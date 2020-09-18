@@ -1,6 +1,9 @@
 # Big raw data files
 data
 
+# Large output files
+output
+
 # History files
 .Rhistory
 .Rapp.history
