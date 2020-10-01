@@ -15,13 +15,13 @@ summary(s2_full)
 
 seeNAcolumns = FALSE
 if (seeNAcolumns) {
-# To see if all columns are NA
-s2_full_nocolnames = s2_full
-colnames(s2_full_nocolnames)= NULL
-naval_nums = sapply(s2_full_nocolnames, FUN = function(x) as.numeric(sum(is.na((x)), na.rm=T)))
-nacol_idxs = which(naval_nums == nrow(s2_full_nocolnames)) # all values are NA?
-nacol_idxs
-colnames(s2_full)[nacol_idxs] # these columns are filled with all NAs.
+  # To see if all columns are NA
+  s2_full_nocolnames = s2_full
+  colnames(s2_full_nocolnames)= NULL
+  naval_nums = sapply(s2_full_nocolnames, FUN = function(x) as.numeric(sum(is.na((x)), na.rm=T)))
+  nacol_idxs = which(naval_nums == nrow(s2_full_nocolnames)) # all values are NA?
+  nacol_idxs
+  colnames(s2_full)[nacol_idxs] # these columns are filled with all NAs.
 }
 # give row IDs
 s2_full$RowID = 1:nrow(s2_full)
@@ -86,15 +86,14 @@ s3_reduced = s3_full[-c(1:16), c(3,2,4:86)]
 
 
 colnames(s3_reduced)=c("paperID","rater","first_auth","appl_ID","warning",
-                     "1.1","1.2","1.3","1.4","1.5","1.6","1.7","1.8",
-                     "2.1","2.2","2.3","2.4","2.5","2.6","2.7","2.8","2.9","2.10","2.11","2.12","2.13","2.14","2.15","2.16","2.17","2.18","2.20","2.21",
-                     "3.1","3.2","3.3","3.4","3.5","3.6","3.7",
-                     "4.1","4.2","4.3","4.4","4.5","4.6","4.7",
-                     "5.1","5.2","5.3","5.4","5.5","5.6","5.7","5.8",
-                     "6.1","6.2","6.3","6.4","6.5","6.6","6.7",
-                     "7.1","7.2","7.3","7.4","7.5",
-                     "8.1","8.2","8.3","8.4","8.5","8.6","8.7","8.8","8.9","8.10","8.11","8.12","8.13","8.14","8.15","8.16","8.17","8.18")
-
+                       "1.1","1.2","1.3","1.4","1.5","1.6","1.7","1.8",
+                       "2.1","2.2","2.3","2.4","2.5","2.6","2.7","2.8","2.9","2.10","2.11","2.12","2.13","2.14","2.15","2.16","2.17","2.18","2.20","2.21",
+                       "3.1","3.2","3.3","3.4","3.5","3.6","3.7",
+                       "4.1","4.2","4.3","4.4","4.5","4.6","4.7",
+                       "5.1","5.2","5.3","5.4","5.5","5.6","5.7","5.8",
+                       "6.1","6.2","6.3","6.4","6.5","6.6","6.7",
+                       "7.1","7.2","7.3","7.4","7.5",
+                       "8.1","8.2","8.3","8.4","8.5","8.6","8.7","8.8","8.9","8.10","8.11","8.12","8.13","8.14","8.15","8.16","8.17","8.18")
 
 
 
@@ -122,6 +121,4 @@ summary(s3_single[,24])
 par(mar = c(5, 30, 4,4))
 barplot(table(s3_single[,24]), horiz=T, las=2, cex.names = 0.3)
 par(mar = c(4, 4, 4,4)) # reset par
-
-
 
