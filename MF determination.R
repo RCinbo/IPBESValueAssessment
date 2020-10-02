@@ -1,7 +1,7 @@
-#this script aims to determine which method families are represented in the applications, based on the verifiers. 
+#this script aims to determine which method families are represented in the applications, based on the variables
 #the scripts creates a matrix with paper ID as lines and 4 columns:  MF1, MF2, MF3, MF4; and then proceeds to fill in 0 (NOT this MF), 1 (SURELY this MF) or blank.
-#This procedure is performed three times, based on different informative verifiers, and then the three matrices are merged into one, 
-#following the logic that empty+0 = 0 ; empty +1= 1; but O + 1 sends a warning. 
+#This procedure is performed three times, based on different variables, and then the three matrices are merged into one,
+#following the logic that empty+0 = 0 ; empty +1= 1; but O + 1 sends a warning.
 
 #d1 matrix is based on Q 2.3 and Q 2.5
 #d2 matrix is based on Q 3.1
@@ -22,13 +22,13 @@
 #note that d2 determines MF2 and MF3 and also check MF1
 
 #"3.1 - Elicitation process: through what process were  values collected?"
-# options "Obtaining information from transactions in markets" 
-#OR "Observing individual practices/behaviors" 
-#OR "Observing group practices/behaviors"  
+# options "Obtaining information from transactions in markets"
+#OR "Observing individual practices/behaviors"
+#OR "Observing group practices/behaviors"
 #=> MF3=1
 
-#options "Obtaining information by observing biological aspects in real-time (e.g. recording bee visitation of flowers, counting birds, measuring biomass of trees)" 
-#OR "Obtaining information by collecting measurement data over a period of time (e.g. weather data, sediments, nutrients etc. )" 
+#options "Obtaining information by observing biological aspects in real-time (e.g. recording bee visitation of flowers, counting birds, measuring biomass of trees)"
+#OR "Obtaining information by collecting measurement data over a period of time (e.g. weather data, sediments, nutrients etc. )"
 #OR "Obtaining information about biophysical indicators using secondary data (expert estimates, land use maps, satellite images, species Atlas data etc)"
 #=> MF1=1
 
@@ -45,7 +45,7 @@
 #option "Application does not assess preferences of humans to nature" => MF2 = 0 and MF3 = 0
 #option "Spending or expenditure (in monetary or other forms of resources) to maintain (or increase) aspects of nature and biodiversity (or to avoid losses)"
 #=> MF3 = 1
-# option "Hypothetical willingness to give up resources (monetary or other forms) to maintain (or increase) aspects of nature and biodiversity" 
+# option "Hypothetical willingness to give up resources (monetary or other forms) to maintain (or increase) aspects of nature and biodiversity"
 #OR "Hypothetical compensation (monetary or other forms) to give up access to nature or management rights of natural areas"
 #OR "Scores of relative importance to people of nature’s contributions to people (e. g. allocation of points to /or ranking of different aspects of nature or different places)"
 #OR "Dialogues with communities about the importance of different aspects of nature and biodiversity"
@@ -123,7 +123,7 @@ for (i in set2){
 set1=grep("Spending or expenditure ", d[,6])
 for (i in set1){
   d3[i,3]=1
-  
+
 }
 
 set1=grep("Hypothetical willingness to give up resources", d[,6])
@@ -163,7 +163,7 @@ for(i in 1:dim(MF1_list)[1]) {
   MF1_list[i,1]=ifelse(0 %in% MF1_check[i,],0, MF1_list[i,1])
   MF1_list[i,1]=ifelse(1 %in% MF1_check[i,],1, MF1_list[i,1])
   #MF1_list[i,1]=ifelse(0 %in% MF1_check[i,] & 1 %in% MF1_check[i,],"warning", MF1_list[i,1])
-} 
+}
 MF1_list
 
 MF2_check=cbind(d1[,2],d2[,2],d3[,2])
@@ -176,7 +176,7 @@ for(i in 1:dim(MF2_list)[1]) {
   MF2_list[i,1]=ifelse(0 %in% MF2_check[i,],0, MF2_list[i,1])
   MF2_list[i,1]=ifelse(1 %in% MF2_check[i,],1, MF2_list[i,1])
   #MF2_list[i,1]=ifelse(0 %in% MF2_check[i,] & 1 %in% MF2_check[i,],"warning", MF2_list[i,1])
-} 
+}
 MF2_list
 
 MF3_check=cbind(d2[,3],d3[,3])
@@ -189,7 +189,7 @@ for(i in 1:dim(MF3_list)[1]) {
   MF3_list[i,1]=ifelse(0 %in% MF3_check[i,],0, MF3_list[i,1])
   MF3_list[i,1]=ifelse(1 %in% MF3_check[i,],1, MF3_list[i,1])
   #MF3_list[i,1]=ifelse(0 %in% MF3_check[i,] & 1 %in% MF3_check[i,],"warning", MF3_list[i,1])
-} 
+}
 MF3_list
 
 MFtable=cbind(s3[,c(1:4)],MF1_list,MF2_list, MF3_list)
