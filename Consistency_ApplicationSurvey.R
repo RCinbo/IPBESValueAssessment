@@ -22,6 +22,10 @@ s2_clean=cbind(s2paperID,s2Rater,s2scores)
 colnames(s2_clean)=c("paperID","rater","first_auth","valuation","application","multiple","appl_nr","appl_names","self_rel","comments")
 s2=s2_clean
 
+
+###up till here, move to another script 'extract data'
+
+
 #make test matrices per paper
 n=length(levels(s2$paperID))
 m=matrix(0,n,1)
@@ -34,7 +38,6 @@ for(i in 1:n){
 }
 
 #for each paper, list scores for application & valuation: scope and nr of applications
-#from this, checks need to be made, and rescoring asked/feedback given to students
 scope=matrix(0,0,6)
 colnames(scope)=c("paperID", "firstauth", "valuation", "application", "unclearYN", "applnr", "rater")
 n=length(levels(s2$paperID))
@@ -68,7 +71,7 @@ k
 f
 
 
-##STEP 3 
+##STEP 3
 
 step3="https://docs.google.com/spreadsheets/d/e/2PACX-1vQPN4pJeP4JjJIvlbRwjqCCLSTwUSicDsBaACqvm3_E8S9yh4z2ujsLUysuA9bATmCKksTzaQe8B4S7/pub?output=csv"
 s3=read.csv(url(step3))
@@ -124,7 +127,7 @@ appnames
 z
 
 #correct appname labels where needed, recalculate z
-#fill in paperID list of labels to correct 
+#fill in paperID list of labels to correct
 corr=c(15,16,17,18,19,20)
 
 #correct these here or with editing links!
@@ -151,7 +154,7 @@ check=count(s3, rater, sort=T)
 check
 
 
-#create tables per application 
+#create tables per application
 
 l3=as.list(matrix(0,z,1))
 q=1
@@ -179,7 +182,7 @@ colnames(irr3)=c("krip.alpha", "Fleiss.kappa")
 rownames(irr3)=rep("x",length(l3))
 for(i in 1:dim(irr3)[1]){
   m=as.matrix(l3[[i]])
-  #select non-free comment fields (use "col" and substract one nr): 
+  #select non-free comment fields (use "col" and substract one nr):
   #5, 11, 12,13, 32, 33, 36, 39, 40, 46, 47, 54, 55, 61, 62, 67, 68, 81, 82, 83, 84, 85
     m=m[,c(2:4,6,8,10,14:31,34,35,37,38,41:45,48:53,56:60,63:65,68:80)]
   mt=t(m)
@@ -194,9 +197,9 @@ s2.20
 k
 f
 
-#As a rule of thumb values of Kappa from 0.40 to 0.59 are considered moderate, 
-#0.60 to 0.79 substantial, and 0.80 outstanding (Landis & Koch, 1977). 
-#Most statisticians prefer for Kappa values to be at least 0.6 
+#As a rule of thumb values of Kappa from 0.40 to 0.59 are considered moderate,
+#0.60 to 0.79 substantial, and 0.80 outstanding (Landis & Koch, 1977).
+#Most statisticians prefer for Kappa values to be at least 0.6
 #and most often higher than 0.7 before claiming a good level of agreement.
 
 #irr per topic!!
@@ -206,7 +209,7 @@ colnames(irr3b)=c("1_Method&use", "2_Appl_Context", "3_Appl_descriptors", "4_Rel
 rownames(irr3b)=rep("x",length(l3))
 for(i in 1:dim(irr3b)[1]){
   m=as.matrix(l3[[i]])
-  #select non-free comment fields (use "col" and substract one nr): 
+  #select non-free comment fields (use "col" and substract one nr):
   #5, 11, 12,13, 32, 33, 36, 39, 40, 46, 47, 54, 55, 61, 62, 67, 68, 81, 82, 83, 84, 85
   m1=m[,c(2,6,8,10)]
   mt1=t(m1)
