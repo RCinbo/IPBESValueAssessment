@@ -11,6 +11,7 @@ IPbeslightgreen <- rgb(181/255, 212/255, 141/255) #b5d48d
 colfunc <- colorRampPalette(c(rgb(92/255, 102/255, 93/255), rgb(181/255, 212/255, 141/255)))
 
 ####------Question 2.17 and 2.18 stacked bar charts----------####
+# This figure only needs s3_single as an input. Make sure you have this in your environment through making in using 'Starting.R' or load it from your data folder.
 # First, we need to disentangle the options in 2.18
 legend<-data.frame(code=c('Inf_FA','Inf_AR','Inf_Just','Inf_AI','Dec_RG','Dec_Partic','Dec_PT','Dec_EMC','T_PS','T_D','Unclear', 'Other'),
                    txt=c('Informative - Formative or Affirmative',
