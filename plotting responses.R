@@ -46,10 +46,58 @@ names(labs) <- c('Desired uptake - A potential, expected, or wished for use of o
 p <- ggplot(subset_long) + geom_bar(alpha=1,size=1,color = IPbeslightgreen, fill = IPbeslightgreen,aes(x=question, y=1*value, group = `2.17` ), stat = "identity")+ facet_grid(cols = vars(`2.17`), scales = "free", labeller = labeller(`2.17` = labs)) + coord_flip() + theme_bw() + scale_x_discrete(breaks = legend$code, labels = str_wrap(as.character(legend$txt),20)) + ylab('Number of papers') + xlab('Valuation results purpose')
 ggsave(p, filename='output/T3-Q217-218.pdf', width= 10, height = 7)
 #extract paper ID numbers for testing use case and actual use case and give the purposes that were given for this application
-  write_xlsx(
+write_xlsx(
     subset[subset$`2.17`!='Desired uptake - A potential, expected, or wished for use of outputs, sometimes only cursory', -3],
     path =  "output/testing and actual use cases.xlsx",
     col_names = TRUE,
     format_headers = TRUE,
     use_zip64 = FALSE
+)
+
+
+
+#########-------Topic 4: Reliability of valuation--------###########♦
+#Page 92, figure 3.13 in the draft text
+# This figure only needs s3_single as an input. Make sure you have this in your environment through making in using 'Starting.R' or load it from your data folder.
+#4.1 - Replicability of the results is assessed  (yes/ no/ unclear)
+#4.2 - Consistency of the results is assessed (yes/ no/ unclear)
+#4.3 - Precision of the results is assessed (yes/ no/ unclear)
+#4.4 - Internal Validity of the results is assessed by (check all that apply: credibility / construct validity / content validity / criterion validity / community validity / unclear / not assessed / Other:)
+#4.5 - External Validity of the results is assessed by (check all that apply: transferability / generalisability / unclear / not assessed / Other:)
+#4.6 - How sure do you feel about your scores for this step?
+Lbl1<-data.frame(Answer = c('Yes','unclear','No'),
+                 count1 = NA, Perc1 = NA, Label1 = NA,
+                 count2 = NA, Perc2 = NA, Label2 = NA,
+                 count3 = NA, Perc3 = NA, Label3 = NA)
+for (i in 1:3){
+  for (j in 1:3){
+  Lbl1[j,sprintf('count%d',i)] <- sum(s3_single[,sprintf('4.%d',i)]==as.character(Lbl1[j,'Answer']))
+  Lbl1[j,sprintf('Perc%d',i)] <- Lbl1[j,sprintf('count%d',i)] / nrow(s3_single)*100
+  Lbl1[j,sprintf('Label%d',i)] <- sprintf('%1.2f%%', Lbl1[j,sprintf('Perc%d',i)])
+  }
+}
+
+blank_theme <- theme_minimal()+
+  theme(
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    panel.border = element_blank(),
+    panel.grid=element_blank(),
+    axis.ticks = element_blank(),
+    plot.title=element_text(size=14, face="bold")
   )
+
+p41 <- ggplot() +
+  geom_bar(aes(x = factor(1), fill = s3_single$`4.1`),width = 1) + coord_polar("y", start = 0) + blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank()) + scale_fill_manual(name = '',breaks = c('Yes','unclear','No'), values  = c(IPbeslightgreen, 'orange', 'red')) + xlab('') + ylab('') + ggtitle('Replicability') +
+  geom_text(aes(x = 1.2, y = Lbl1$count1/2+ c(0, cumsum(Lbl1$count1)[-length(Lbl1$count1)]),
+                label = Lbl1$Label1), size=5)
+p42 <- ggplot() +
+  geom_bar(aes(x = factor(1), fill = s3_single$`4.2`),width = 1) + coord_polar("y", start = 0) + blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank())+ scale_fill_manual(name = '',breaks = c('Yes','unclear','No'), values  = c(IPbeslightgreen, 'orange', 'red')) + xlab('') + ylab('') + ggtitle('Consistency') +
+  geom_text(aes(x = 1.2, y = Lbl1$count2/2+ c(0, cumsum(Lbl1$count2)[-length(Lbl1$count2)]),
+                label = Lbl1$Label2), size=5)
+p43 <- ggplot() +
+  geom_bar(aes(x = factor(1), fill = s3_single$`4.3`),width = 1) + coord_polar("y", start = 0) + blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank())+ scale_fill_manual(name = '',breaks = c('Yes','unclear','No'), values  = c(IPbeslightgreen, 'orange', 'red')) + xlab('') + ylab('') + ggtitle('Precision') +
+  geom_text(aes(x = 1.2, y = Lbl1$count3/2+ c(0, cumsum(Lbl1$count3)[-length(Lbl1$count3)]),
+                label = Lbl1$Label3), size=5)
+
+
