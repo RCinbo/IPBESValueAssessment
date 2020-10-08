@@ -179,7 +179,6 @@ for (i in 1:4) {
 dev.off()
 
 
-
 # png("Figures/FIG_IPBESmethod_by_region.png", width = 700, height = 600, pointsize = 17, bg = NA)
 #pdf("Figures/FIG_IPBESmethod_by_region_transparent.pdf",width = 18, height = 12, pointsize = 18,  bg = "transparent")
 
