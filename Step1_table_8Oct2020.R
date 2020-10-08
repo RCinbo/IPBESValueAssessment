@@ -18,17 +18,17 @@ paste_noNA <- function(x,sep=", ") {
 ##########################################################################################
 ##########################################################################################
 
-data.final <- read.xlsx("IDSWAP_ 425 AND_16June20DG_copy.xlsx", colNames=T) 
+data.final <- read.xlsx("IDSWAP_ 425 AND_16June20DG_copy.xlsx", colNames=T)
 
 colnames(data.final)
 final.country <- data.final[, c("TSU.ID_MERGED", "Region_TI_AB_DE_ID", "PY", "DI", "TS18", "TS19", paste0("TS", c(20:27)))] # "Subregion_TI_AB_DE_ID",
 final.country[32,]
 nrow(final.country)
 
-### Expand the region 
+### Expand the region
 geocountry_l_final = lapply(final.country$Region_TI_AB_DE_ID,  FUN = function(geocountry) unique(strsplit(geocountry, ",")[[1]]))
 
-final.country$TSU.ID_MERGED = as.integer(final.country$TSU.ID_MERGED) # real number to integer 
+final.country$TSU.ID_MERGED = as.integer(final.country$TSU.ID_MERGED) # real number to integer
 
 TSU.ID_MERGED_StrLength_range = range(sapply(final.country$TSU.ID_MERGED, FUN = str_length))
 substr_length_max = TSU.ID_MERGED_StrLength_range[2]
@@ -40,25 +40,25 @@ TSU.ID_MERGED_Padded = as.character(formatC(final.country$TSU.ID_MERGED,  flag =
 names(geocountry_l_final) = TSU.ID_MERGED_Padded
 head(geocountry_l_final)
 
-geocountry_names_fi = unique(unlist(geocountry_l_final)) 
+geocountry_names_fi = unique(unlist(geocountry_l_final))
 table(sapply(geocountry_l_final, length))
 sum(table(sapply(geocountry_l_final, length)))
 # which(sapply(geocountry_l_final, length) == 4)
 
 # geocountry_l_final[86]
 
-table(unlist(geocountry_l_final)) 
+table(unlist(geocountry_l_final))
 
 geocountry_unlisted_fi_beforeunlist = (sapply(geocountry_l_final, FUN = function(x) {if (length(x)==0) {return("")} else {return(unlist(x))}}))
 length(geocountry_unlisted_fi_beforeunlist)
 geocountry_unlisted_fi = unlist(geocountry_unlisted_fi_beforeunlist)
-names(geocountry_unlisted_fi) 
+names(geocountry_unlisted_fi)
 length(geocountry_unlisted_fi) # 86066
 # 72568 + 5968*2 + 455*3 + 48*4 + 5
 
 # unlist(geocountry_unlisted_fi_beforeunlist[[1]])
 
-geocountry_unlisted_fi_id = substr(names(geocountry_unlisted_fi), start = 1, stop = substr_length_max) 
+geocountry_unlisted_fi_id = substr(names(geocountry_unlisted_fi), start = 1, stop = substr_length_max)
 head(geocountry_unlisted_fi_id)
 
 final.country$TSU.ID_MERGED_Padded = TSU.ID_MERGED_Padded
@@ -68,7 +68,7 @@ nrow(geocountry_expanded_df_fi) #86066
 
 data_merged_fi = merge(final.country, geocountry_expanded_df_fi, by = "TSU.ID_MERGED_Padded", all= T )
 
-data_merged_fi[which(data_merged_fi$GEO_country_single == "NA"), ]$GEO_country_single = NA 
+data_merged_fi[which(data_merged_fi$GEO_country_single == "NA"), ]$GEO_country_single = NA
 
 data_merged_fi$GEO_country_single = factor(as.character(data_merged_fi$GEO_country_single)) # to remove text "NA" from the levels
 
@@ -100,14 +100,14 @@ write.xlsx(data_merged_fi, "data_country_merged.xlsx")
 
 # method.subset.tem <- subset(final.country, TS20 == 1)
 yr_start = 2010
-yr_end= 2020 
-method_names = paste0("TS", 20:23)
+yr_end= 2020
 
-data_MF_year <- subset(final.country, PY >= yr_start & PY <= yr_end) 
+
+data_MF_year <- subset(final.country, PY >= yr_start & PY <= yr_end)
 nrow(data_MF_year) #[1] 56650
 
 ############################################################################################
-#### Figure  
+#### Figure
 ############################################################################################
 head(data_merged_fi)
 Decade = cut(data_merged_fi$PY, breaks = seq(1980, 2020, 10), include.lowest = F)
@@ -116,7 +116,7 @@ levels(Decade) = paste0("D", as.integer(seq(1980, 2020, 10)))
 
 data_merged_fi$Decade = factor(as.character(Decade))
 
-IPBES.region.decade.tsu <- table(data_merged_fi$Decade, data_merged_fi$GEO_country_single) # NA... not recognized.. 
+IPBES.region.decade.tsu <- table(data_merged_fi$Decade, data_merged_fi$GEO_country_single) # NA... not recognized..
 barplot(IPBES.region.decade.tsu)
 
 # Method Family 1: TS20
@@ -155,11 +155,11 @@ legend("topleft", legend =method_names, col = col_method, pch = 15, bty = "n")
 #dev.off()
 
 
-# 
-# TS20  TS21  TS22  TS23 
-# 34870  6359  4932  4079 
+#
+# TS20  TS21  TS22  TS23
+# 34870  6359  4932  4079
 
-###### Pie chart 
+###### Pie chart
 method_by_region_by = by(data_merged_fi[, paste0("TS2", 0:3)], INDICES = data_merged_fi$GEO_country_single, FUN = rbind)
 method_by_region_df = do.call("rbind", lapply(method_by_region_by, FUN = colSums))
 
@@ -172,11 +172,11 @@ radius  = radius / sum(radius) * 3
 colnames(method_by_region_df) = method_names
 
 par(mfrow=c(2,2), mar = c(5,5,5,5))
-for (i in 1:4) { 
+for (i in 1:4) {
   pie(method_by_region_df[i,], radius = radius[i], col = col_method, main = paste0(rownames(method_by_region_df)[i], " (n=",  rowSums(method_by_region_df)[i], ")"))
 }
 # legend("topleft", legend =method_names, col = col_method, pch = 15, bty = "n")
-#dev.off()
+dev.off()
 
 
 
@@ -189,37 +189,36 @@ radius  = radius / sum(radius) * 3.5
 colnames(method_by_region_df) = method_names
 
 par(mfrow=c(2,2), mar = c(5,5,5,5), bg= NA)
-for (i in 1:4) { 
+for (i in 1:4) {
   pie(method_by_region_df[i,], radius = radius[i], col = col_method,labels = "", main = paste0(rownames(method_by_region_df)[i], " (n=",  rowSums(method_by_region_df)[i], ")"))
 }
 # legend("topleft", legend =method_names, col = col_method, pch = 15, bty = "n")
-#dev.off()
+dev.off()
 
 #pdf("Figures/FIG_MethodFamily_Legend.pdf", width = 4, height = 4, pointsize = 18,  bg = "transparent")
 par(mfrow=c(1,1), mar =c (1,1,1,1))
 plot(NULL ,xaxt='n',yaxt='n',bty='n',ylab='',xlab='', xlim=0:1, ylim=0:1)
 legend("topleft", legend =method_names, col = col_method, pch = 15, bty = "n")
-#dev.off()
+dev.off()
 
 
 
-###### Number of method families applied per valuation studies 
+###### Number of method families applied per valuation studies
 # Method Family 1: TS20
 # Method Family 2: TS21
 # Method Family 3: TS22
 # Method Family 4: TS23
 
-method_names
-MF_count <- data.final[,method_names] 
-
+method_code = paste0("TS", 20:23)
+MF_count <- data.final[,method_code]
 
 nrow(MF_count)
 sum(table(rowSums(MF_count)))
-#     0     1     2     3     4 
-# 34081 43422  1463    73     1 
+#     0     1     2     3     4
+# 34081 43422  1463    73     1
 MF_notZero <- table(rowSums(MF_count))[-1]
 pie(MF_notZero)
-barplot(MF_notZero)
+dev.off(); barplot(MF_notZero)
 
 
 
