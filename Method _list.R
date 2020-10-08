@@ -193,20 +193,26 @@ which(s3_single$paperID == 40974) # Row 85 in s3_single
 s3_single[s3_single$paperID == 40974,"1.2"]
 
  library(openxlsx)
-write.xlsx(res_all_df,file = "output/Step3_1.2_all.xlsx")
+#write.xlsx(res_all_df,file = "output/Step3_1.2_all.xlsx")
 
-write.xlsx(res_all_df[res_all_df$NeedChecking=="Y",], file="output/Step3_1.2_needchecking_only.xlsx")
+#write.xlsx(res_all_df[res_all_df$NeedChecking=="Y",], file="output/Step3_1.2_needchecking_only.xlsx")
 
-stop("ends here (8 Oct 2020) by HL")
+#stop("ends here (8 Oct 2020) by HL")
 
+table(s3_single$"1.1")
+#   1     2     3     4     5     6     7    11    22 64502
+# 859   153    46    17     6     2     1     1     1     1
 
-
-
-
-
-
-
-
+which(s3_single$"1.1" == 22) # it's an error: it should be '2'? There are only two method names following..
+s3_single[724,"1.1"] <-2
 
 
+which(s3_single$"1.1" == 64502) # that's paperID. It should be corrected as '1'. Only one method ID is presented in the next question
+s3_single[1060,"1.1"] <- 1
 
+table(s3_single$"1.1")
+#   1   2   3   4   5   6   7  11
+# 860 154  46  17   6   2   1   1
+
+pie(table(s3_single$"1.1"))
+barplot(table(s3_single$"1.1"))
