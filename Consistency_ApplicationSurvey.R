@@ -1,30 +1,10 @@
-#extract and clean tables for STEP2 and STEP3 surveys
-
-##STEP 2
-
-step2="https://docs.google.com/spreadsheets/d/e/2PACX-1vQa2_J5d1RiSCZTTFJslWmA0zsaqNmoVCOnl9GeNOAHzfLQorqsrfWk2jgc6baPXgQZfWzsqDVOdYfo/pub?output=csv"
-s2=read.csv(url(step2))
-dim(s2)
-colnames(s2)
-str(s2)
-
-#remove validation trials,remove non-existing factor levels from trials
-s2b=(s2)[14:dim(s2)[1],]
-for(i in 1:ncol(s2b)) {
-  s2b[,i]<-factor(s2b[,i])}
-s2=s2b
-
-#clean up
-s2paperID=as.data.frame(s2[,3])
-s2Rater=as.data.frame(s2[,2])
-s2scores=as.data.frame(s2[,c(4:11)])
-s2_clean=cbind(s2paperID,s2Rater,s2scores)
-colnames(s2_clean)=c("paperID","rater","first_auth","valuation","application","multiple","appl_nr","appl_names","self_rel","comments")
-s2=s2_clean
+# test reliability in first test round - step 2 and step 3
+# test reliability for all repeated papers (inc/excl first ones) - step 2 and step 3
+# extract ONE observation for each paper to add back to the step 2 and 3 table
 
 
-###up till here, move to another script 'extract data'
-
+#STEP2
+#(waiting) for corrected script extracting all repeated papers in strating.R)
 
 #make test matrices per paper
 n=length(levels(s2$paperID))
@@ -73,41 +53,6 @@ f
 
 ##STEP 3
 
-step3="https://docs.google.com/spreadsheets/d/e/2PACX-1vQPN4pJeP4JjJIvlbRwjqCCLSTwUSicDsBaACqvm3_E8S9yh4z2ujsLUysuA9bATmCKksTzaQe8B4S7/pub?output=csv"
-s3=read.csv(url(step3))
-dim(s3)
-colnames(s3)
-head(s3)[,2]
-
-#remove validation trials
-s3b=(s3)[17:dim(s3)[1],]
-for(i in 1:ncol(s3b)) {
-  s3b[,i]<-factor(s3b[,i])}
-s3=s3b
-
-#clean
-s3paperID=as.data.frame(s3[,3])
-s3Rater=as.data.frame(s3[,2])
-s3scores=as.data.frame(s3[,c(4:86)])
-s3_clean=cbind(s3paperID,s3Rater,s3scores)
-  #list with full colnames
-  #n=dim(s3)[2]
-  n=86
-  col=matrix(0,n,1)
-  rownames(col)=c(1:n)
-  for (i in 1:n){
-  col[i,1]=colnames(s3)[i]
-  }
-colnames(s3_clean)=c("paperID","rater","first_auth","appl_ID","warning",
-                     "1.1","1.2","1.3","1.4","1.5","1.6","1.7","1.8",
-                     "2.1","2.2","2.3","2.4","2.5","2.6","2.7","2.8","2.9","2.10","2.11","2.12","2.13","2.14","2.15","2.16","2.17","2.18","2.20","2.21",
-                     "3.1","3.2","3.3","3.4","3.5","3.6","3.7",
-                     "4.1","4.2","4.3","4.4","4.5","4.6","4.7",
-                     "5.1","5.2","5.3","5.4","5.5","5.6","5.7","5.8",
-                     "6.1","6.2","6.3","6.4","6.5","6.6","6.7",
-                     "7.1","7.2","7.3","7.4","7.5",
-                     "8.1","8.2","8.3","8.4","8.5","8.6","8.7","8.8","8.9","8.10","8.11","8.12","8.13","8.14","8.15","8.16","8.17","8.18")
-s3=s3_clean
 
 #clean application names and count nr of applications
 appnames=matrix(0,0,4)

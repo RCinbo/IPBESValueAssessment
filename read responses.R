@@ -5,55 +5,55 @@ St2tr=read.csv(url(Step2_train))
 colnames(St2tr)
 
 
-# summary of the table 
+# summary of the table
 summary(St2tr)
 
-# Notes on the data structure & values 
-# Column 5: should be all yes or no? There's one blank (""). 
-# Column 8: "" should be "No"?(17) 
-# Column 9: "" should be "One" or the other way around (17)  
-# Column 11, 12 and 13: there's one "" 
-# Column 19: "" should be "No"?(81) 
-# Column 20: "" should be "1"?(92) and "two" should be "2" (1) 
-# Column 21: "" should be "No"?(81) 
+# Notes on the data structure & values
+# Column 5: should be all yes or no? There's one blank ("").
+# Column 8: "" should be "No"?(17)
+# Column 9: "" should be "One" or the other way around (17)
+# Column 11, 12 and 13: there's one ""
+# Column 19: "" should be "No"?(81)
+# Column 20: "" should be "1"?(92) and "two" should be "2" (1)
+# Column 21: "" should be "No"?(81)
 
 
-# A column with multiple data points  
+# A column with multiple data points
 shortnames = St2tr$X10..please.provide.short.names.for.the.applications...A..name......B..name......C..name...Use.CLEAR.and.SENSIBLE.names.which.you.will.reuse.in.the.next.survey.and.allow.finding.it.in.the.paper..Use.at.least.one.word..
 table(shortnames)
-# which used "//", "/", ";", "," to seperate data points and ":" to split data name and the value 
+# which used "//", "/", ";", "," to seperate data points and ":" to split data name and the value
 
-library(stringr) # parsing strings in R 
+library(stringr) # parsing strings in R
 
 shortnames_split_by_item = str_split(shortnames, pattern = "(,|;|//|/)") # regular expression (,|;|\/\/|\/)
 shortnames_split_by_item_and_name = lapply(shortnames_split_by_item, FUN = function(x) str_split(x, pattern = ":"))
-shortnames_count = sapply(shortnames_split_by_item_and_name, FUN = length) # count the maximum items 
-shortnames_max_item = max(shortnames_count) # is 3 as of 25 Sep 2020 
+shortnames_count = sapply(shortnames_split_by_item_and_name, FUN = length) # count the maximum items
+shortnames_max_item = max(shortnames_count) # is 3 as of 25 Sep 2020
 shortnames_df = data.frame(matrix(nrow = length(shortnames), ncol = shortnames_max_item))
 colnames(shortnames_df) = LETTERS[1:shortnames_max_item]
 
-# fill each row one by one 
-for (idx in 1:length(shortnames)) { 
+# fill each row one by one
+for (idx in 1:length(shortnames)) {
   shorname_tmp = shortnames_split_by_item_and_name[[idx]]
-  colcnt = length(shorname_tmp) # how many items does a row have? 
+  colcnt = length(shorname_tmp) # how many items does a row have?
   shortnames_df[idx,1:colcnt] = sapply(shorname_tmp, FUN = function(x) str_trim(x[2])) # and trim the strings
 }
 
 str(shortnames_df)
-table(unlist(shortnames_df)) # might want to decapitalize the strings (e.g. SolVES and SOLVES) 
-library(rjson) # table to json 
+table(unlist(shortnames_df)) # might want to decapitalize the strings (e.g. SolVES and SOLVES)
+library(rjson) # table to json
 
 shortnames_json = rjson::toJSON(shortnames_df) # Convert to a JSON string (can be stored in CSV or Excel columns)
 shortnames_json
-shortnames_df_inversely_fromjson = rjson::fromJSON(shortnames_json) # and converts back from it 
+shortnames_df_inversely_fromjson = rjson::fromJSON(shortnames_json) # and converts back from it
 shortnames_df_reconstructed = data.frame(shortnames_df_inversely_fromjson)
 
-# if wants to convert a single row 
+# if wants to convert a single row
 shorname_example_row_json = rjson::toJSON(shortnames_df[92,])
-rjson::fromJSON(shorname_example_row_json) # and converts back from it 
+rjson::fromJSON(shorname_example_row_json) # and converts back from it
 
-# or 
-# 
+# or
+#
 # {
 #   "A": "SOLVES",
 #   "B": "ARIES",
@@ -68,6 +68,7 @@ Rater=as.data.frame(St2tr[,15])
 scores=as.data.frame(St2tr[,c(4:7,9,11:14)])
 s2=cbind(paperID,Rater,scores)
 colnames(s2)=c("paperID","Rater","Valuation","Application","Policy theme","challenges","appl_nr","ILKauth","locauth","nonacauth","fund")
+
 #make test matrices for same papers
 list_s2=matrix(0,length(levels(as.factor(s2$paperID))),1)
 l=as.list(list_s2)
@@ -76,6 +77,8 @@ for(i in 1: length(levels(as.factor(s2$paperID)))){
   l[[i]]=a
   list_s2[i,1]= paste("s2.",levels(as.factor(s2$paperID))[i],sep="")
 }
+
+
 
 
 #Topic 1

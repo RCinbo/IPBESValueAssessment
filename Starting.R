@@ -51,6 +51,8 @@ which(s2_single$paperID %in% paperid_ids_multiple)
 
 s2_single
 
+##later, include one of each back in the table##
+
 # STEP 3
 step3="https://docs.google.com/spreadsheets/d/e/2PACX-1vQPN4pJeP4JjJIvlbRwjqCCLSTwUSicDsBaACqvm3_E8S9yh4z2ujsLUysuA9bATmCKksTzaQe8B4S7/pub?output=csv"
 s3_full=read.csv(url(step3))
