@@ -73,7 +73,8 @@ for (row_idx in 1:nrow(s3_single)) {
       # it has only the method ID
       id_tmp = as.numeric(res_1[1])
       if (!is.na(id_tmp)){
-        res_2 = c(paperID_tmp, row_idx, id_tmp, NA, "N", NA) # ID, desc.,NeedChecking?, row data string
+         res_2 = c(paperID_tmp, row_idx, id_tmp, NA, "N", s3_1.2_tmp) # ID, desc.,NeedChecking?, row data string
+
       } else {
         # it is null, it means the first element is not a number (means something else like desc. or name of the method)
         res_2 = c(paperID_tmp, row_idx, NA, res_1[1], "Y", s3_1.2_tmp)
@@ -87,7 +88,8 @@ for (row_idx in 1:nrow(s3_single)) {
       desc_tmp = res_1[2]
 
       if (!is.na(id_tmp)){
-        res_2 = c(paperID_tmp, row_idx, id_tmp, desc_tmp, "N", NA) # ID, desc.,NeedChecking?, raw data string
+         res_2 = c(paperID_tmp, row_idx, id_tmp, desc_tmp, "N", s3_1.2_tmp) # ID, desc.,NeedChecking?, raw data string
+
       } else {
         # it is null, it means the first element is not a number (means something else like desc. or name of the method)
         res_2 = c(paperID_tmp, row_idx, NA, desc_tmp, "Y", s3_1.2_tmp)
@@ -105,10 +107,19 @@ for (row_idx in 1:nrow(s3_single)) {
     # print(method_tmp_idx)
     # print(res_2)
 
+     if (!(res_2[3]  %in% method_lutb$ID)) {
+      # if the method is not enlisted, it could be possibly wrong.. (e.g. 2009)
+      res_2[5] = "Y"
+    }
 
     res_tmp[method_tmp_idx, ] = res_2
-    res_all[[row_idx]] = res_tmp
   }
+
+
+  res_all[[row_idx]] = res_tmp
+
+
+
 }
 
 nrow(s3_single)
@@ -142,8 +153,21 @@ names(method_tb1) = method_tb_name
 
 barplot(method_tb1, las=2)
 
-par(mar=c(15, 4,4,4))
-barplot(sort(method_tb1, T), las=2, cex.names = 0.5)
+ pdf("output/Main_Method_list.pdf", width = 12, height = 8)
+par(mar=c(4,17,4,4))
+barplot(sort(method_tb1, F), las=1, cex.names = 0.5, horiz = T, xlab = "# of applications")
+dev.off()
+
+
+# figure out what was not found
+method_not_found_idx = which(is.na(match(method_lutb$ID, method_tb_code)))
+
+method_lutb$Method.name[method_not_found_idx]
+
+
+which(str_detect(s3_single$"1.2", pattern ="SolVES"))
+# which(str_detect(s3_single$"1.4", pattern ="Solv"))
+# s3_single$"1.4"[996]
 
 
 
@@ -168,17 +192,27 @@ which(s3_single$paperID == 40974) # Row 85 in s3_single
 
 s3_single[s3_single$paperID == 40974,"1.2"]
 
+ library(openxlsx)
+#write.xlsx(res_all_df,file = "output/Step3_1.2_all.xlsx")
 
-stop("ends here (7 Oct 2020) by HL")
+#write.xlsx(res_all_df[res_all_df$NeedChecking=="Y",], file="output/Step3_1.2_needchecking_only.xlsx")
+
+#stop("ends here (8 Oct 2020) by HL")
+
+table(s3_single$"1.1")
+#   1     2     3     4     5     6     7    11    22 64502
+# 859   153    46    17     6     2     1     1     1     1
+
+which(s3_single$"1.1" == 22) # it's an error: it should be '2'? There are only two method names following..
+s3_single[724,"1.1"] <-2
 
 
+which(s3_single$"1.1" == 64502) # that's paperID. It should be corrected as '1'. Only one method ID is presented in the next question
+s3_single[1060,"1.1"] <- 1
 
+table(s3_single$"1.1")
+#   1   2   3   4   5   6   7  11
+# 860 154  46  17   6   2   1   1
 
-
-
-
-
-
-
-
-
+pie(table(s3_single$"1.1"))
+barplot(table(s3_single$"1.1"))
