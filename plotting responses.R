@@ -9,7 +9,13 @@ library(writexl)
 IPbesdarkgreen <- rgb(92/255, 102/255, 93/255) #5c665d
 IPbeslightgreen <- rgb(181/255, 212/255, 141/255) #b5d48d
 colfunc <- colorRampPalette(c(rgb(92/255, 102/255, 93/255), rgb(181/255, 212/255, 141/255)))
-
+#######Usefull function if you want just one legend for several figures#######
+library(gridExtra)
+g_legend<-function(a.gplot){
+  tmp <- ggplot_gtable(ggplot_build(a.gplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)}
 ####------Question 2.17 and 2.18 stacked bar charts----------####
 # This figure only needs s3_single as an input. Make sure you have this in your environment through making in using 'Starting.R' or load it from your data folder.
 # First, we need to disentangle the options in 2.18
@@ -56,7 +62,7 @@ write_xlsx(
 
 
 
-#########-------Topic 4: Reliability of valuation--------###########♦
+#############-------Topic 4: Reliability of valuation--------###########
 #Page 92, figure 3.13 in the draft text
 # This figure only needs s3_single as an input. Make sure you have this in your environment through making in using 'Starting.R' or load it from your data folder.
 #4.1 - Replicability of the results is assessed  (yes/ no/ unclear)
@@ -88,7 +94,7 @@ blank_theme <- theme_minimal()+
   )
 
 p41 <- ggplot() +
-  geom_bar(aes(x = factor(1), fill = s3_single$`4.1`),width = 1) + coord_polar("y", start = 0) + blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank()) + scale_fill_manual(name = '',breaks = c('Yes','unclear','No'), values  = c(IPbeslightgreen, 'orange', 'red')) + xlab('') + ylab('') + ggtitle('Replicability') +
+  geom_bar(aes(x = factor(1), fill = s3_single$`4.1`),width = 1) + coord_polar("y", start = 0) + blank_theme + theme(axis.text.x=element_blank(), legend.position="bottom", axis.text.y = element_blank()) + scale_fill_manual(name = '',breaks = c('Yes','unclear','No'), values  = c(IPbeslightgreen, 'orange', 'red')) + xlab('') + ylab('') + ggtitle('Replicability') +
   geom_text(aes(x = 1.2, y = Lbl1$count1/2+ c(0, cumsum(Lbl1$count1)[-length(Lbl1$count1)]),
                 label = Lbl1$Label1), size=5)
 p42 <- ggplot() +
@@ -99,5 +105,41 @@ p43 <- ggplot() +
   geom_bar(aes(x = factor(1), fill = s3_single$`4.3`),width = 1) + coord_polar("y", start = 0) + blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank())+ scale_fill_manual(name = '',breaks = c('Yes','unclear','No'), values  = c(IPbeslightgreen, 'orange', 'red')) + xlab('') + ylab('') + ggtitle('Precision') +
   geom_text(aes(x = 1.2, y = Lbl1$count3/2+ c(0, cumsum(Lbl1$count3)[-length(Lbl1$count3)]),
                 label = Lbl1$Label3), size=5)
+mylegend<-g_legend(p41)
+Pane1 <-grid.arrange(
+  p41 + theme(legend.position="none"),
+  p42 + theme(legend.position="none"),
+  p43 + theme(legend.position="none"),
+  mylegend,nrow=2, heights=c(10,0.5), layout_matrix = rbind(c(1,2,3),c(4,4,4)))
+ggsave(Pane1, filename='output/T3-Q41-43.pdf',width=10, height=3.5)
+
+
+#--------------internal & external validity graph---------------#
+legend <- data.frame(code=c('IV_cred', 'IV_ConstrVal', 'IV_ContVal', 'IV_CritVal', 'IV_CommVal', 'IV_unclear', 'IV_NA', 'IV_Other','EV_Tranf','EV_General','EV_unclear','EV_NA','EV_Other'),
+                     txt=c('credibility','construct validity','content validity','criterion validity','community validity','unclear','not assessed','Other:', 'transferability','generalisability','unclear','not assessed','Other:'))
+subset<-s3_single[,c('paperID','4.4','4.5')]
+for(i in 1:8){
+  A <-  str_detect(subset$`4.4`, pattern = as.character(legend[i,'txt']))
+  subset <- cbind(subset, A)
+  colnames(subset)[ncol(subset)] <- as.character(legend[i,'code'])
+}
+for(i in 9:13){
+  A <-  str_detect(subset$`4.5`, pattern = as.character(legend[i,'txt']))
+  subset <- cbind(subset, A)
+  colnames(subset)[ncol(subset)] <- as.character(legend[i,'code'])
+}
+#from wide to long format
+subset[,1:11] %>%
+  gather(question, value, -paperID,-`4.4`,-`4.5`) ->subset_long44
+subset[,c(1:3,12:16)] %>%
+  gather(question, value, -paperID,-`4.4`,-`4.5`) ->subset_long45
+# #labels for the facets
+# labs <- c(sprintf('Desired uptake, N=%d', sum(subset$`2.17`=='Desired uptake - A potential, expected, or wished for use of outputs, sometimes only cursory')),
+#           sprintf('Testing use case, N=%d', sum(subset$`2.17`=='Testing use case - Researcher initiated valuation study, reported test of use to enable decision making')),
+#           sprintf('Actual Use case, N=%d', sum(subset$`2.17`=='Actual use case - Stakeholder commissioned valuation study, reported use to enable decision making')))
+# names(labs) <- c('Desired uptake - A potential, expected, or wished for use of outputs, sometimes only cursory', 'Testing use case - Researcher initiated valuation study, reported test of use to enable decision making', 'Actual use case - Stakeholder commissioned valuation study, reported use to enable decision making')
+p44 <- ggplot(subset_long44) + geom_bar(alpha=1,size=1,color = IPbeslightgreen, fill = IPbeslightgreen, aes(x = question, y=1*value), stat = "identity") + coord_flip() + theme_bw() + scale_x_discrete(breaks = legend[1:8,'code'], labels = str_wrap(as.character(legend[1:8,'txt']),20)) + ylab('Number of papers') + xlab('Internal Validity is assessed by ...')
+p45 <- ggplot(subset_long45) + geom_bar(alpha=1,size=1,color = IPbeslightgreen, fill = IPbeslightgreen, aes(x = question, y=1*value), stat = "identity") + coord_flip() + theme_bw() + scale_x_discrete(breaks = legend[9:13,'code'], labels = str_wrap(as.character(legend[9:13,'txt']),20)) + ylab('Number of papers') + xlab('External Validity is assessed by ...')
+
 
 
