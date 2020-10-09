@@ -153,7 +153,7 @@ names(method_tb1) = method_tb_name
 
 barplot(method_tb1, las=2)
 
- pdf("output/Main_Method_list.pdf", width = 12, height = 8)
+#pdf("output/Main_Method_list.pdf", width = 12, height = 8)
 par(mar=c(4,17,4,4))
 barplot(sort(method_tb1, F), las=1, cex.names = 0.5, horiz = T, xlab = "# of applications")
 dev.off()
@@ -163,9 +163,9 @@ dev.off()
 method_not_found_idx = which(is.na(match(method_lutb$ID, method_tb_code)))
 
 method_lutb$Method.name[method_not_found_idx]
+length(method_lutb$Method.name[method_not_found_idx])
 
-
-which(str_detect(s3_single$"1.2", pattern ="SolVES"))
+#which(str_detect(s3_single$"1.2", pattern ="SolVES"))
 # which(str_detect(s3_single$"1.4", pattern ="Solv"))
 # s3_single$"1.4"[996]
 
@@ -212,7 +212,13 @@ s3_single[1060,"1.1"] <- 1
 
 table(s3_single$"1.1")
 #   1   2   3   4   5   6   7  11
-# 860 154  46  17   6   2   1   1
+# 860 154  46  17   7   2   1   1
 
 pie(table(s3_single$"1.1"))
 barplot(table(s3_single$"1.1"))
+
+length(which(s3_single$"1.1" >= 4))
+
+which(s3_single$"1.1" >= 4)
+
+s3_single[s3_single$"1.1" >= 4, "paperID"]
