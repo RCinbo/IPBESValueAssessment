@@ -3,7 +3,6 @@ source("Starting.R")
 # 1.This script is to compile a list of method mentioned in the survey
 # This looks at the Question 1.2, 1.4
 
-
 summary(s3_single$"1.2")  # multiple answered were separated by ; (sometimes it is separated by :) # Numbers indicate the method name, when there is no number matched with the method, added as a text,
 summary(s3_single$"1.4")
 
@@ -204,11 +203,11 @@ table(s3_single$"1.1")
 # 859   153    46    17     6     2     1     1     1     1
 
 which(s3_single$"1.1" == 22) # it's an error: it should be '2'? There are only two method names following..
-s3_single[724,"1.1"] <-2
+#s3_single[724,"1.1"] <-2 # need to check it when we have the final ver.
 
 
 which(s3_single$"1.1" == 64502) # that's paperID. It should be corrected as '1'. Only one method ID is presented in the next question
-s3_single[1060,"1.1"] <- 1
+#s3_single[1060,"1.1"] <- 1 # need to check it when we have the final ver.
 
 tb_howmany = table(s3_single$"1.1")
 #   1   2   3   4   5   6   7  11
@@ -235,3 +234,12 @@ length(which(s3_single$"1.1" >= 4))
 which(s3_single$"1.1" >= 4)
 
 s3_single[s3_single$"1.1" >= 4, "paperID"]
+
+
+table(s3_single$"1.3")  # Additional methods
+#   0   1   2   3   4   5   6   7   8
+# 501 338 175  68  30  11   4   3   1
+
+
+
+
