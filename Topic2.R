@@ -1,13 +1,18 @@
+library(stringr)
+
 source("Starting.R")
 
-######  Topic 2 - Context of application
+ ######  Topic 2 - Context of application
 
 ### 2.1- The application addresses the following spatial scales (multiple possible)
 ### Their multiple answers are separated by ','
 
-summary(s3_single$"2.1")
+
+ summary(s3_single$"2.1")
 # how many are 'multiple scales' ?
 levels(s3_single$"2.1")
+summary(s3_single$"2.2")
+
 
 table(s3_single$"2.1")
 
@@ -28,7 +33,6 @@ choices_alt = c("O1_Local", "O2_District", "O3_Administrative", "O4_CrossNationa
 choice_org_v = as.character(s3_single$"2.1")
 choice_alt_v = choice_org_v
 
-library(stringr)
 # Replace well-defined options to simple format
 for (o_idx in 1:length(choices_org)) {
   choice_alt_v = str_replace_all(choice_alt_v, pattern = choices_org[o_idx], replacement = choices_alt[o_idx])
@@ -59,6 +63,7 @@ barplot(choice_tb_sorted, log="x", las=1, horiz=T, cex.names = 0.5)
 choice_tb_reduced = (table(choice_split_v_fac))[which (table(choice_split_v_fac)>2)]
 
 barplot(sort(choice_tb_reduced, F), horiz=T, las=1, cex.names=0.5)
+ barplot(sort(table(choice_split_v_fac), F), log="x", las=1, horiz=T, cex.names = 0.5)
 
 split_res_l
 
@@ -67,7 +72,7 @@ split_res_df = plyr::ldply(split_res_l, rbind)
 
 split_res_df = sapply(split_res_df, FUN = function(x) as.character(x))
 
-split_cnt_v = sapply(split_res_l, FUN = length)
+ split_cnt_v = sapply(split_res_l, FUN = length)
 stopifnot(max(split_cnt_v) == ncol(split_res_df))
 
 table(split_cnt_v)
@@ -75,7 +80,6 @@ table(split_cnt_v)
 #    1    2    3    4    5
 # 1042   86   10    1    1
 barplot(table(split_cnt_v), las= 1)
-
 
 
 # Max 5 items
@@ -244,7 +248,5 @@ summary(s3_single$"2.16")
 table(s3_single$"2.16")
 par(mar=c(5, 20, 5, 5))
 barplot(table(s3_single$"2.16"), horiz = T, las = 1, cex.names = 0.5)
-
-
 
 
