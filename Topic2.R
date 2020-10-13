@@ -65,7 +65,7 @@ choice_tb_reduced = (table(choice_split_v_fac))[which (table(choice_split_v_fac)
 barplot(sort(choice_tb_reduced, F), horiz=T, las=1, cex.names=0.5)
  barplot(sort(table(choice_split_v_fac), F), log="x", las=1, horiz=T, cex.names = 0.5)
 
-split_res_l
+# split_res_l
 
 library(plyr)
 split_res_df = plyr::ldply(split_res_l, rbind)
