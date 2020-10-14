@@ -14,6 +14,7 @@ main_method_1.2 = str_split(s3_single$"1.2", pattern = ";")
 
 # Read method name look-up table
 method_lutb = read.csv2("IPBES_method_LookUp.csv")
+colnames(method_lutb)=c("ID","Method.name")
 # str(method_lutb)
 
 
