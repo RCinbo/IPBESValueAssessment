@@ -44,11 +44,11 @@ for (o_idx in 1:length(choices_org)) {
 row_idx = 1
 library(doMC)
 # install.packages("doMC")
-
-split_res_l = foreach (row_idx = 1:nrow(s3_single)) %do% {
+split_res_l<-list()
+for(row_idx in 1:nrow(s3_single)){
 
   split_tmp = str_trim(str_split(choice_alt_v[row_idx], pattern = ",")[[1]])
-  return(split_tmp)
+  split_res_l[[row_idx]]<-split_tmp
 }
 
 choice_split_v = unlist(split_res_l)
