@@ -3,7 +3,6 @@ source("Starting.R")
 # 1.This script is to compile a list of method mentioned in the survey
 # This looks at the Question 1.2, 1.4
 
-
 summary(s3_single$"1.2")  # multiple answered were separated by ; (sometimes it is separated by :) # Numbers indicate the method name, when there is no number matched with the method, added as a text,
 summary(s3_single$"1.4")
 
@@ -153,7 +152,7 @@ names(method_tb1) = method_tb_name
 
 barplot(method_tb1, las=2)
 
- pdf("output/Main_Method_list.pdf", width = 12, height = 8)
+#pdf("output/Main_Method_list.pdf", width = 12, height = 8)
 par(mar=c(4,17,4,4))
 barplot(sort(method_tb1, F), las=1, cex.names = 0.5, horiz = T, xlab = "# of applications")
 dev.off()
@@ -164,9 +163,9 @@ dev.off()
 method_not_found_idx = which(is.na(match(method_lutb$ID, method_tb_code)))
 
 method_lutb$Method.name[method_not_found_idx]
+length(method_lutb$Method.name[method_not_found_idx])
 
-
-which(str_detect(s3_single$"1.2", pattern ="SolVES"))
+#which(str_detect(s3_single$"1.2", pattern ="SolVES"))
 # which(str_detect(s3_single$"1.4", pattern ="Solv"))
 # s3_single$"1.4"[996]
 
@@ -205,15 +204,43 @@ table(s3_single$"1.1")
 # 859   153    46    17     6     2     1     1     1     1
 
 which(s3_single$"1.1" == 22) # it's an error: it should be '2'? There are only two method names following..
-s3_single[724,"1.1"] <-2
+#s3_single[724,"1.1"] <-2 # need to check it when we have the final ver.
 
 
 which(s3_single$"1.1" == 64502) # that's paperID. It should be corrected as '1'. Only one method ID is presented in the next question
-s3_single[1060,"1.1"] <- 1
+#s3_single[1060,"1.1"] <- 1 # need to check it when we have the final ver.
 
-table(s3_single$"1.1")
+tb_howmany = table(s3_single$"1.1")
 #   1   2   3   4   5   6   7  11
-# 860 154  46  17   6   2   1   1
+# 860 154  46  17   7   2   1   1
+
+tb_howmany_4 = c(tb_howmany[1:3], sum (tb_howmany[4:8]))
+names(tb_howmany_4)[4] = 4
+tb_howmany_4
+
+pie(tb_howmany_4)
+
+# using cut
+cut_1.1 = cut(s3_single$"1.1", breaks = c(0, 1.5, 2.5, 3.5, max(s3_single$"1.1")))
+levels(cut_1.1) = c(1,2,3,"4=<")
+cut_1.1
+
+pie(table(cut_1.1))
 
 pie(table(s3_single$"1.1"))
 barplot(table(s3_single$"1.1"))
+
+length(which(s3_single$"1.1" >= 4))
+
+which(s3_single$"1.1" >= 4)
+
+s3_single[s3_single$"1.1" >= 4, "paperID"]
+
+
+table(s3_single$"1.3")  # Additional methods
+#   0   1   2   3   4   5   6   7   8
+# 501 338 175  68  30  11   4   3   1
+
+
+
+
