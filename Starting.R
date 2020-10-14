@@ -1,5 +1,5 @@
 # This script is to prepare the cleaned data set before the analysis
-
+library(tidyverse)
 ### Step 2 Table
 # 1. read the table from the Google doc
 # 2. Remove validation trials (Step 2: the first 13 rows, Step 3: 16 rows)
@@ -124,3 +124,12 @@ par(mar = c(5, 30, 4,4))
 barplot(table(s3_single[,24]), horiz=T, las=2, cex.names = 0.3)
 par(mar = c(4, 4, 4,4)) # reset par
 
+#Add the method families to the s3_single dataframe. Currently, we use the method families that were identified by keywords, we'll improve that later based on the questionnaires.
+#Make sure you first run Step1_table_Oct2020.R to get the step 1 table with the keyword search method families
+s3_single %>%mutate(MF1.key = NA, MF2.key = NA, MF3.key = NA, MF4.key = NA, MFA.key = NA, MFB.key = NA) ->s3_single
+for (i in 1:nrow(s3_single)){
+  idx<-which(data.final$TSU.ID_MERGED==s3_single[i,'paperID'])
+  if (length(idx)==0){print(sprintf('error, %d',s3_single[i,'paperID']))}else{
+    s3_single[i,c('MF1.key','MF2.key','MF3.key','MF4.key','MFA.key','MFB.key')] <-data.final[idx,c('TS20','TS21','TS22','TS23','TS18','TS19')]
+  }
+}
