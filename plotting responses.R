@@ -15,6 +15,12 @@ g_legend<-function(a.gplot){
   leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
   legend <- tmp$grobs[[leg]]
   return(legend)}
+###########Labeller for the method families##########
+MFLabels <- c('MF1','MF2','MF3','MF4') # change the names here if needed.
+names(MFLabels) <- c('MF1','MF2','MF3','MF4')
+
+
+
 ####------Question 2.17 and 2.18 stacked bar charts----------####
 # This figure only needs s3_single as an input. Make sure you have this in your environment through making in using 'Starting.R' or load it from your data folder.
 # First, we need to disentangle the options in 2.18
@@ -109,7 +115,7 @@ Pane1 <-grid.arrange(
   p41 + theme(legend.position="none"),
   p42 + theme(legend.position="none"),
   p43 + theme(legend.position="none"),
-  mylegend,nrow=2, heights=c(10,0.5), layout_matrix = rbind(c(1,2,3),c(4,4,4)))
+  nrow=1, layout_matrix = rbind(c(1,2,3)))
 ggsave(Pane1, filename='output/T3-Q41-43.pdf',width=10, height=3.5)
 
 
@@ -168,7 +174,8 @@ p45pie <- ggplot() +
 sbst%>%mutate(Replicability =  s3_single$`4.1`,
               Consistency = s3_single$`4.2`,
               Precision = s3_single$`4.3`) -> sbst
-Pane2 <- ggplot(sbst) + geom_bar(aes(x=as.factor(TotalNB), fill = IPbeslightgreen)) + theme_minimal() +  xlab('Number of reliability aspects addressed') + ylab('Number of papers') + ggtitle('Number of reliability aspect adressed per paper') + scale_fill_identity()
+sbst$TotalNB <- rowSums(sbst[,17:21]=="Yes")
+Pane2 <- ggplot(sbst) + geom_bar(aes(x=as.factor(TotalNB), fill = IPbesdarkgreen)) + theme_minimal() +  xlab('Number of reliability aspects addressed') + ylab('Number of papers') + ggtitle('Number of reliability aspect adressed per paper') + scale_fill_identity()
 ggsave(Pane2,filename='output/T3-Q41-45.pdf',width=10, height=3.5)
 
 #Add method families
@@ -183,7 +190,7 @@ familysummaryIV <- data.frame(MF = c('MF1','MF1','MF1','MF2','MF2','MF2','MF3','
 familysummaryIV$N = sapply(1:12,FUN=function(x) sum(sbst[,sprintf('%s.key',as.character(familysummaryIV$MF[x]))]==1 & (sbst$IV==familysummaryIV$Answer[x]),na.rm=T))
 familysummaryIV$Percentage = familysummaryIV$N/sapply(familysummaryIV$MF,FUN = function(x)sum(familysummaryIV[familysummaryIV$MF==x,'N']))
 
-pIV.fam<-ggplot(familysummaryIV) + geom_bar(aes(x = MF, fill=Answer, y=Percentage*100),stat = 'identity',position='stack') + scale_fill_manual(name = '',breaks = c('Yes','unclear','No'), values  = c(IPbeslightgreen, 'orange', 'red')) +ylab('Percentage in the method family') + xlab('Method family') + ggtitle('Is internal validity accounted for in the method family?') + theme_minimal()
+pIV.fam <- ggplot(familysummaryIV) + geom_bar(aes(x = MF, fill=Answer, y=Percentage*100),stat = 'identity',position='stack') + scale_fill_manual(name = '',breaks = c('Yes','unclear','No'), values  = c(IPbeslightgreen, 'orange', 'red')) +ylab('Percentage in the method family') + xlab('Method family') + ggtitle('Is internal validity accounted for in the method family?') + theme_minimal() + scale_x_discrete(labels= MFLabels)
 
 familysummaryEV <- data.frame(MF = c('MF1','MF1','MF1','MF2','MF2','MF2','MF3','MF3','MF3','MF4','MF4','MF4'),
                               Answer = c('Yes','unclear','No','Yes','unclear','No','Yes','unclear','No','Yes','unclear','No'),
@@ -192,18 +199,42 @@ familysummaryEV <- data.frame(MF = c('MF1','MF1','MF1','MF2','MF2','MF2','MF3','
 familysummaryEV$N = sapply(1:12,FUN=function(x) sum(sbst[,sprintf('%s.key',as.character(familysummaryEV$MF[x]))]==1 & (sbst$EV==familysummaryEV$Answer[x]),na.rm=T))
 familysummaryEV$Percentage = familysummaryEV$N/sapply(familysummaryEV$MF,FUN = function(x)sum(familysummaryEV[familysummaryEV$MF==x,'N']))
 
-pEV.fam <- ggplot(familysummaryEV) + geom_bar(aes(x = MF, fill=Answer, y=Percentage*100),stat = 'identity',position='stack') + scale_fill_manual(name = '',breaks = c('Yes','unclear','No'), values  = c(IPbeslightgreen, 'orange', 'red')) +ylab('Percentage in the method family') + xlab('Method family') + ggtitle('Is external validity accounted for in the method family?') + theme_minimal()
+pEV.fam <- ggplot(familysummaryEV) + geom_bar(aes(x = MF, fill=Answer, y=Percentage*100),stat = 'identity',position='stack') + scale_fill_manual(name = '',breaks = c('Yes','unclear','No'), values  = c(IPbeslightgreen, 'orange', 'red')) +ylab('Percentage in the method family') + xlab('Method family') + ggtitle('Is external validity accounted for in the method family?') + theme_minimal() + scale_x_discrete(labels= MFLabels)
 
-mylegend<-g_legend(p44pie)
 Pane3 <-grid.arrange(
   p44pie + theme(legend.position="none"),
   pIV.fam + theme(legend.position="none"),
   nrow=1, layout_matrix = rbind(c(1,2,2)))
 ggsave(Pane3, filename='output/T3-Q44.pdf',width=10, height=3.5)
-mylegend<-g_legend(p44pie)
 Pane4 <-grid.arrange(
   p45pie + theme(legend.position="none"),
   pEV.fam + theme(legend.position="none"),
   nrow=1, layout_matrix = rbind(c(1,2,2)))
 ggsave(Pane4, filename='output/T3-Q45.pdf',width=10, height=3.5)
 ggsave(Pane2,filename='output/T3-Q41-45.pdf',width=10, height=3.5)
+
+Theme4 <- grid.arrange(mylegend, Pane1, Pane2, Pane3, Pane4,
+                       nrow=4, heights=c(1,10,1,10),widths=c(10,0.5,10),layout_matrix = rbind(c(1,NA,NA),c(2,NA,3),c(NA,NA,NA),c(4,NA,5)))
+ggsave(Theme4,filename='output/Theme4.pdf',width=18, height=8)
+
+########-----Data Overview 5 - Valuation for Human Wellbeing-----########
+p87
+
+
+########-----Data Overview 6 - Valuation for Human Wellbeing-----########
+p87
+
+########-----Data Overview 4 - Valuation of indigenous peaoples' and like-minded local communities's-----########
+#Topic 5, p87 --> Q5.1 - Q5.8
+#Q5.1: Are there any authors from Indigenous Peoples or Like-minded Local Communities? none / one or more authors explicitly represented as such / unclear
+#Q5.2: The application identifies/assesses respect towards nature by (multiple possible):
+  #1) generally demonstrating and expressing deep respect to the land, sea, or their natural
+#surroundings; manifestation of spiritual connection to the land showing intimate
+#interaction associated with the land, sea, lakes or rivers; spiritual beings in the landscape;
+#sacred sites.
+  #2) identifying placed-based community ceremonies, rituals or gatherings that are linked
+#to the terrestrial or marine landscape.
+  #3)respecting those ceremonies, rituals or gatherings
+  #4)does not assess this
+#Q5.3:
+
