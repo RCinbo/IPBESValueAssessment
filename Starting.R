@@ -44,7 +44,7 @@ s2_full$RowID = 1:nrow(s2_full)
 # s2_clean=cbind(s2paperID,s2Rater,s2scores)
 #s2=s2_clean # i think it is not a good idea to overlap the name.
 
-s2_reduced = s2_full[, c(3,2,4:11)] # s2 cleaned # do not remove the first 13 rows -c(1:13)
+s2_reduced = s2_full[-c(1:13), c(3,2,4:11)] # s2 cleaned # do not remove the first 13 rows -c(1:13)
 colnames(s2_reduced)=c("paperID","rater","first_auth","valuation","application","multiple","appl_nr","appl_names","self_rel","comments")
 
 ### remove papers reviewed by multiple students (i.e. duplicated paperIDs)
@@ -92,7 +92,7 @@ col = matrix(data = colnames(s3_full)[1:86], nrow = 86, ncol = 1 )
 # s3_clean=cbind(s3paperID,s3Rater,s3scores)
 # #list with full colnames
 # #n=dim(s3)[2]
-s3_reduced = s3_full[, c(3,2,4:86)] # do not remove the first 16 testing rows -c(1:16)
+s3_reduced = s3_full[-c(1:16), c(3,2,4:86)] # do not remove the first 16 testing rows -c(1:16)
 
 
 colnames(s3_reduced)=c("paperID","rater","first_auth","appl_ID","warning",
