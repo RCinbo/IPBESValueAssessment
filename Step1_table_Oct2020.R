@@ -10,7 +10,7 @@ library(lattice)
 brewer.YlGnBu <- colorRampPalette(brewer.pal(9, "YlGnBu"), interpolate = "spline")
 brewer.BuPu <- colorRampPalette(brewer.pal(9, "BuPu"), interpolate = "spline")
 
-setwd("~/Google Drive/Values assessment/R-IPBES/")
+# setwd("~/Google Drive/Values assessment/R-IPBES/")
 
 paste_noNA <- function(x,sep=", ") {
   gsub(", " ,sep, toString(x[!is.na(x) & x!="" & x!="NA"] ) ) }
@@ -18,8 +18,12 @@ paste_noNA <- function(x,sep=", ") {
 ##########################################################################################
 ##########################################################################################
 
-data.final <- read.xlsx("IDSWAP_ 425 AND_16June20DG_copy.xlsx", colNames=T)
+data.final <- read.xlsx("~/Google Drive/Values assessment/R-IPBES/IDSWAP_ 425 AND_16June20DG_copy.xlsx", colNames=T)
 #data.final <- read.xlsx("./data/IDSWAP_ 425 AND_16June20DG_copy.xlsx", colNames=T)#Raïsa added this line to read the data locally
+
+
+
+
 
 colnames(data.final)
 final.country <- data.final[, c("TSU.ID_MERGED", "Region_TI_AB_DE_ID", "PY", "DI", "TS18", "TS19", paste0("TS", c(20:27)))] # "Subregion_TI_AB_DE_ID",

@@ -1,4 +1,6 @@
 library(stringr)
+# library(doSNOW) # foreach()
+library(openxlsx)
 
 source("Starting.R")
 
@@ -65,12 +67,31 @@ choice_tb_reduced = (table(choice_split_v_fac))[which (table(choice_split_v_fac)
 barplot(sort(choice_tb_reduced, F), horiz=T, las=1, cex.names=0.5)
  barplot(sort(table(choice_split_v_fac), F), log="x", las=1, horiz=T, cex.names = 0.5)
 
-# split_res_l
 
-library(plyr)
-split_res_df = plyr::ldply(split_res_l, rbind)
+ # split list to data frame
+ library(plyr)
+ split_res_df = plyr::ldply(split_res_l, rbind) # automatically decide how many columns should it have
 
-split_res_df = sapply(split_res_df, FUN = function(x) as.character(x))
+ split_res_df = sapply(split_res_df, FUN = function(x) as.character(x))
+
+
+ # Extract Paper IDs of the choice_malformed
+
+# Be aware of the NA values when counting
+other_choice_cnt =  apply(split_res_df, MARGIN = 1, FUN = function(x) length(which(!(x[!is.na(x)] %in% choices_alt)))) # how many choices (non-NA) are not in the given well-formed answers
+# length(idx1)
+table(other_choice_cnt > 0 ) # 189 studies
+cnt_otherchoice = length(which(other_choice_cnt > 0))
+# studies including other choices
+s3_single$paperID[other_choice_cnt > 0 ]
+
+s3_single_with_other_choices_df = s3_single[other_choice_cnt > 0, c("paperID", "2.1")]
+write.xlsx(s3_single_with_other_choices_df, paste0("output/s3_single_with_other_choices_n", cnt_otherchoice, ".xlsx"))
+
+
+
+
+
 
  split_cnt_v = sapply(split_res_l, FUN = length)
 stopifnot(max(split_cnt_v) == ncol(split_res_df))
@@ -108,10 +129,12 @@ wetland_alt_v = wetland_org_v
 
 wetland_alt_v = str_replace_all(wetland_alt_v, pattern = wetland_org, replacement = wetland_alt)
 
-split_res_l_2.2 = foreach (row_idx = 1:nrow(s3_single)) %do% {
+split_res_l_2.2 = vector("list", length = nrow(s3_single))
+
+for (row_idx in 1:nrow(s3_single)) {
 
   split_tmp = str_trim(str_split(wetland_alt_v[row_idx], pattern = ",")[[1]])
-  return(split_tmp)
+  split_res_l_2.2[[row_idx]] = split_tmp
 }
 
 habitat_split_v = unlist(split_res_l_2.2)
@@ -139,10 +162,12 @@ pie(table(s3_single$"2.8"))
 ### 2.10 There are multiple classifications of 'what is valued'. We want to know how these fit in the IPBES categories. The application assesses the following 'targets of valuation' regarding Nature Itself (multiple possible)
 summary(s3_single$"2.10")
 # Multiple answers are separated by ','
-split_res_l_2.10 = foreach (row_idx = 1:nrow(s3_single)) %do% {
+split_res_l_2.10 = vector("list", length = nrow(s3_single))
+
+for (row_idx in 1:nrow(s3_single)) {
 
   split_tmp = str_trim(str_split(s3_single$"2.10"[row_idx], pattern = ",")[[1]])
-  return(split_tmp)
+  split_res_l_2.10[[row_idx]] = split_tmp
 }
 
 nature_split_v = unlist(split_res_l_2.10)
@@ -162,10 +187,11 @@ flow_alt_v = flow_org_v
 
 flow_alt_v = str_replace_all(flow_alt_v, pattern = flow_org, replacement = flow_alt)
 
-split_res_l_2.11 = foreach (row_idx = 1:nrow(s3_single)) %do% {
+split_res_l_2.11 = vector("list", length = nrow(s3_single))
+for (row_idx in 1:nrow(s3_single)) {
 
   split_tmp = str_trim(str_split(flow_alt_v[row_idx], pattern = ",")[[1]])
-  return(split_tmp)
+  split_res_l_2.11[[row_idx]] = split_tmp
 }
 
 regul_split_v = unlist(split_res_l_2.11)
@@ -179,10 +205,11 @@ barplot(sort(regul_tb_reduced, F), horiz=T, las=1, cex.names=0.5)
 ### 2.12 There are multiple classifications of 'what is valued'. We want to know how these fit in the IPBES categories. The application assesses the following 'targets of valuation' regarding Material Nature Contributions To People (multiple possible)
 summary(s3_single$"2.12")
 # Multiple answers are separated by ','
-split_res_l_2.12 = foreach (row_idx = 1:nrow(s3_single)) %do% {
+split_res_l_2.12 = vector("list", length = nrow(s3_single))
+for (row_idx in 1:nrow(s3_single))  {
 
   split_tmp = str_trim(str_split(s3_single$"2.12"[row_idx], pattern = ",")[[1]])
-  return(split_tmp)
+  split_res_l_2.12[[row_idx]] = split_tmp
 }
 
 material_split_v = unlist(split_res_l_2.12)
@@ -196,10 +223,12 @@ barplot(sort(material_tb_reduced, F), horiz=T, las=1, cex.names=0.5)
 ### 2.13 There are multiple classifications of 'what is valued'. We want to know how these fit in the IPBES categories. The application assesses the following 'targets of valuation' regarding non-material Nature Contributions To People (multiple possible)
 summary(s3_single$"2.13")
 # Multiple answers are separated by ','
-split_res_l_2.13 = foreach (row_idx = 1:nrow(s3_single)) %do% {
+split_res_l_2.13 = vector("list", length = nrow(s3_single))
+
+for (row_idx in 1:nrow(s3_single))  {
 
   split_tmp = str_trim(str_split(s3_single$"2.13"[row_idx], pattern = ",")[[1]])
-  return(split_tmp)
+  split_res_l_2.13[[row_idx]] = split_tmp
 }
 
 non_material_split_v = unlist(split_res_l_2.13)
@@ -212,10 +241,12 @@ barplot(sort(non_material_tb_reduced, F), horiz=T, las=1, cex.names=0.5)
 ### 2.14 There are multiple classifications of 'what is valued'. We want to know how these fit in the IPBES categories. The application assesses the following 'targets of valuation' regarding People's quality of life (multiple possible)
 summary(s3_single$"2.14")
 # Multiple answers are separated by ','
-split_res_l_2.14 = foreach (row_idx = 1:nrow(s3_single)) %do% {
+split_res_l_2.14 = vector("list", length = nrow(s3_single))
+
+for (row_idx in 1:nrow(s3_single))  {
 
   split_tmp = str_trim(str_split(s3_single$"2.14"[row_idx], pattern = ",")[[1]])
-  return(split_tmp)
+  split_res_l_2.14[[row_idx]] = split_tmp
 }
 
 QoL_split_v = unlist(split_res_l_2.14)
@@ -229,10 +260,12 @@ barplot(sort(QoL_tb_reduced, F), horiz=T, las=1, cex.names=0.5)
 ### 2.15 The application assesses multiple values and brings thme together into an 'overall value' or importance by: (check all that apply)
 summary(s3_single$"2.15")
 # Multiple answers are separated by ','
-split_res_l_2.15 = foreach (row_idx = 1:nrow(s3_single)) %do% {
+split_res_l_2.15 = vector("list", length = nrow(s3_single))
+
+for (row_idx in 1:nrow(s3_single))  {
 
   split_tmp = str_trim(str_split(s3_single$"2.15"[row_idx], pattern = ",")[[1]])
-  return(split_tmp)
+  split_res_l_2.15[[row_idx]] = split_tmp
 }
 
 value_split_v = unlist(split_res_l_2.15)

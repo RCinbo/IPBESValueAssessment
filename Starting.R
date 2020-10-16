@@ -7,11 +7,19 @@ library(tidyverse)
 # 4. Subset those studies scored multiple times (those will come back after consistency analysis)
 
 step2="https://docs.google.com/spreadsheets/d/e/2PACX-1vQa2_J5d1RiSCZTTFJslWmA0zsaqNmoVCOnl9GeNOAHzfLQorqsrfWk2jgc6baPXgQZfWzsqDVOdYfo/pub?output=csv"
+
+
 s2_full=read.csv(url(step2))
 dim(s2_full)
 colnames(s2_full)
-str(s2_full)
+# str(s2_full)
 summary(s2_full)
+
+# It is integer
+print(class(s2_full$X0.1...what.s.the.paper.ID)) # integer
+range(s2_full$X0.1...what.s.the.paper.ID) # starting from 1
+# @TODO figure out why it starts from 1 instead of 2 (contrary to what the TSU said)
+
 
 seeNAcolumns = FALSE
 if (seeNAcolumns) {
@@ -23,7 +31,7 @@ if (seeNAcolumns) {
   nacol_idxs
   colnames(s2_full)[nacol_idxs] # these columns are filled with all NAs.
 }
-# give row IDs
+# give row IDs (it is not paperID!)
 s2_full$RowID = 1:nrow(s2_full)
 
 #remove validation trials,remove non-existing factor levels from trials
