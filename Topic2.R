@@ -47,6 +47,7 @@ row_idx = 1
 library(doMC)
 # install.packages("doMC")
 split_res_l<-list()
+
 for(row_idx in 1:nrow(s3_single)){
 
   split_tmp = str_trim(str_split(choice_alt_v[row_idx], pattern = ",")[[1]])
@@ -75,7 +76,7 @@ barplot(sort(choice_tb_reduced, F), horiz=T, las=1, cex.names=0.5)
  split_res_df = sapply(split_res_df, FUN = function(x) as.character(x))
 
 
- # Extract Paper IDs of the choice_malformed
+# Extract Paper IDs of the choice_malformed
 
 # Be aware of the NA values when counting
 other_choice_cnt =  apply(split_res_df, MARGIN = 1, FUN = function(x) length(which(!(x[!is.na(x)] %in% choices_alt)))) # how many choices (non-NA) are not in the given well-formed answers
@@ -87,10 +88,6 @@ s3_single$paperID[other_choice_cnt > 0 ]
 
 s3_single_with_other_choices_df = s3_single[other_choice_cnt > 0, c("paperID", "2.1")]
 write.xlsx(s3_single_with_other_choices_df, paste0("output/s3_single_with_other_choices_n", cnt_otherchoice, ".xlsx"))
-
-
-
-
 
 
  split_cnt_v = sapply(split_res_l, FUN = length)
@@ -122,7 +119,7 @@ write.xlsx(s3_single_2.1_comparison_df, file = "output/s3_single_2.1_for_compari
 summary(s3_single$"2.2")
 # Multiple answers are separated by ','
 
-wetland_org = "Wetlands \\- peatlands, mires, bogs"
+wetland_org = "Wetlands \\– peatslands, mires, bogs"
 wetland_alt = "Wetlands"
 wetland_org_v = as.character(s3_single$"2.2")
 wetland_alt_v = wetland_org_v
@@ -141,12 +138,47 @@ habitat_split_v = unlist(split_res_l_2.2)
 habitat_split_v_fac = factor(habitat_split_v)
 
 habitat_tb_sorted = sort(table(habitat_split_v_fac), decreasing = F)
-
 barplot(habitat_tb_sorted, log="x", las=1, horiz=T, cex.names = 0.5)
 
 habitat_tb_reduced = (table(habitat_split_v_fac))[which (table(habitat_split_v_fac)>5)]
-
 barplot(sort(habitat_tb_reduced, F), horiz=T, las=1, cex.names=0.5)
+
+habitat_given_answer = c( "Forests",
+"Savannah",
+"Deserts",
+"Grasslands",
+"Shrublands",
+"Wetlands", #\\- peatlands, mires, bogs",
+"Urban / Semi-urban",
+"Cultivated areas",
+"Aquaculture",
+"Inland surface water and water bodies / freshwater Coastal areas",
+"Deep sea", "unclear", "Irrelevant"
+)
+
+
+#### Come BACK HERE! IT'S WRONG!! - THE ANSWERS ARE NOT SEPARATED
+# split list to data frame
+split_res_2.2_df = plyr::ldply(split_res_l_2.2, rbind) # automatically decide how many columns should it have
+
+split_res_2.2_df = sapply(split_res_2.2_df, FUN = function(x) as.character(x))
+
+
+# Extract Paper IDs of the choice_malformed
+
+# Be aware of the NA values when counting
+habitat_other_choice_cnt =  apply(split_res_2.2_df, MARGIN = 1, FUN = function(x) length(which(!(x[!is.na(x)] %in% habitat_given_answer)))) # how many choices (non-NA) are not in the given well-formed answers
+# length(idx1)
+table(habitat_other_choice_cnt > 0 ) # 189 studies
+cnt_otherchoice_habitat = length(which(habitat_other_choice_cnt > 0))
+# studies including other choices
+s3_single$paperID[cnt_otherchoice_habitat > 0 ]
+
+s3_single_with_other_habitat_df = s3_single[cnt_otherchoice_habitat > 0, c("paperID", "2.2")]
+write.xlsx(s3_single_with_other_habitat_df, paste0("output/s3_single_with_other_habitat_n", cnt_otherchoice_habitat, ".xlsx"))
+
+
+
 
 ### 2.7 - The application collected data with the following temporal frequency: (only one answer)
 summary(s3_single$"2.7")
