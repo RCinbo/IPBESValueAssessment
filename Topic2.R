@@ -423,56 +423,6 @@ write.xlsx(s3_single_with_other_non_material_df, paste0("output/s3_single_with_o
 
 
 
-
-
-
-################ ASSIGN overall None
-non_list = list(split_res_2.10_df, split_res_2.11_df, split_res_2.12_df,split_res_2.13_df)
-
-## replace "None" to NA
-
-non_list = lapply(non_list, FUN = function(df_in){
-  df_in[df_in=="None"] =NA
-  return(df_in)
-  })
-
-df_in = non_list[[1]]
-ES_cnt_df = sapply(non_list, FUN = function(df_in){
-  return(rowSums(!is.na(df_in)))
-})
-
-colnames(ES_cnt_df) = c("Nature", "Regulation", "Material", "Non-material")
-
-
-# how many ES were studied in each ES category in an application?
-boxplot(ES_cnt_df)
-
-ES_cnt_tb_l = (apply(ES_cnt_df, MARGIN = 2,  table))
-par(mfrow=c(2,2))
-pie(ES_cnt_tb_l[[1]], main = "Nature")
-pie(ES_cnt_tb_l[[2]], main = "Regulation")
-pie(ES_cnt_tb_l[[3]], main = "Material")
-pie(ES_cnt_tb_l[[4]], main = "Non-material")
-dev.off()
-# how many ES were studied in each application?
-boxplot(rowSums(ES_cnt_df))
-
-barplot(table(rowSums(ES_cnt_df)), main = "How many ES were studied per application? ")
-
-# were there studies with no ES category studied?
-table(rowSums(ES_cnt_df) == 0 ) # no
-
-# How many ES categries were studied in each application?
-ES_category_cnt_v = rowSums(ES_cnt_df > 0)
-boxplot(ES_category_cnt_v)
-ES_category_cnt_tb =(table(ES_category_cnt_v))
-
-pie(ES_category_cnt_tb, main = "# of ES categories per application")
-
-
-
-
-
 ### 2.14 There are multiple classifications of 'what is valued'. We want to know how these fit in the IPBES categories. The application assesses the following 'targets of valuation' regarding People's quality of life (multiple possible)
 summary(s3_single$"2.14")
 # Multiple answers are separated by ','
@@ -489,6 +439,88 @@ QoL_split_v_fac = factor(QoL_split_v)
 QoL_tb_sorted = sort(table(QoL_split_v_fac), decreasing = F)
 QoL_tb_reduced = (table(QoL_split_v_fac))[which (table(QoL_split_v_fac)>1)]
 barplot(sort(QoL_tb_reduced, F), horiz=T, las=1, cex.names=0.5)
+
+
+
+split_res_2.14_df = plyr::ldply(split_res_l_2.14, rbind) # automatically decide how many columns should it have
+
+split_res_2.14_df = sapply(split_res_2.14_df, FUN = function(x) as.character(x))
+
+QoL_given_answer = c(
+  "Living well in harmony with nature",
+  "Identity and Autonomy",
+  "Spirituality and Religions",
+  "Art and Cultural heritage",
+  "Sustainability and Resilience",
+  "Diversity and Options",
+  "Governance and Justice",
+  "Health and Wellbeing",
+  "Education and Knowledge",
+  "Good social relations",
+  "Security and Livelihoods",
+  "None"
+)
+
+
+# Be aware of the NA values when counting
+QoL_other_choice_cnt =  apply(split_res_2.14_df, MARGIN = 1, FUN = function(x) length(which(!(x[!is.na(x)] %in% QoL_given_answer)))) # how many choices (non-NA) are not in the given well-formed answers
+# length(idx1)
+table(QoL_other_choice_cnt > 0 ) # 29 studies
+cnt_otherchoice_QoL = length(which(QoL_other_choice_cnt > 0))
+# studies including other choices
+s3_single$paperID[QoL_other_choice_cnt > 0 ]
+s3_single_with_other_QoL_df = s3_single[QoL_other_choice_cnt > 0, c("paperID", "2.14")]
+
+
+write.xlsx(s3_single_with_other_QoL_df, paste0("output/s3_single_with_other_QoL_n", cnt_otherchoice_QoL, ".xlsx"))
+
+
+
+################ ASSIGN overall None
+non_list = list(split_res_2.10_df, split_res_2.11_df, split_res_2.12_df, split_res_2.13_df, split_res_2.14_df)
+
+## replace "None" to NA
+
+non_list = lapply(non_list, FUN = function(df_in){
+  df_in[df_in=="None"] =NA
+  return(df_in)
+})
+
+df_in = non_list[[1]]
+ES_cnt_df = sapply(non_list, FUN = function(df_in){
+  return(rowSums(!is.na(df_in)))
+})
+
+colnames(ES_cnt_df) = c("Nature", "Regulation", "Material", "Non-material", "Quality of Life")
+
+
+# how many ES were studied in each ES category in an application?
+boxplot(ES_cnt_df)
+
+ES_cnt_tb_l = (apply(ES_cnt_df, MARGIN = 2,  table))
+par(mfrow=c(2,2))
+pie(ES_cnt_tb_l[[1]], main = "Nature")
+pie(ES_cnt_tb_l[[2]], main = "Regulation")
+pie(ES_cnt_tb_l[[3]], main = "Material")
+pie(ES_cnt_tb_l[[4]], main = "Non-material")
+pie(ES_cnt_tb_l[[5]], main = "Quality of Life")
+
+dev.off()
+# how many ES were studied in each application?
+boxplot(rowSums(ES_cnt_df))
+
+barplot(table(rowSums(ES_cnt_df)), main = "How many ES were studied per application? ")
+
+# were there studies with no ES category studied?
+table(rowSums(ES_cnt_df) == 0 ) # no
+
+# How many ES categries were studied in each application?
+ES_category_cnt_v = rowSums(ES_cnt_df > 0)
+boxplot(ES_category_cnt_v)
+ES_category_cnt_tb =(table(ES_category_cnt_v))
+
+pie(ES_category_cnt_tb, main = "# of ES categories per application")
+
 
 
 
