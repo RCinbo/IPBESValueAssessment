@@ -344,8 +344,197 @@ s3_single[s3_single$"1.3" >= 4, "paperID"]
 # [49] 20317  7586
 
 
+## COME BACK HERE NEED TO CHECK
 
 ########### 1.4. List of additional methods..
+s3_1.2_mainlist_corrected = read.csv(url(s3_1.2_mainlist_corrected_web), header = T)
+colnames(s3_1.2_mainlist_corrected)[c(2, 3, 5, 7)] = c("paperID", "appl_ID", "cr_1.2", "cr_1.4")
+
+table(s3_1.2_mainlist_corrected$cr_1.4)
+
+s3_1.2_mainlist_corrected$appl_ID = as.character(s3_1.2_mainlist_corrected$appl_ID)
+
+res_all_1.4 = vector("list", length = nrow(s3_single)) #
+
+
+for (row_idx in 1:nrow(s3_single)) {
+
+  s3_single_tmp = s3_single[row_idx,]
+  s3_1.4_tmp = as.character(s3_single_tmp$"1.4")
+  paperID_tmp = s3_single_tmp$paperID
+
+  ###### Replace malformed answers by the corrected data on the web
+
+  s3_cr_tmp = subset(s3_1.2_mainlist_corrected, subset = ((paperID ==paperID_tmp) & (appl_ID == s3_single_tmp$appl_ID)))
+
+  if (nrow(s3_cr_tmp) >= 1 ) {
+    # we have corrected data
+
+    if (nrow(s3_cr_tmp) > 1 ) {
+      warning(paste0("paperID:", paperID_tmp, " more than one items with the same paper ID and the appl ID!"))
+      # print(paste0("paperID:", paperID_tmp))
+      cat("row id:", row_idx)
+      print(s3_cr_tmp$cr_1.4)
+      # stop("more than one items with the same paper ID and the appl ID!")
+
+      s3_cr_tmp = s3_cr_tmp[1, ] # ignore the rows other than the first row
+    }
+
+    s3_1.4_tmp = as.character(s3_cr_tmp$cr_1.4)
+
+
+  } else {
+    # do nothing
+  }
+
+  method_tmp_v = str_split(s3_1.4_tmp, pattern = ";")[[1]]
+  method_tmp_v = str_trim(method_tmp_v) # remove trailing spaces
+  method_tmp_cnt = length(method_tmp_v)# how many?
+
+
+  # store the processed information in the container
+  res_tmp = data.frame(matrix(data = NA, nrow = method_tmp_cnt, ncol = 6 )) # ID, desc.,note, raw data string if needed
+  colnames(res_tmp) = c("PaperID","RowID", "MethodID","Description", "NeedChecking", "RawData")
+
+
+  for (method_tmp_idx in 1:method_tmp_cnt) {
+    # see if it contains ":"
+    method_tmp = method_tmp_v[method_tmp_idx]
+    colonExists = str_detect(method_tmp , pattern = ":")
+
+    if (colonExists) {
+
+      res_1 = str_split(method_tmp, pattern = ":", simplify = F)[[1]] # split by ":" assuming the latter part contains detailed description.
+    } else {
+      # it is the case e.g. row 981. containing no colon
+      res_1 = c(method_tmp ) # make it two elements - ID=NA with desc.
+    }
+
+
+    if (length(res_1) == 1) {
+      # it has only the method ID
+      id_tmp = as.numeric(res_1[1])
+      if (!is.na(id_tmp)){
+        res_2 = c(paperID_tmp, row_idx, id_tmp, NA, "N", s3_1.4_tmp) # ID, desc.,NeedChecking?, row data string
+
+      } else {
+        # it is null, it means the first element is not a number (means something else like desc. or name of the method)
+        res_2 = c(paperID_tmp, row_idx, NA, res_1[1], "Y", s3_1.4_tmp)
+
+      }
+
+    } else if (length(res_1)==2) {
+
+      # method ID and description
+      id_tmp = as.numeric(res_1[1])
+      desc_tmp = res_1[2]
+
+      if (!is.na(id_tmp)){
+        res_2 = c(paperID_tmp, row_idx, id_tmp, desc_tmp, "N", s3_1.4_tmp) # ID, desc.,NeedChecking?, raw data string
+
+      } else {
+        # it is null, it means the first element is not a number (means something else like desc. or name of the method)
+        res_2 = c(paperID_tmp, row_idx, NA, desc_tmp, "Y", s3_1.4_tmp)
+
+      }
+
+
+
+    } else {
+      # if it has more than three elements we throw an error for now
+      # print(paste0("PaperID:", paperID_tmp, " Row ", row_idx, " has more than two elements: \"", s3_single_tmp, "\""))
+      res_2 = c(paperID_tmp, row_idx, NA, NA,  "Y", s3_1.4_tmp)
+    }
+
+    # print(method_tmp_idx)
+    # print(res_2)
+
+    if (!(res_2[3]  %in% method_lutb$ID)) {
+      # if the method is not enlisted, it could be possibly wrong.. (e.g. 2009)
+      res_2[5] = "Y"
+    }
+
+    res_tmp[method_tmp_idx, ] = res_2
+  }
+
+
+  res_all_1.4[[row_idx]] = res_tmp
+
+
+
+}
+
+nrow(s3_single)
+length(res_all_1.4)
+res_all_1.4[[7]]
+res_all_1.4[[8]]
+res_all_1.4[[981]]
+
+res_all_1.4_df = do.call("rbind", res_all_1.4)
+
+nrow(res_all_1.4_df)
+
+# warnings (+50) when the first element was not numeric. It is dealt the above.
+
+#######################
+table(res_all_1.4_df$NeedChecking)
+
+res_all_1.4_df[,"MethodID"] = factor(as.character(res_all_1.4_df[,"MethodID"]))
+
+# Let's first consider only well-formed values
+
+add_method_tb1 = table(res_all_1.4_df[,"MethodID"])
+(add_method_tb1)
+sort(add_method_tb1, decreasing = T)
+
+barplot(sort(add_method_tb1, decreasing = T), las=2)
+
+add_method_tb_code = names(add_method_tb1)
+add_method_tb_name =method_lutb$Method.name[match(add_method_tb_code, method_lutb$ID )]
+names(add_method_tb1) = method_tb_name
+
+barplot(add_method_tb1, las=2)
+
+#pdf("output/Main_Method_list.pdf", width = 12, height = 8)
+par(mar=c(4,17,4,4))
+barplot(sort(add_method_tb1, F), las=1, cex.names = 0.5, horiz = T, xlab = "# of applications")
+dev.off()
+
+
+# figure out what was not found
+
+add_method_not_found_idx = which(is.na(match(method_lutb$ID, add_method_tb_code)))
+
+method_lutb$Method.name[add_method_not_found_idx]
+length(method_lutb$Method.name[add_method_not_found_idx])
+
+#which(str_detect(s3_single$"1.2", pattern ="SolVES"))
+# which(str_detect(s3_single$"1.4", pattern ="Solv"))
+# s3_single$"1.4"[996]
+
+
+
+# papers to look at
+add_checklist_v = which(res_all_1.4_df$NeedChecking == "Y")
+add_checklist_rowid_v = res_all_1.4_df$RowID[checklist_v]
+head(add_checklist_rowid_v)
+head(add_checklist_v)
+# res_all_df$PaperID[checklist_v ]
+# res_all_df$Description[checklist_v ]
+# res_all_df$RawData[checklist_v ]
+
+# 15th row in res_all_df (11th row in s3single)
+res_all_1.4_df[15,]
+s3_single[11,"1.2"]
+#
+
+
+toSave3_1.4 = T # TRUE
+
+if (toSave3_1.4){
+  write.xlsx(res_all_1.4_df,file = paste0("output/Step3_1.4_all_", Sys.Date(),".xlsx"))
+  write.xlsx(res_all_1.4_df[res_all_1.4_df$NeedChecking=="Y",], file=paste0("output/Step3_1.4_needchecking_only_ ", Sys.Date(),".xlsx"))
+}
 
 
 
