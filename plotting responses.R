@@ -102,14 +102,39 @@ p41 <- ggplot() +
   geom_bar(aes(x = factor(1), fill = s3_single$`4.1`),width = 1) + coord_polar("y", start = 0) + blank_theme + theme(axis.text.x=element_blank(), legend.position="bottom", axis.text.y = element_blank()) + scale_fill_manual(name = '',breaks = c('Yes','unclear','No'), values  = c(IPbeslightgreen, 'orange', 'red')) + xlab('') + ylab('') + ggtitle('Replicability') +
   geom_text(aes(x = 1.2, y = Lbl1$count1/2+ c(0, cumsum(Lbl1$count1)[-length(Lbl1$count1)]),
                 label = Lbl1$Label1), size=5)
+familysummary41 <- data.frame(MF = c('MF1','MF1','MF1','MF2','MF2','MF2','MF3','MF3','MF3','MF4','MF4','MF4'),
+                              Answer = c('Yes','unclear','No','Yes','unclear','No','Yes','unclear','No','Yes','unclear','No'),
+                              N = NA,
+                              Percentage=NA)
+familysummary41$N = sapply(1:12,FUN=function(x) sum(s3_single[,sprintf('%s.key',as.character(familysummary41$MF[x]))]==1 & (s3_single$`4.1`==familysummary41$Answer[x]),na.rm=T))
+familysummary41$Percentage = familysummary41$N/sapply(familysummary41$MF,FUN = function(x)sum(familysummary41[familysummary41$MF==x,'N']))
+p41.fam <- ggplot(familysummary41) + geom_bar(aes(x = MF, fill=Answer, y=Percentage*100),stat = 'identity',position='stack') + scale_fill_manual(name = '',breaks = c('Yes','unclear','No'), values  = c(IPbeslightgreen, 'orange', 'red')) +ylab('Percentage in the method family') + xlab('Method family') + ggtitle('Is replicability of the results assessed?') + theme_minimal() + scale_x_discrete(labels= MFLabels)
+
 p42 <- ggplot() +
   geom_bar(aes(x = factor(1), fill = s3_single$`4.2`),width = 1) + coord_polar("y", start = 0) + blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank())+ scale_fill_manual(name = '',breaks = c('Yes','unclear','No'), values  = c(IPbeslightgreen, 'orange', 'red')) + xlab('') + ylab('') + ggtitle('Consistency') +
   geom_text(aes(x = 1.2, y = Lbl1$count2/2+ c(0, cumsum(Lbl1$count2)[-length(Lbl1$count2)]),
                 label = Lbl1$Label2), size=5)
+familysummary42 <- data.frame(MF = c('MF1','MF1','MF1','MF2','MF2','MF2','MF3','MF3','MF3','MF4','MF4','MF4'),
+                              Answer = c('Yes','unclear','No','Yes','unclear','No','Yes','unclear','No','Yes','unclear','No'),
+                              N = NA,
+                              Percentage=NA)
+familysummary42$N = sapply(1:12,FUN=function(x) sum(s3_single[,sprintf('%s.key',as.character(familysummary42$MF[x]))]==1 & (s3_single$`4.2`==familysummary42$Answer[x]),na.rm=T))
+familysummary42$Percentage = familysummary42$N/sapply(familysummary42$MF,FUN = function(x)sum(familysummary42[familysummary42$MF==x,'N']))
+p42.fam <- ggplot(familysummary42) + geom_bar(aes(x = MF, fill=Answer, y=Percentage*100),stat = 'identity',position='stack') + scale_fill_manual(name = '',breaks = c('Yes','unclear','No'), values  = c(IPbeslightgreen, 'orange', 'red')) +ylab('Percentage in the method family') + xlab('Method family') + ggtitle('Is consistency of the results assessed?') + theme_minimal() + scale_x_discrete(labels= MFLabels)
+
 p43 <- ggplot() +
   geom_bar(aes(x = factor(1), fill = s3_single$`4.3`),width = 1) + coord_polar("y", start = 0) + blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank())+ scale_fill_manual(name = '',breaks = c('Yes','unclear','No'), values  = c(IPbeslightgreen, 'orange', 'red')) + xlab('') + ylab('') + ggtitle('Precision') +
   geom_text(aes(x = 1.2, y = Lbl1$count3/2+ c(0, cumsum(Lbl1$count3)[-length(Lbl1$count3)]),
                 label = Lbl1$Label3), size=5)
+familysummary43 <- data.frame(MF = c('MF1','MF1','MF1','MF2','MF2','MF2','MF3','MF3','MF3','MF4','MF4','MF4'),
+                              Answer = c('Yes','unclear','No','Yes','unclear','No','Yes','unclear','No','Yes','unclear','No'),
+                              N = NA,
+                              Percentage=NA)
+familysummary43$N = sapply(1:12,FUN=function(x) sum(s3_single[,sprintf('%s.key',as.character(familysummary43$MF[x]))]==1 & (s3_single$`4.3`==familysummary43$Answer[x]),na.rm=T))
+familysummary43$Percentage = familysummary43$N/sapply(familysummary43$MF,FUN = function(x)sum(familysummary43[familysummary43$MF==x,'N']))
+p43.fam <- ggplot(familysummary43) + geom_bar(aes(x = MF, fill=Answer, y=Percentage*100),stat = 'identity',position='stack') + scale_fill_manual(name = '',breaks = c('Yes','unclear','No'), values  = c(IPbeslightgreen, 'orange', 'red')) +ylab('Percentage in the method family') + xlab('Method family') + ggtitle('Is precision of the results assessed?') + theme_minimal() + scale_x_discrete(labels= MFLabels)
+
+
 mylegend<-g_legend(p41)
 Pane1 <-grid.arrange(
   p41 + theme(legend.position="none"),
@@ -117,6 +142,19 @@ Pane1 <-grid.arrange(
   p43 + theme(legend.position="none"),
   nrow=1, layout_matrix = rbind(c(1,2,3)))
 ggsave(Pane1, filename='output/T3-Q41-43.pdf',width=10, height=3.5)
+
+mylegend<-g_legend(p41)
+Pane1 <-grid.arrange(
+  p41 + theme(legend.position="none"),
+  p41.fam + theme(legend.position="none"),
+  p42 + theme(legend.position="none"),
+  p42.fam + theme(legend.position="none"),
+  p43 + theme(legend.position="none"),
+  p43.fam + theme(legend.position="none"),
+  mylegend,
+  nrow=4, layout_matrix = rbind(c(1,2),c(3,4),c(5,6),c(7,7)), widths=c(1,4), heights=c(3,3,3,1))
+ggsave(Pane1, filename='output/T3-Q41-43_MF.pdf',width=10, height=10)
+
 
 
 #--------------internal & external validity graph---------------#
@@ -224,7 +262,8 @@ p87
 ########-----Data Overview 6 - Valuation for Human Wellbeing-----########
 p87
 
-########-----Data Overview 4 - Valuation of indigenous peaoples' and like-minded local communities's-----########
+########-----Data Overview 4 - Valuation of indigenous peoples' and like-minded local communities's-----########
+if(1==0){
 #Topic 5, p87 --> Q5.1 - Q5.8
 #Q5.1: Are there any authors from Indigenous Peoples or Like-minded Local Communities? none / one or more authors explicitly represented as such / unclear
 #Q5.2: The application identifies/assesses respect towards nature by (multiple possible):
@@ -236,5 +275,35 @@ p87
 #to the terrestrial or marine landscape.
   #3)respecting those ceremonies, rituals or gatherings
   #4)does not assess this
-#Q5.3:
+#Q5.3:The application assesses responsibility or care for the land by (multiple possible):
+  #1) assessing overall protection & preservation of sites (mountains, rivers, landscapes, landforms, forests, etc.) for their sacred meaning, or cultural or historical significance;
+  #2) assessing whether actions/practices where natural resources use is compatible with and follows ancestral teachings about living in harmony with nature and respect for the land;
+  #3) Identifying non-over-exploitative production systems out of a sense of responsibilities towards future generations
+  #4) considering actions/practices to renew the sense of interconnection with terrestrial or marine surroundings and awareness about responsibility and care.
+  #5) does not assess this
+  #6) other
+#Q5.4: The application assesses kinship/communality with other people by (multiple possible):
+  #1) assessing equitable sharing use of seasonal resources,
+  #2) considering the satisfaction of community members’ needs, particularly women, elders and children.
+  #3) assessing whether the community shares teachings and knowledge on how to live sustainably with all elements of nature
+  #4) assessing the community internal practices of reciprocity (communal work or sharing of products); equitable trade with other communities.
+  #5) does not assess this
+  #6) other
+#Q5.5: The applicationassesses kinship/communality with non-human entities by  (multiple possible):
+   #1) identifying and assessing kinship relationships with animal through time identifying and assessing kinship relationships with animals’ habitat and other plant species
+  #2) identifying some plants as sacred,
+  #3) assessing the reluctance and discouragement of using plants, animals, mountains,rivers, and other non-living entities in nature for individualistic gains
+  #4) assessing the understanding of landforms as entitled to personhood or legal rights
+  #5) does not assess this
+  #6) Other
+#Q5.6: The application assesses values of self-determination and ancestral law, by (multiple possible):
+  #1) assessing the application of ancestral law, teachings, customs and uses,
+  #2) assessing the acknowledgement and inclusion of people’s beliefs, spirituality, and ceremonial practices
+  #3) assessing the community governance and community protocols or regulations,
+  #4) assessing the implementation of the FPIC,
+  #5) accounting for the intervention of Indigenous spiritual authorities and use of Indigenous language,
+  #6) including the Indigenous authors’ self-positioning or elders and knowledge-keepers authorship
+  #7) does not assess this
+  #8) other
+}
 
