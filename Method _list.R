@@ -1,3 +1,4 @@
+library(openxlsx)
 source("Starting.R")
 
 # 1.This script is to compile a list of method mentioned in the survey
@@ -9,7 +10,6 @@ summary(s3_single$"1.4")
 library(stringr) # parsing strings in R
 
 main_method_1.2 = str_split(s3_single$"1.2", pattern = ";")
-
 
 
 # Read method name look-up table
@@ -37,13 +37,55 @@ row_idx = 8 # multiple items
 row_idx = 85 # use of semicolon
 row_idx = 11 # use of semicolon
 
+########## 1.2. the list of main methods..
+s3_1.2_mainlist_corrected_web = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-M3x4O_Oj9qQEoe8hasuATMoLbqeXfdBUkOtaJYwLJhmdHX0zAeQX4zNd07bmYf6t2GyF8rUvVK0L/pub?gid=730503165&single=true&output=csv"
+s3_1.2_mainlist_corrected = read.csv(url(s3_1.2_mainlist_corrected_web), header = T)
+colnames(s3_1.2_mainlist_corrected)[c(2, 3, 5)] = c("paperID", "appl_ID", "cr_1.2" )
+
+table(s3_1.2_mainlist_corrected$cr_1.2)
+
+s3_1.2_mainlist_corrected$appl_ID = as.character(s3_1.2_mainlist_corrected$appl_ID)
+
 res_all = vector("list", length = nrow(s3_single)) #
+
+# see paper id 19484 and 47081
+
+# which(s3_single$paperID == 19484) # 40
+# which(s3_single$paperID == 47081) # 60 61 (two rows with different applID)
+# which(s3_single$paperID == 42291) # 969 970 (two rows with the same applID)
+
+row_idx = 11
+
 
 for (row_idx in 1:nrow(s3_single)) {
 
   s3_single_tmp = s3_single[row_idx,]
   s3_1.2_tmp = as.character(s3_single_tmp$"1.2")
   paperID_tmp = s3_single_tmp$paperID
+
+  ###### Replace malformed answers by the corrected data on the web
+
+  s3_cr_tmp = subset(s3_1.2_mainlist_corrected, subset = ((paperID ==paperID_tmp) & (appl_ID == s3_single_tmp$appl_ID)))
+
+  if (nrow(s3_cr_tmp) >= 1 ) {
+    # we have corrected data
+
+    if (nrow(s3_cr_tmp) > 1 ) {
+      warning(paste0("paperID:", paperID_tmp, " more than one items with the same paper ID and the appl ID!"))
+      # print(paste0("paperID:", paperID_tmp))
+      cat("row id:", row_idx)
+      print(s3_cr_tmp$cr_1.2)
+      # stop("more than one items with the same paper ID and the appl ID!")
+
+      s3_cr_tmp = s3_cr_tmp[1, ] # ignore the rows other than the first row
+    }
+
+    s3_1.2_tmp = as.character(s3_cr_tmp$cr_1.2)
+
+
+  } else {
+    # do nothing
+  }
 
   method_tmp_v = str_split(s3_1.2_tmp, pattern = ";")[[1]]
   method_tmp_v = str_trim(method_tmp_v) # remove trailing spaces
@@ -73,7 +115,7 @@ for (row_idx in 1:nrow(s3_single)) {
       # it has only the method ID
       id_tmp = as.numeric(res_1[1])
       if (!is.na(id_tmp)){
-         res_2 = c(paperID_tmp, row_idx, id_tmp, NA, "N", s3_1.2_tmp) # ID, desc.,NeedChecking?, row data string
+        res_2 = c(paperID_tmp, row_idx, id_tmp, NA, "N", s3_1.2_tmp) # ID, desc.,NeedChecking?, row data string
 
       } else {
         # it is null, it means the first element is not a number (means something else like desc. or name of the method)
@@ -88,7 +130,7 @@ for (row_idx in 1:nrow(s3_single)) {
       desc_tmp = res_1[2]
 
       if (!is.na(id_tmp)){
-         res_2 = c(paperID_tmp, row_idx, id_tmp, desc_tmp, "N", s3_1.2_tmp) # ID, desc.,NeedChecking?, raw data string
+        res_2 = c(paperID_tmp, row_idx, id_tmp, desc_tmp, "N", s3_1.2_tmp) # ID, desc.,NeedChecking?, raw data string
 
       } else {
         # it is null, it means the first element is not a number (means something else like desc. or name of the method)
@@ -107,7 +149,7 @@ for (row_idx in 1:nrow(s3_single)) {
     # print(method_tmp_idx)
     # print(res_2)
 
-     if (!(res_2[3]  %in% method_lutb$ID)) {
+    if (!(res_2[3]  %in% method_lutb$ID)) {
       # if the method is not enlisted, it could be possibly wrong.. (e.g. 2009)
       res_2[5] = "Y"
     }
@@ -193,10 +235,13 @@ which(s3_single$paperID == 40974) # Row 85 in s3_single
 
 s3_single[s3_single$paperID == 40974,"1.2"]
 
-library(openxlsx)
-#write.xlsx(res_all_df,file = "output/Step3_1.2_all.xlsx")
 
-#write.xlsx(res_all_df[res_all_df$NeedChecking=="Y",], file="output/Step3_1.2_needchecking_only.xlsx")
+toSave3_1.2 = FALSE # TRUE
+
+if (toSave3_1.2){
+  write.xlsx(res_all_df,file = paste0("output/Step3_1.2_all_", Sys.Date(),".xlsx"))
+  write.xlsx(res_all_df[res_all_df$NeedChecking=="Y",], file=paste0("output/Step3_1.2_needchecking_only_ ", Sys.Date(),".xlsx"))
+}
 
 #stop("ends here (8 Oct 2020) by HL")
 
@@ -273,13 +318,6 @@ length(which(s3_single$"1.1" >= 4))
 which(s3_single$"1.1" >= 4)
 
 
-########### 1.2. the list of main methods..
-s3_1.2_mainlist_corrected_web = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-M3x4O_Oj9qQEoe8hasuATMoLbqeXfdBUkOtaJYwLJhmdHX0zAeQX4zNd07bmYf6t2GyF8rUvVK0L/pub?gid=730503165&single=true&output=csv"
-s3_1.2_mainlist_corrected = read.csv(url(s3_1.2_mainlist_corrected_web), header = T)
-colnames(s3_1.2_mainlist_corrected)[c(2, 5)] = c("paperID", "cr_1.2" )
-
-# it's a bit confusing still
-table(s3_1.2_mainlist_corrected$cr_1.2)
 
 
 
