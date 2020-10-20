@@ -193,12 +193,16 @@ which(s3_single$paperID == 40974) # Row 85 in s3_single
 
 s3_single[s3_single$paperID == 40974,"1.2"]
 
- library(openxlsx)
+library(openxlsx)
 #write.xlsx(res_all_df,file = "output/Step3_1.2_all.xlsx")
 
 #write.xlsx(res_all_df[res_all_df$NeedChecking=="Y",], file="output/Step3_1.2_needchecking_only.xlsx")
 
 #stop("ends here (8 Oct 2020) by HL")
+
+
+#########################################################################
+############# 1.1 the number of main methods..
 
 table(s3_single$"1.1")
 #   1     2     3     4     5     6     7    11    22 64502
@@ -212,8 +216,6 @@ which(s3_single$"1.1" == 64502) # that's paperID. It should be corrected as '1'.
 #s3_single[1060,"1.1"] <- 1 # need to check it when we have the final ver.
 
 tb_howmany = table(s3_single$"1.1")
-#   1   2   3   4   5   6   7  11
-# 860 154  46  17   7   2   1   1
 
 tb_howmany_4 = c(tb_howmany[1:3], sum (tb_howmany[4:8]))
 names(tb_howmany_4)[4] = 4
@@ -236,12 +238,100 @@ length(which(s3_single$"1.1" >= 4))
 which(s3_single$"1.1" >= 4)
 
 s3_single[s3_single$"1.1" >= 4, "paperID"]
+s3_single[s3_single$"paperID" == 22904, "1.1"]
 
 
+s3_single[which(s3_single$"1.1" == 22),]
+
+s3_single_1.1_corrected_web ="https://docs.google.com/spreadsheets/d/e/2PACX-1vRWkUoHry3fkwoMWmUfnkS43auXAFT580JZh5yFfUTKJkPjtbIjnf0kfIOdvSjknzlurVpLT81eIb_t/pub?output=csv"
+s3_1.1_corrected=read.csv(url(s3_single_1.1_corrected_web), header = F)
+colnames(s3_1.1_corrected) = c("paperID","cr_1.1","Note")
+
+
+str(s3_1.1_corrected$cr_1.1)
+
+# Warning: replace the original values by the live values on the web
+s3_single[match(s3_1.1_corrected$paperID, s3_single$paperID),]$"1.1" =s3_1.1_corrected$cr_1.1
+
+table(s3_single$"1.1")
+
+
+# using cut
+cut_1.1 = cut(s3_single$"1.1", breaks = c(0, 1.5, 2.5, 3.5, max(s3_single$"1.1")))
+levels(cut_1.1) = c(1,2,3,"more than 4")
+cut_1.1
+
+#pdf("output/Fig_1.1.pdf", width=5, height = 5, pointsize = 12)
+pie(table(cut_1.1))
+#dev.off()
+
+pie(table(s3_single$"1.1"))
+barplot(table(s3_single$"1.1"))
+
+length(which(s3_single$"1.1" >= 4))
+
+which(s3_single$"1.1" >= 4)
+
+
+########### 1.2. the list of main methods..
+s3_1.2_mainlist_corrected_web = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-M3x4O_Oj9qQEoe8hasuATMoLbqeXfdBUkOtaJYwLJhmdHX0zAeQX4zNd07bmYf6t2GyF8rUvVK0L/pub?gid=730503165&single=true&output=csv"
+s3_1.2_mainlist_corrected = read.csv(url(s3_1.2_mainlist_corrected_web), header = T)
+colnames(s3_1.2_mainlist_corrected)[c(2, 5)] = c("paperID", "cr_1.2" )
+
+# it's a bit confusing still
+table(s3_1.2_mainlist_corrected$cr_1.2)
+
+
+
+# # First we get the well-formed answers after splitting
+# row_idx = 1
+# tmp1.2 = s3_1.2_mainlist_corrected[row_idx,"cr_1.2"]
+# method_tmp_v = str_split(tmp1.2, pattern = ";")[[1]]
+# method_tmp_v = str_trim(method_tmp_v) # remove trailing spaces
+#
+#
+# method_tmp_cnt = length(method_tmp_v)# how many?
+
+
+
+########### 1.3. The number of additional methods..
 table(s3_single$"1.3")  # Additional methods
 #   0   1   2   3   4   5   6   7   8
 # 501 338 175  68  30  11   4   3   1
+s3_single[s3_single$"1.3" >= 4, "paperID"]
+# [1] 38316 38518 17191 29506 74437 17155 58559 26512 29915 10261  4714 36263
+# [13]  8869  3206 35757 34150 69884 54436 20791 59670 23700 35913 62947 44894
+# [25]  2198  9727 23185 45593 28465 43314 42378 39619 12597  3734 71934  2248
+# [37] 22816 41028 14021 16915  6493 25781 25094  6674 20245 38947 66234 69734
+# [49] 20317  7586
+
+
+
+########### 1.4. List of additional methods..
 
 
 
 
+########### 1.5. Goald of combining valuation methods.
+summary(s3_single$"1.5")
+split_res_l_1.5 = vector("list", length = nrow(s3_single))
+
+for (row_idx in 1:nrow(s3_single)) {
+
+  split_tmp = str_trim(str_split(s3_single$"1.5"[row_idx], pattern = ",")[[1]])
+  split_res_l_1.5[[row_idx]] = split_tmp
+}
+
+goal_split_v = unlist(split_res_l_1.5)
+goal_split_v_fac = factor(goal_split_v)
+
+goal_tb_sorted = sort(table(goal_split_v_fac), decreasing = F)
+
+# put the minor goals together (<5)
+goal_tb_sorted_reduced =  c(sum(goal_tb_sorted[goal_tb_sorted<5]), goal_tb_sorted[goal_tb_sorted>=5])
+names(goal_tb_sorted_reduced)[1] = "Other"
+
+#pdf("output/Fig_1.5.pdf", width=10, height = 5, pointsize = 12)
+par(mar=c(5, 20, 5, 5))
+barplot(goal_tb_sorted_reduced, las=1, horiz=T, cex.names = 0.7, xlim=c(0, max(goal_tb_sorted_reduced) * 1.2 ))
+#dev.off()
