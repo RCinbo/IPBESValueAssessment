@@ -344,7 +344,7 @@ s3_single[s3_single$"1.3" >= 4, "paperID"]
 # [49] 20317  7586
 
 
-## COME BACK HERE NEED TO CHECK
+
 
 ########### 1.4. List of additional methods..
 s3_1.2_mainlist_corrected = read.csv(url(s3_1.2_mainlist_corrected_web), header = T)
@@ -356,6 +356,8 @@ s3_1.2_mainlist_corrected$appl_ID = as.character(s3_1.2_mainlist_corrected$appl_
 
 res_all_1.4 = vector("list", length = nrow(s3_single)) #
 
+
+ # row_idx = 989
 
 for (row_idx in 1:nrow(s3_single)) {
 
@@ -389,12 +391,24 @@ for (row_idx in 1:nrow(s3_single)) {
 
   method_tmp_v = str_split(s3_1.4_tmp, pattern = ";")[[1]]
   method_tmp_v = str_trim(method_tmp_v) # remove trailing spaces
+
+  # if the values are actually uninformative ones
+  method_tmp_v[method_tmp_v==""] = NA
+  method_tmp_v[method_tmp_v=="/"] = NA
+  method_tmp_v = method_tmp_v[!is.na(method_tmp_v)]
+
   method_tmp_cnt = length(method_tmp_v)# how many?
 
 
   # store the processed information in the container
   res_tmp = data.frame(matrix(data = NA, nrow = method_tmp_cnt, ncol = 6 )) # ID, desc.,note, raw data string if needed
   colnames(res_tmp) = c("PaperID","RowID", "MethodID","Description", "NeedChecking", "RawData")
+
+  if (method_tmp_cnt == 0 ) {
+    res_tmp[1,] = c(paperID_tmp, row_idx, NA, "No data entered", "N", s3_1.4_tmp)
+    res_all_1.4[[row_idx]] = res_tmp
+    next() # continue the loop
+  }
 
 
   for (method_tmp_idx in 1:method_tmp_cnt) {
@@ -529,11 +543,25 @@ s3_single[11,"1.2"]
 #
 
 
+res_needchecking_1.4_df = res_all_1.4_df[res_all_1.4_df$NeedChecking=="Y",]
+
+nrow(res_needchecking_1.4_df)
+
+# see what's the popular cases if checking is needed
+nctb = table(res_needchecking_1.4_df$NeedChecking, res_needchecking_1.4_df$Description)
+dimnames(nctb)[[2]][order(nctb, decreasing = T)[1:5]]
+
+# see all excluding the above
+alltb = table(res_all_1.4_df$NeedChecking, res_all_1.4_df$Description)
+dimnames(alltb)[[2]][order(alltb[1,], decreasing = T)[1:5]] # 513 no data entered case
+
+
+
 toSave3_1.4 = T # TRUE
 
 if (toSave3_1.4){
   write.xlsx(res_all_1.4_df,file = paste0("output/Step3_1.4_all_", Sys.Date(),".xlsx"))
-  write.xlsx(res_all_1.4_df[res_all_1.4_df$NeedChecking=="Y",], file=paste0("output/Step3_1.4_needchecking_only_ ", Sys.Date(),".xlsx"))
+  write.xlsx(res_needchecking_1.4_df, file=paste0("output/Step3_1.4_needchecking_only_ ", Sys.Date(),".xlsx"))
 }
 
 
