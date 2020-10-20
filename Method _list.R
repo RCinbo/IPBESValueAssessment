@@ -163,7 +163,7 @@ dev.off()
 
 method_not_found_idx = which(is.na(match(method_lutb$ID, method_tb_code)))
 
-method_lutb$Method.name[method_not_found_idx]
+n=method_lutb$Method.name[method_not_found_idx]
 length(method_lutb$Method.name[method_not_found_idx])
 
 #which(str_detect(s3_single$"1.2", pattern ="SolVES"))
