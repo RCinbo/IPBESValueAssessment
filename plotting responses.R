@@ -3,6 +3,7 @@ library(scales)
 library(stringr)
 library(tidyverse)
 library(grDevices)
+library(likert)
 library(writexl)
 ############Define a color scheme#####################
 IPbesdarkgreen <- rgb(92/255, 102/255, 93/255) #5c665d
@@ -19,6 +20,23 @@ g_legend<-function(a.gplot){
 MFLabels <- c('MF1','MF2','MF3','MF4') # change the names here if needed.
 names(MFLabels) <- c('MF1','MF2','MF3','MF4')
 
+
+##########-------- All 'How certain are you about your answers?'--------##########
+A<-data.frame(colnm = c('1.7', '2.20', '3.6','4.6','5.7','6.6','7.4','8.15','8.17'),
+              subject = c('topic 1: Methods and their use', 'topic 2: Context of application','topic 3: Application descriptors','topic 4: Reliability and Validity','topic 5: IPLMLC','topic 6: Human well-being','topic 7: Ecological Sustainability','topic 8: Justice','All topics'))
+
+L<-as.data.frame(s3_single[,sapply(A$colnm,FUN=function(x)which(colnames(s3_single)==x))])
+
+for(i in 1:ncol(L)){
+  L[,i] <- recode_factor(factor(as.factor(L[,i]), levels= c('5','4','3','2','1')),'1'='very sure','2'='sure','3'='in between','4'='unsure','5'='very unsure')
+  L[,i] <- factor(L[,i],levels=c('very unsure','unsure','in between','sure','very sure'),ordered=TRUE)
+}
+  l<-likert(L)
+  a<-order(summary(l,center=3)$high)
+  plotCertainty <- likert.bar.plot(l, low.color ='red', high.color='forestgreen', plot.percent.low=TRUE,plot.percent.neutral=TRUE,plot.percent.high=TRUE,legend.position= "bottom",legend='') + theme_classic()+ylab('Percentage of the respondents') +
+    theme(legend.position='bottom') + scale_x_discrete(limits=summary(l,center=3)[a,'Item'],labels = sapply(summary(l,center=3)[a,'Item'], FUN=function(x)  str_wrap(A[A$colnm==x,'subject'], width = 22)))
+
+ggsave(plotCertainty, filename = 'output/CertaintyLikertPlot.pdf', width= 8, height = 5)
 
 
 ####------Question 2.17 and 2.18 stacked bar charts----------####
@@ -306,4 +324,34 @@ if(1==0){
   #7) does not assess this
   #8) other
 }
+legend <- data.frame(code=c('Q5.2_1', 'Q5.2_2', 'Q5.2_3', 'Q5.2_NA', 'Q5.2_Other'),
+                     txt=c('generally demonstrating and expressing deep respect to the land, sea, or their natural surroundings; manifestation of spiritual connection to the land showing intimate interaction associated with the land, sea, lakes or rivers; spiritual beings in the landscape;sacred sites.','identifying placed-based community ceremonies, rituals or gatherings that are linked to the terrestrial or marine landscape.','respecting those ceremonies, rituals or gatherings','not assesed','Other'),
+                     keywords = c('generally demonstrating and expressing deep respect','identifying placed-based community ceremonies, rituals or gatherings','respecting those ceremonies, rituals or gatherings','does not assess this','other'))
+sbst<-s3_single[,c('paperID','MF1.key','MF2.key','MF3.key','MF4.key','5.2')]
+for(i in 1:nrow(legend)){
+  A <-  str_detect(sbst$`5.2`, pattern = as.character(legend[i,'txt']))
+  sbst <- cbind(sbst, A)
+  colnames(sbst)[ncol(sbst)] <- as.character(legend[i,'code'])
+}
+#from wide to long format
+sbst[,1:11] %>%
+  gather(question, value, -paperID,-MF1.key,-MF2.key,-MF3.key,-MF4.key,-`5.2`) ->sbst_long44
+
+
+#Pie chart for whether the authors are indigenous
+s3_single$`5.1`<-factor(s3_single$`5.1`, levels=c('none','unclear', 'one or more authors explicitly represented as such'),ordered=TRUE)
+Lbl2<-data.frame(Answer = c('one or more authors explicitly represented as such','unclear','none'),count = NA, Perc = NA, Label = NA)
+for (j in 1:3){
+    Lbl2[j,'count'] <- sum(s3_single$`5.1`==as.character(Lbl2[j,'Answer']))
+    Lbl2[j,'Perc'] <- Lbl2[j,'count'] / nrow(s3_single)*100
+    Lbl2[j,'Label'] <- sprintf('%1.2f%%', Lbl2[j,'Perc'])
+  }
+p51pie <- ggplot() +
+  geom_bar(aes(x = factor(1), fill = s3_single$`5.1`),width = 1) +
+  blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank())+ scale_fill_manual(name = '',breaks = c('none','one or more authors explicitly represented as such', 'unclear'),labels = c('No','Yes, one or more', 'Unclear'), values  = c('red', IPbeslightgreen, 'orange')) +
+  xlab('') + ylab('') + ggtitle('Are there any authors from Indigenous Peoples\n or Like-minded Local Communities?') +
+  geom_text(aes(x = c(1.3,1,1.2), y = Lbl2$count/2+ c(0, cumsum(Lbl2$count)[-length(Lbl2$count)]),label = Lbl2$Label), size=5) + coord_polar("y", start = 0,direction = 1)
+ggsave(p51pie,file = 'output/T3-Q51.pdf', width = 5, height = 3)
+
+#Bar charts for all other theme 5 questions
 
