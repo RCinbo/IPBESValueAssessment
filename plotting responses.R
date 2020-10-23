@@ -275,8 +275,102 @@ Theme4 <- grid.arrange(mylegend, Pane1, Pane2, Pane3, Pane4,
                        nrow=4, heights=c(1,10,1,10),widths=c(10,0.5,10),layout_matrix = rbind(c(1,NA,NA),c(2,NA,3),c(NA,NA,NA),c(4,NA,5)))
 ggsave(Theme4,filename='output/Theme4.pdf',width=18, height=8)
 
+
+
 ########-----Data Overview 5 - Valuation for Human Wellbeing-----########
 Heera
+
+##--- 6.1. The application assesses human well-being using one of the following indicators (multiple possible)
+wellbeing_indicator_org = c("Subjective well-being \\(e.g., satisfaction, happiness etc.\\) linked to nature & biodiversity",
+"A composite indicator \\(combining different aspects of well-being into one, such as Human Development Index, Better Life Index etc.\\) linked to  nature and biodiversity") # !!! a tab betwen "to" and "nature"
+
+
+wellbeing_indicator_alt = c("Subjective well-being", "A composite indicator")
+wellbeing_indicator_org_v = as.character(s3_single$"6.1")
+wellbeing_indicator_alt_v = wellbeing_indicator_org_v
+
+
+for (o_idx in 1:length(wellbeing_indicator_org)) {
+
+  wellbeing_indicator_alt_v = str_replace_all(wellbeing_indicator_alt_v, pattern = wellbeing_indicator_org[o_idx], replacement = wellbeing_indicator_alt[o_idx])
+}
+
+# detects "tab"
+tab_yn = str_detect(wellbeing_indicator_org_v, pattern = "  ")
+table(tab_yn)
+
+# suchas_yn = str_detect(wellbeing_indicator_alt_v, pattern = "such as")
+# table(suchas_yn)
+# which(suchas_yn)
+#
+# wellbeing_indicator_alt_v[556]
+
+
+# starts_idx = which(starts_yn)
+#
+# detect_yn = str_detect(wellbeing_indicator_alt_v[starts_idx], pattern = wellbeing_indicator_org[1])
+# table(detect_yn)
+#
+# replaced_v  = str_replace_all(wellbeing_indicator_alt_v[starts_idx], pattern = wellbeing_indicator_org[1], replacement = wellbeing_indicator_alt[1])
+#
+# replaced_detect_yn = str_detect(replaced_v, pattern = wellbeing_indicator_org[1])
+#
+
+
+split_res_l_6.1 = vector("list", length = nrow(s3_single))
+
+for (row_idx in 1:nrow(s3_single)) {
+
+  split_tmp = str_trim(str_split(wellbeing_indicator_alt_v[row_idx], pattern = ",")[[1]])
+  split_res_l_6.1[[row_idx]] = split_tmp
+}
+
+
+split_6.1_v = unlist(split_res_l_6.1)
+split_6.1_v_fac = factor(split_6.1_v)
+split_6.1_sorted = sort(table(split_6.1_v_fac), decreasing = F)
+barplot(split_6.1_sorted, horiz=T, las=1, cex.names=0.5, col=IPbeslightgreen)
+
+split_6.1_tb_sorted_reduced =  c(sum(split_6.1_sorted[split_6.1_sorted<5]), split_6.1_sorted[split_6.1_sorted>=5])
+names(split_6.1_tb_sorted_reduced)[1] = "Other"
+
+
+
+##--- 6.2. preference
+preference_org = c("") # !!! a tab betwen "to" and "nature"
+
+
+preference_alt = c("")
+preference_org_v = as.character(s3_single$"6.2")
+preference_alt_v = preference_org_v
+
+
+for (o_idx in 1:length(preference_org)) {
+
+  preference_alt_v = str_replace_all(preference_alt_v, pattern = preference_org[o_idx], replacement = preference_alt[o_idx])
+}
+
+split_res_l_6.2 = vector("list", length = nrow(s3_single))
+
+for (row_idx in 1:nrow(s3_single)) {
+
+  split_tmp = str_trim(str_split(s3_single$"6.2"[row_idx], pattern = ",")[[1]])
+  split_res_l_6.2[[row_idx]] = split_tmp
+}
+
+split_6.2_v = unlist(split_res_l_6.2)
+split_6.2_v_fac = factor(split_6.2_v)
+split_6.2_sorted = sort(table(split_6.2_v_fac), decreasing = F)
+barplot(split_6.2_sorted, horiz=T, las=1, cex.names=0.5, col=IPbeslightgreen)
+
+names(split_6.2_sorted[split_6.2_sorted==1])
+#
+# split_6.1_tb_sorted_reduced =  c(sum(split_6.1_sorted[split_6.1_sorted<5]), split_6.1_sorted[split_6.1_sorted>=5])
+# names(split_6.1_tb_sorted_reduced)[1] = "Other"
+
+
+
+
 
 
 ########-----Data Overview 6 - Valuation for ecological sustainability-----########
