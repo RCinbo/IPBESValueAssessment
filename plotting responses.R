@@ -278,12 +278,11 @@ ggsave(Theme4,filename='output/Theme4.pdf',width=18, height=8)
 
 
 ########-----Data Overview 5 - Valuation for Human Wellbeing-----########
-Heera
+# @TODO Heera
 
 ##--- 6.1. The application assesses human well-being using one of the following indicators (multiple possible)
 wellbeing_indicator_org = c("Subjective well-being \\(e.g., satisfaction, happiness etc.\\) linked to nature & biodiversity",
 "A composite indicator \\(combining different aspects of well-being into one, such as Human Development Index, Better Life Index etc.\\) linked to  nature and biodiversity") # !!! a tab betwen "to" and "nature"
-
 
 wellbeing_indicator_alt = c("Subjective well-being", "A composite indicator")
 wellbeing_indicator_org_v = as.character(s3_single$"6.1")
@@ -316,59 +315,113 @@ table(tab_yn)
 # replaced_detect_yn = str_detect(replaced_v, pattern = wellbeing_indicator_org[1])
 #
 
+wellbeing_given_answer = c(
+  "Livelihood dependence on access to natural resources",
+  "Livelihood dependence on management of land",
+  "\\(Loss of\\) profits from natural resources",
+  "Physical health outcomes linked to nature & biodiversity",
+  "Mental health outcomes linked to nature & biodiversity",
+  "Subjective well-being",
+  "A composite indicator",
+  "Change in utility of individuals linked to changes in nature & biodiversity",
+  "Well-being indicator is assessed but not linked to nature & biodiversity",
+  "Application does not assess human wellbeing with one of these indicators"
+)
 
+# Identify other answers
 split_res_l_6.1 = vector("list", length = nrow(s3_single))
 
-for (row_idx in 1:nrow(s3_single)) {
+wellbeing_indicator_other_v = wellbeing_indicator_alt_v
+for (given_idx in 1:length(wellbeing_given_answer)) {
 
-  split_tmp = str_trim(str_split(wellbeing_indicator_alt_v[row_idx], pattern = ",")[[1]])
-  split_res_l_6.1[[row_idx]] = split_tmp
+  wellbeing_indicator_other_v = str_replace_all(wellbeing_indicator_other_v, pattern = wellbeing_given_answer[given_idx], replacement = "")
 }
+wellbeing_indicator_other_v = str_trim(str_replace_all(wellbeing_indicator_other_v, pattern = "[,;]", replacement = "")) # warning: other answers without comma and semicolon
+# table(wellbeing_indicator_other_v)
 
 
-split_6.1_v = unlist(split_res_l_6.1)
-split_6.1_v_fac = factor(split_6.1_v)
-split_6.1_sorted = sort(table(split_6.1_v_fac), decreasing = F)
-barplot(split_6.1_sorted, horiz=T, las=1, cex.names=0.5, col=IPbeslightgreen)
+wellbeing_indicator_other_wospace_v = str_replace_all(wellbeing_indicator_other_v, pattern = "[ ]", replacement = "") # remove whitespace
+other_idx_6.1 = str_length(wellbeing_indicator_other_wospace_v) >= 1 # does it have still more characters?
 
-split_6.1_tb_sorted_reduced =  c(sum(split_6.1_sorted[split_6.1_sorted<5]), split_6.1_sorted[split_6.1_sorted>=5])
-names(split_6.1_tb_sorted_reduced)[1] = "Other"
+wellbeing_indicator_other_v[other_idx_6.1]
+n_other_6.1 = length(which(other_idx_6.1))
+other_df_6.1= cbind(paperID= s3_single$paperID, OTHER_ANSWER_6_1 = wellbeing_indicator_other_v,ANSWER_RAW=as.character(s3_single$"6.1") )[other_idx_6.1,]
+write.xlsx(other_df_6.1, file = "output/6.1_otheranswers.xlsx")
 
+# Count given and other answers individually
 
-
-##--- 6.2. preference
-preference_org = c("") # !!! a tab betwen "to" and "nature"
-
-
-preference_alt = c("")
-preference_org_v = as.character(s3_single$"6.2")
-preference_alt_v = preference_org_v
+wellbeing_given_detected = sapply(wellbeing_given_answer, FUN = function(x) str_detect(wellbeing_indicator_alt_v, pattern = x))
 
 
-for (o_idx in 1:length(preference_org)) {
+wellbeing_given_cnt= apply(wellbeing_given_detected, MARGIN = 1,  FUN = function(x) (which(x)))
+wellbeing_given_tb = table(unlist(wellbeing_given_cnt))
+names(wellbeing_given_tb)= wellbeing_given_answer
 
-  preference_alt_v = str_replace_all(preference_alt_v, pattern = preference_org[o_idx], replacement = preference_alt[o_idx])
-}
+wellbeing_all_tb= c(wellbeing_given_tb, Other = n_other_6.1)
+barplot(wellbeing_all_tb,  las=1, horiz=T)
 
-split_res_l_6.2 = vector("list", length = nrow(s3_single))
 
-for (row_idx in 1:nrow(s3_single)) {
-
-  split_tmp = str_trim(str_split(s3_single$"6.2"[row_idx], pattern = ",")[[1]])
-  split_res_l_6.2[[row_idx]] = split_tmp
-}
-
-split_6.2_v = unlist(split_res_l_6.2)
-split_6.2_v_fac = factor(split_6.2_v)
-split_6.2_sorted = sort(table(split_6.2_v_fac), decreasing = F)
-barplot(split_6.2_sorted, horiz=T, las=1, cex.names=0.5, col=IPbeslightgreen)
-
-names(split_6.2_sorted[split_6.2_sorted==1])
+#
+#
+# # 21230
+# which(s3_single$paperID=="21230")
+#
+# split_res_l_6.1 = vector("list", length = nrow(s3_single))
+#
+# for (row_idx in 1:nrow(s3_single)) {
+#
+#   split_tmp = str_trim(str_split(wellbeing_indicator_final_v[row_idx], pattern = ",")[[1]])
+#   split_res_l_6.1[[row_idx]] = split_tmp
+# }
+#
+# split_res_l_6.1[[1029]]
+#
+# split_6.1_v = unlist(split_res_l_6.1)
+# split_6.1_v_fac = factor(split_6.1_v)
+#
+# levels(split_6.1_v_fac)
+#
+# split_6.1_sorted = sort(table(split_6.1_v_fac), decreasing = F)
+# barplot(split_6.1_sorted, horiz=T, las=1, cex.names=0.5, col=IPbeslightgreen)
 #
 # split_6.1_tb_sorted_reduced =  c(sum(split_6.1_sorted[split_6.1_sorted<5]), split_6.1_sorted[split_6.1_sorted>=5])
 # names(split_6.1_tb_sorted_reduced)[1] = "Other"
 
 
+
+##--- 6.2. preference
+# preference_org = c("") # !!! a tab betwen "to" and "nature"
+#
+#
+# preference_alt = c("")
+# preference_org_v = as.character(s3_single$"6.2")
+# preference_alt_v = preference_org_v
+#
+#
+# for (o_idx in 1:length(preference_org)) {
+#
+#   preference_alt_v = str_replace_all(preference_alt_v, pattern = preference_org[o_idx], replacement = preference_alt[o_idx])
+# }
+#
+# split_res_l_6.2 = vector("list", length = nrow(s3_single))
+#
+# for (row_idx in 1:nrow(s3_single)) {
+#
+#   split_tmp = str_trim(str_split(s3_single$"6.2"[row_idx], pattern = ",")[[1]])
+#   split_res_l_6.2[[row_idx]] = split_tmp
+# }
+#
+# split_6.2_v = unlist(split_res_l_6.2)
+# split_6.2_v_fac = factor(split_6.2_v)
+# split_6.2_sorted = sort(table(split_6.2_v_fac), decreasing = F)
+# barplot(split_6.2_sorted, horiz=T, las=1, cex.names=0.5, col=IPbeslightgreen)
+#
+# names(split_6.2_sorted[split_6.2_sorted==1])
+# #
+# # split_6.1_tb_sorted_reduced =  c(sum(split_6.1_sorted[split_6.1_sorted<5]), split_6.1_sorted[split_6.1_sorted>=5])
+# # names(split_6.1_tb_sorted_reduced)[1] = "Other"
+#
+#
 
 
 
