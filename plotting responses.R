@@ -346,7 +346,7 @@ other_idx_6.1 = str_length(wellbeing_indicator_other_wospace_v) >= 1 # does it h
 wellbeing_indicator_other_v[other_idx_6.1]
 n_other_6.1 = length(which(other_idx_6.1))
 other_df_6.1= cbind(paperID= s3_single$paperID, OTHER_ANSWER_6_1 = wellbeing_indicator_other_v,ANSWER_RAW=as.character(s3_single$"6.1") )[other_idx_6.1,]
-write.xlsx(other_df_6.1, file = "output/6.1_otheranswers.xlsx")
+#write.xlsx(other_df_6.1, file = "output/6.1_otheranswers.xlsx")
 
 # Count given and other answers individually
 
@@ -357,9 +357,14 @@ wellbeing_given_cnt= apply(wellbeing_given_detected, MARGIN = 1,  FUN = function
 wellbeing_given_tb = table(unlist(wellbeing_given_cnt))
 names(wellbeing_given_tb)= wellbeing_given_answer
 
-wellbeing_all_tb= c(wellbeing_given_tb, Other = n_other_6.1)
-barplot(wellbeing_all_tb,  las=1, horiz=T)
+wellbeing_all_tb= c(Other = n_other_6.1, sort(wellbeing_given_tb))
+names(wellbeing_all_tb)[10] <- "(Loss of) profits from natural resources"
+names(wellbeing_all_tb)
 
+#pdf("output/Fig_6.1_25Oct.pdf", width=15, height = 8, pointsize = 12)
+par(mar=c(5,25,1,1))
+  barplot(wellbeing_all_tb, las=1, horiz=T, cex.names = 0.8, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(wellbeing_all_tb) *1.1))
+#dev.off()
 
 #
 #
@@ -389,40 +394,244 @@ barplot(wellbeing_all_tb,  las=1, horiz=T)
 
 
 
-##--- 6.2. preference
-# preference_org = c("") # !!! a tab betwen "to" and "nature"
-#
-#
-# preference_alt = c("")
-# preference_org_v = as.character(s3_single$"6.2")
-# preference_alt_v = preference_org_v
-#
-#
-# for (o_idx in 1:length(preference_org)) {
-#
-#   preference_alt_v = str_replace_all(preference_alt_v, pattern = preference_org[o_idx], replacement = preference_alt[o_idx])
-# }
-#
-# split_res_l_6.2 = vector("list", length = nrow(s3_single))
-#
-# for (row_idx in 1:nrow(s3_single)) {
-#
-#   split_tmp = str_trim(str_split(s3_single$"6.2"[row_idx], pattern = ",")[[1]])
-#   split_res_l_6.2[[row_idx]] = split_tmp
-# }
-#
-# split_6.2_v = unlist(split_res_l_6.2)
-# split_6.2_v_fac = factor(split_6.2_v)
-# split_6.2_sorted = sort(table(split_6.2_v_fac), decreasing = F)
-# barplot(split_6.2_sorted, horiz=T, las=1, cex.names=0.5, col=IPbeslightgreen)
-#
-# names(split_6.2_sorted[split_6.2_sorted==1])
-# #
-# # split_6.1_tb_sorted_reduced =  c(sum(split_6.1_sorted[split_6.1_sorted<5]), split_6.1_sorted[split_6.1_sorted>=5])
-# # names(split_6.1_tb_sorted_reduced)[1] = "Other"
-#
-#
+######  --- 6.2. The application assesses the preferences (or importance) that humans assign to nature and biodiversity in terms of (multiple possible)
+summary(s3_single$"6.2")
 
+preference_given_answer = c(
+  "Hypothetical willingness to give up resources \\(monetary or other forms\\) to maintain \\(or increase\\) aspects of nature and biodiversity",
+  "Hypothetical compensation \\(monetary or other forms\\) to give up access to nature or management rights of natural areas",
+  "Scores of relative importance to people of nature’s contributions to people \\(e. g. allocation of points to /or ranking of different aspects of nature or different places\\)",
+  "Spending or expenditure \\(in monetary or other forms of resources\\) to maintain \\(or increase\\) aspects of nature and biodiversity \\(or to avoid losses\\)",
+  "Dialogues with communities about the importance of different aspects of nature and biodiversity",
+  "Application does not assess preferences of humans to nature"
+)
+
+# Identify other answers
+split_res_l_6.2 = vector("list", length = nrow(s3_single))
+
+for (row_idx in 1:nrow(s3_single)) {
+
+  split_tmp = str_trim(str_split(s3_single$"6.2"[row_idx], pattern = ",")[[1]])
+  split_res_l_6.2[[row_idx]] = split_tmp
+}
+
+split_6.2_v = unlist(split_res_l_6.2)
+split_6.2_v_fac = factor(split_6.2_v)
+split_6.2_sorted = sort(table(split_6.2_v_fac), decreasing = F)
+barplot(split_6.2_sorted, horiz=T, las=1, cex.names=0.5, col=IPbeslightgreen)
+
+names(split_6.2_sorted[split_6.2_sorted==1])
+#
+# split_6.1_tb_sorted_reduced =  c(sum(split_6.1_sorted[split_6.1_sorted<5]), split_6.1_sorted[split_6.1_sorted>=5])
+# names(split_6.1_tb_sorted_reduced)[1] = "Other"
+
+preference_other_v = as.character(s3_single$"6.2")
+
+for (given_idx in 1:length(preference_given_answer)) {
+
+  preference_other_v = str_replace_all(preference_other_v, pattern = preference_given_answer[given_idx], replacement = "")
+}
+
+preference_other_v = str_trim(str_replace_all(preference_other_v, pattern = "[,;]", replacement = "")) # warning: other answers without comma and semicolon
+length(table(preference_other_v))
+
+preference_other_wospace_v = str_replace_all(preference_other_v, pattern = "[ ]", replacement = "") # remove whitespace
+other_idx_6.2 = str_length(preference_other_wospace_v) >= 1 # does it have still more characters?
+
+preference_other_v[other_idx_6.2]
+n_other_6.2 = length(which(other_idx_6.2))
+other_df_6.2= cbind(paperID= s3_single$paperID, OTHER_ANSWER_6_2 = preference_other_v, ANSWER_RAW=as.character(s3_single$"6.2") )[other_idx_6.2,]
+#write.xlsx(other_df_6.2, file = "output/6.2_otheranswers.xlsx")
+
+# Count given and other answers individually
+
+prefernece_given_detected = sapply(preference_given_answer, FUN = function(x) str_detect(as.character(s3_single$"6.2"), pattern = x))
+preference_given_cnt= apply(prefernece_given_detected, MARGIN = 1,  FUN = function(x) (which(x)))
+preference_given_tb = table(unlist(preference_given_cnt))
+names(preference_given_tb)= preference_given_answer
+
+preference_all_tb= c(Other = n_other_6.2, sort(preference_given_tb))
+shortnames_preference_all_tb = c(
+  "Other",
+  "Hypothetical compensation \nto give up access to nature ",
+  "Spending or expenditure to maintain aspects \nof nature and biodiversity",
+  "Scores of relative importance \nto people of nature's contributions to people",
+  "Dialogues with communities about the importance \nof different aspects of nature and biodiversity",
+  "Hypothetical willingness to give up resources \nto maintain aspects of nature and biodiversity",
+  "Application does not assess preferences of humans to nature"  )
+names(preference_all_tb) <-shortnames_preference_all_tb
+
+# pdf("output/Fig_6.2_25Oct.pdf", width=15, height = 8, pointsize = 12)
+par(mar=c(5,20,1,1))
+barplot(preference_all_tb, las=1, horiz=T, cex.names = 0.8, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(preference_all_tb) *1.1))
+# dev.off()
+
+
+
+###### ------ 6.3. The application assesses the costs to protect nature & biodiversity for its own sake or to maintain nature's contribution to people in the form of (multiple possible)
+summary(s3_single$"6.3")
+length(summary(s3_single$"6.3"))
+
+cost_org = "i.e.,"
+cost_alt = "i.e."
+cost_org_v = as.character(s3_single$"6.3")
+cost_alt_v = cost_org_v
+
+cost_alt_v = str_replace_all(cost_alt_v, pattern = cost_org, replacement = cost_alt)
+
+cost_given_answer = c(
+  "What has actually been spent in the past to protect nature and biodiversity or maintain nature’s contribution to people \\[This only applies if the investment was done in the past\\]",
+  "The costs and the benefits from past projects to protect nature and biodiversity or maintain nature’s contribution to people \\[This only applies if the project was in the past\\]",
+  "What it would cost \\(cost per unit\\) to protect nature and biodiversity or maintain nature’s contribution to people",
+  "What it would cost to protect nature and biodiversity or maintain nature’s contribution to people in the most effective way \\(i.e. compare different ways of meeting a target for nature and biodiversity or ES/NCPs\\)",
+  "The costs and the benefits from potential or hypothetical future projects or policies to protect nature and biodiversity or maintain nature’s contribution to people",
+  "Application does not assess cost to protect nature & biodiversity for its own sake or to maintain nature’s contributions to people"
+)
+
+
+# Identify other answers
+split_res_l_6.3 = vector("list", length = nrow(s3_single))
+
+cost_other_v = cost_alt_v
+
+for (given_idx in 1:length(cost_given_answer)) {
+
+  cost_other_v = str_replace_all(cost_other_v, pattern = cost_given_answer[given_idx], replacement = "")
+}
+cost_other_v = str_trim(str_replace_all(cost_other_v, pattern = "[,;]", replacement = "")) # warning: other answers without comma and semicolon
+table(cost_other_v)
+length(table(cost_other_v))
+
+
+cost_other_wospace_v = str_replace_all(cost_other_v, pattern = "[ ]", replacement = "") # remove whitespace
+other_idx_6.3 = str_length(cost_other_wospace_v) >= 1 # does it have still more characters?
+
+cost_other_v[other_idx_6.3]
+n_other_6.3 = length(which(other_idx_6.3)); n_other_6.3
+other_df_6.3= cbind(paperID= s3_single$paperID, OTHER_ANSWER_6_3 = cost_other_v, ANSWER_RAW=as.character(s3_single$"6.3") )[other_idx_6.3,]
+#write.xlsx(other_df_6.3, file = "output/6.3_otheranswers.xlsx")
+
+# Count given and other answers individually
+
+cost_given_detected = sapply(cost_given_answer, FUN = function(x) str_detect(cost_alt_v, pattern = x))
+cost_given_cnt= apply(cost_given_detected, MARGIN = 1,  FUN = function(x) (which(x)))
+cost_given_tb = table(unlist(cost_given_cnt))
+names(cost_given_tb)= cost_given_answer
+
+cost_all_tb = c(Other = n_other_6.3, sort(cost_given_tb))
+names(cost_all_tb)
+shortnames_cost_all_tb = c(
+  "Other",
+  "What has actually been spent in the past to protect nature and biodiversity \nor maintain nature's contribution to people",
+  "The costs and the benefits from past projects to protect nature \nand biodiversity or maintain nature’s contribution to people",
+  "What it would cost to protect nature and biodiversity \nor maintain nature's contribution to people",
+  "What it would cost to protect nature and biodiversity or maintain \nnatur's contribution to people in the most effective way",
+  "The costs and the benefits from potential or \nhypothetical future projects or policies",
+  "Application does not assess cost"
+)
+names(cost_all_tb) <- shortnames_cost_all_tb
+
+# pdf("output/Fig_6.3_25Oct.pdf", width=15, height = 8, pointsize = 12)
+par(mar=c(5,25,1,1))
+barplot(cost_all_tb, las=1, horiz=T, cex.names = 0.8, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(cost_all_tb) *1.1))
+# dev.off()
+
+
+##### --- 6.4 The application asseses human well-being in a different way, please spcify
+length(summary(s3_single$"6.4"))
+as.character(s3_single$"6.4")
+
+different_wospace_v = str_replace_all(as.character(s3_single$"6.4"), pattern = "[ ]", replacement = "") # remove whitespace
+other_idx_6.4 = str_length(different_wospace_v) >= 1 # does it have still more characters?
+
+as.character(s3_single$"6.4")[other_idx_6.4]
+n_other_6.4 = length(which(other_idx_6.4)); n_other_6.4
+other_df_6.4= cbind(paperID= s3_single$paperID, ANSWER_RAW= as.character(s3_single$"6.4") )[other_idx_6.4,]
+#write.xlsx(other_df_6.4, file = "output/6.4_otheranswers.xlsx")
+
+
+##### --- 6.5 If the application assesses human well-being (specified above), is the well-being indicator assessed for different socio-demographic groups?
+summary(s3_single$"6.5")
+length(summary(s3_single$"6.5"))
+
+socio_org = c("Yes, ", "No, ")
+socio_alt = c("Yes-", "No-")
+socio_org_v = as.character(s3_single$"6.5")
+socio_alt_v = socio_org_v
+
+
+for (o_idx in 1:length(socio_org)) {
+
+  socio_alt_v = str_replace_all(socio_alt_v, pattern = socio_org[o_idx], replacement = socio_alt[o_idx])
+}
+
+socio_given_answer = c(
+  "Yes-analysed for different income groups",
+  "Yes-analysed for different age groups",
+  "Yes-analysed for different levels of education",
+  "Yes-analysed for different gender",
+  "Yes-analysed for different stakeholder groups",
+  "No-difference in the well-being indicator is assessed but not attributed to different socio-demographic groups",
+  "No-difference in the well-being indicator by socio-demographic group is not evaluated.",
+  "irrelevant"
+)
+
+# Identify other answers
+split_res_l_6.5 = vector("list", length = nrow(s3_single))
+
+socio_other_v = socio_alt_v
+
+for (given_idx in 1:length(socio_given_answer)) {
+
+  socio_other_v = str_replace_all(socio_other_v, pattern = socio_given_answer[given_idx], replacement = "")
+}
+socio_other_v = str_trim(str_replace_all(socio_other_v, pattern = "[,;]", replacement = "")) # warning: other answers without comma and semicolon
+table(socio_other_v)
+length(table(socio_other_v))
+
+socio_other_wospace_v = str_replace_all(socio_other_v, pattern = "[ ]", replacement = "") # remove whitespace
+other_idx_6.5 = str_length(socio_other_wospace_v) >= 1 # does it have still more characters?
+
+socio_other_v[other_idx_6.5]
+n_other_6.5 = length(which(other_idx_6.5)); n_other_6.5
+other_df_6.5= cbind(paperID= s3_single$paperID, OTHER_ANSWER_6_5 = socio_other_v, ANSWER_RAW = as.character(s3_single$"6.5") )[other_idx_6.5,]
+#write.xlsx(other_df_6.5, file = "output/6.5_otheranswers.xlsx")
+
+# Count given and other answers individually
+
+socio_given_detected = sapply(socio_given_answer, FUN = function(x) str_detect(socio_alt_v, pattern = x))
+socio_given_cnt= apply(socio_given_detected, MARGIN = 1,  FUN = function(x) (which(x)))
+socio_given_tb = table(unlist(socio_given_cnt))
+names(socio_given_tb)= socio_given_answer
+
+socio_all_tb = c(Other = n_other_6.5, socio_given_tb)
+names(socio_all_tb)
+shortnames_socio_all_tb = c(
+  "Other",
+  "Yes, analysed for different income groups",
+  "Yes, analysed for different age groups",
+  "Yes, analysed for different levels of education",
+  "Yes, analysed for different gender",
+  "Yes, analysed for different stakeholder groups",
+  "No, difference in the well-being indicator is assessed \nbut not attributed to different socio-demographic groups",
+  "No, difference in the well-being indicator \nby socio-demographic group is not evaluated",
+  "irrelevant"
+)
+names(socio_all_tb) <- shortnames_socio_all_tb
+
+#pdf("output/Fig_6.5_25Oct.pdf", width=15, height = 8, pointsize = 12)
+par(mar=c(5,20,1,1))
+barplot(socio_all_tb, las=1, horiz=T, cex.names = 0.8, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(socio_all_tb) *1.1))
+#dev.off()
+
+#pdf("output/Topic6_combine_25Oct.pdf", width=15, height = 20, pointsize = 12)
+
+par(mfrow=c(4,1), mar=c(5,25,1,1))
+barplot(wellbeing_all_tb, las=1, horiz=T, cex.names = 0.8, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(wellbeing_all_tb) *1.1), main = "6.1 Well-being")
+barplot(preference_all_tb, las=1, horiz=T, cex.names = 0.8, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(preference_all_tb) *1.1), main= "6.2 Preference")
+barplot(cost_all_tb, las=1, horiz=T, cex.names = 0.8, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(cost_all_tb) *1.1), main = "6.3 Cost")
+barplot(socio_all_tb, las=1, horiz=T, cex.names = 0.8, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(socio_all_tb) *1.1), main = "6.5 Socio-demographic groups")
+#dev.off()
 
 
 

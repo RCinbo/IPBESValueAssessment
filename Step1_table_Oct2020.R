@@ -18,7 +18,9 @@ paste_noNA <- function(x,sep=", ") {
 ##########################################################################################
 ##########################################################################################
 
-data.final <- read.xlsx("~/Google Drive/Values assessment/R-IPBES/IDSWAP_ 425 AND_16June20DG_copy.xlsx", colNames=T)
+# data.final <- read.xlsx("~/Google Drive/Values assessment/R-IPBES/IDSWAP_ 425 AND_16June20DG_copy.xlsx", colNames=T)
+data.final <- read.xlsx("~/Dropbox/IPBES/Values Assessment/Meta_data/IDSWAP_ 425 AND_16June20DG_copy.xlsx", colNames=T)
+
 #data.final <- read.xlsx("./data/IDSWAP_ 425 AND_16June20DG_copy.xlsx", colNames=T)#Raïsa added this line to read the data locally
 
 

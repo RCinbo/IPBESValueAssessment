@@ -182,7 +182,6 @@ cnt_otherchoice_habitat = length(which(habitat_other_choice_cnt > 0))
 s3_single$paperID[habitat_other_choice_cnt > 0 ]
 
 
-
 other_answers_habitat =  apply(split_res_2.2_df, MARGIN = 1, FUN = function(x) x[(which(!(x[!is.na(x)] %in% habitat_given_answer)))]) # how many choices (non-NA) are not in the given well-formed answers
 other_answers_habitat = unlist(other_answers_habitat)
 
@@ -195,6 +194,121 @@ s3_single_with_other_habitat_df = s3_single[habitat_other_choice_cnt > 0, c("pap
 head(s3_single_with_other_habitat_df)
 
 write.xlsx(s3_single_with_other_habitat_df, paste0("output/s3_single_with_other_habitat_n", cnt_otherchoice_habitat, ".xlsx"))
+
+
+
+################ Read corrected data (from Sander)
+
+habitat_corrected_df = read.xlsx("Corrected/s3_single_with_other_habitat_n127-corrSJ.xlsx", sheet = 1)
+str(habitat_corrected_df)
+
+
+
+
+# Identify other answers in the uncorrected data
+
+habitat_other_v = wetland_alt_v
+for (given_idx in 1:length(habitat_given_answer)) {
+
+  habitat_other_v = str_replace_all(habitat_other_v, pattern = habitat_given_answer[given_idx], replacement = "")
+}
+
+habitat_other_v = str_trim(str_replace_all(habitat_other_v, pattern = "[,;]", replacement = "")) # warning: other answers without comma and semicolon
+table(habitat_other_v)
+
+
+habitat_other_wospace_v = str_replace_all(habitat_other_v, pattern = "[ ]", replacement = "") # remove whitespace
+habitat_other_idx_2.2 = str_length(habitat_other_wospace_v) >= 1 # does it have still more characters?
+
+wetland_alt_v[habitat_other_idx_2.2]
+n_other_2.2 = length(which(habitat_other_idx_2.2))
+# other_df_6.1= cbind(paperID= s3_single$paperID, OTHER_ANSWER_6_1 = wellbeing_indicator_other_v,ANSWER_RAW=as.character(s3_single$"6.1") )[other_idx_6.1,]
+# write.xlsx(other_df_6.1, file = "output/6.1_otheranswers.xlsx")
+
+# Count given and other answers individually
+
+habitat_given_detected = sapply(habitat_given_answer, FUN = function(x) str_detect(wetland_alt_v, pattern = x))
+
+habitat_given_detected_one_na = ifelse(habitat_given_detected, yes = 1, no = NA)
+
+habitat_given_detected_df = data.frame(s3_single$paperID, s3_single$"2.2", habitat_given_detected_one_na, other=NA)
+colnames(habitat_given_detected_df) = colnames(habitat_corrected_df) # Make sure two datasets are in the same order
+
+# merge two datasets using paperID
+habitat_given_detected_df[match(habitat_corrected_df$paperID, habitat_given_detected_df$paperID), ] = habitat_corrected_df
+
+habitat_tb_final = colSums(habitat_given_detected_df[,-c(1:2)], na.rm = T)
+
+barplot(habitat_tb_final, horiz=T, las=2)
+
+
+
+
+
+
+
+
+
+
+habitat_given_cnt= apply(habitat_given_detected, MARGIN = 1,  FUN = function(x) (which(x)))
+habitat_given_tb = table(unlist(habitat_given_cnt))
+names(habitat_given_tb)= habitat_given_answer
+
+habitat_all_tb= c(habitat_given_tb, Other = n_other_2.2)
+barplot(habitat_all_tb,  las=1, horiz=T)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -392,9 +506,6 @@ non_material_split_v_fac = factor(non_material_split_v)
 non_material_tb_sorted = sort(table(non_material_split_v_fac), decreasing = F)
 non_material_tb_reduced = (table(non_material_split_v_fac))[which (table(non_material_split_v_fac)>1)]
 barplot(sort(non_material_tb_reduced, F), horiz=T, las=1, cex.names=0.5)
-
-
-
 
 
 split_res_2.13_df = plyr::ldply(split_res_l_2.13, rbind) # automatically decide how many columns should it have
