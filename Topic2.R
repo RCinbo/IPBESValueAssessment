@@ -4,6 +4,12 @@ library(openxlsx)
 
 source("Starting.R")
 
+############Define a color scheme#####################
+IPbesdarkgreen <- rgb(92/255, 102/255, 93/255) #5c665d
+IPbeslightgreen <- rgb(181/255, 212/255, 141/255) #b5d48d
+colfunc <- colorRampPalette(c(rgb(92/255, 102/255, 93/255), rgb(181/255, 212/255, 141/255)))
+
+
 ######  Topic 2 - Context of application
 
 ### 2.1- The application addresses the following spatial scales (multiple possible)
@@ -182,7 +188,6 @@ cnt_otherchoice_habitat = length(which(habitat_other_choice_cnt > 0))
 s3_single$paperID[habitat_other_choice_cnt > 0 ]
 
 
-
 other_answers_habitat =  apply(split_res_2.2_df, MARGIN = 1, FUN = function(x) x[(which(!(x[!is.na(x)] %in% habitat_given_answer)))]) # how many choices (non-NA) are not in the given well-formed answers
 other_answers_habitat = unlist(other_answers_habitat)
 
@@ -198,6 +203,60 @@ write.xlsx(s3_single_with_other_habitat_df, paste0("output/s3_single_with_other_
 
 
 
+################ Read corrected data (from Sander)
+
+habitat_corrected_df = read.xlsx("Corrected/s3_single_with_other_habitat_n127-corrSJ.xlsx", sheet = 1)
+str(habitat_corrected_df)
+
+# Identify other answers in the uncorrected data
+
+habitat_other_v = wetland_alt_v
+for (given_idx in 1:length(habitat_given_answer)) {
+
+  habitat_other_v = str_replace_all(habitat_other_v, pattern = habitat_given_answer[given_idx], replacement = "")
+}
+
+habitat_other_v = str_trim(str_replace_all(habitat_other_v, pattern = "[,;]", replacement = "")) # warning: other answers without comma and semicolon
+table(habitat_other_v)
+
+
+habitat_other_wospace_v = str_replace_all(habitat_other_v, pattern = "[ ]", replacement = "") # remove whitespace
+habitat_other_idx_2.2 = str_length(habitat_other_wospace_v) >= 1 # does it have still more characters?
+
+wetland_alt_v[habitat_other_idx_2.2]
+n_other_2.2 = length(which(habitat_other_idx_2.2)); n_other_2.2
+# other_df_6.1= cbind(paperID= s3_single$paperID, OTHER_ANSWER_6_1 = wellbeing_indicator_other_v,ANSWER_RAW=as.character(s3_single$"6.1") )[other_idx_6.1,]
+# write.xlsx(other_df_6.1, file = "output/6.1_otheranswers.xlsx")
+
+# Count given and other answers individually
+
+habitat_given_detected = sapply(habitat_given_answer, FUN = function(x) str_detect(wetland_alt_v, pattern = x))
+
+habitat_given_detected_one_na = ifelse(habitat_given_detected, yes = 1, no = NA)
+
+habitat_given_detected_df = data.frame(s3_single$paperID, s3_single$"2.2", habitat_given_detected_one_na, other=NA)
+colnames(habitat_given_detected_df) = colnames(habitat_corrected_df) # Make sure two datasets are in the same order
+
+# merge two datasets using paperID
+habitat_given_detected_df[match(habitat_corrected_df$paperID, habitat_given_detected_df$paperID), ] = habitat_corrected_df
+
+habitat_tb_final = colSums(habitat_given_detected_df[,-c(1:2)], na.rm = T)
+
+barplot(habitat_tb_final, horiz=T, las=2)
+
+habitat_given_cnt= apply(habitat_given_detected, MARGIN = 1,  FUN = function(x) (which(x)))
+habitat_given_tb = table(unlist(habitat_given_cnt))
+names(habitat_given_tb)= habitat_given_answer
+
+habitat_all_tb= c(Other = n_other_2.2, sort(habitat_given_tb, decreasing = F))
+
+#pdf("output/Fig_habitat_corrected_25Oct.pdf", width=15, height = 8, pointsize = 12)
+png("output/Fig_habitat_corrected_25Oct.png", width=800, height = 600, pointsize = 12)
+
+par(mar=c(5,20,1,1))
+barplot(habitat_all_tb,  las=1, horiz=T, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(habitat_all_tb) *1.1))
+dev.off()
+
 
 ### 2.7 - The application collected data with the following temporal frequency: (only one answer)
 summary(s3_single$"2.7")
@@ -209,7 +268,6 @@ summary(s3_single$"2.8")
 pie(table(s3_single$"2.8"))
 
 
-
 ### 2.10 There are multiple classifications of 'what is valued'. We want to know how these fit in the IPBES categories. The application assesses the following 'targets of valuation' regarding Nature Itself (multiple possible)
 summary(s3_single$"2.10")
 # Multiple answers are separated by ','
@@ -217,7 +275,7 @@ split_res_l_2.10 = vector("list", length = nrow(s3_single))
 
 for (row_idx in 1:nrow(s3_single)) {
 
-  split_tmp = str_trim(str_split(s3_single$"2.10"[row_idx], pattern = ",")[[1]])
+  split_tmp = str_trim(str_split(as.character(s3_single$"2.10")[row_idx], pattern = ",")[[1]])
   split_res_l_2.10[[row_idx]] = split_tmp
 }
 
@@ -233,7 +291,7 @@ split_res_2.10_df = plyr::ldply(split_res_l_2.10, rbind) # automatically decide 
 split_res_2.10_df = sapply(split_res_2.10_df, FUN = function(x) as.character(x))
 
 nature_given_answers = c(
-  "Individual organisms (e.g. the sacred village tree)",
+  "Individual organisms \\(e.g. the sacred village tree\\)",
   "Biophysical assemblages",
   "Biophysical processes",
   "Biodiversity",
@@ -253,8 +311,47 @@ cnt_otherchoice_nature = length(which(nature_other_choice_cnt > 0))
 s3_single$paperID[nature_other_choice_cnt > 0 ]
 s3_single_with_other_nature_df = s3_single[nature_other_choice_cnt > 0, c("paperID", "2.10")]
 
-
 write.xlsx(s3_single_with_other_nature_df, paste0("output/s3_single_with_other_nature_n", cnt_otherchoice_nature, ".xlsx"))
+
+
+
+################ Read corrected data (from Sander)
+
+NCP_nature_corrected_df = read.xlsx("Corrected/s3_single_with_other_nature_n20-corrSJ.xlsx", sheet = 1)
+str(NCP_nature_corrected_df)
+
+# Identify other answers in the uncorrected data
+
+NCP_nature_other_v = as.character(s3_single$"2.10")
+
+for (given_idx in 1:length(nature_given_answers)) {
+  NCP_nature_other_v = str_replace_all(NCP_nature_other_v, pattern = nature_given_answers[given_idx], replacement = "")
+}
+
+NCP_nature_other_v = str_trim(str_replace_all(NCP_nature_other_v, pattern = "[,;]", replacement = "")) # warning: other answers without comma and semicolon
+table(NCP_nature_other_v)
+
+NCP_nature_other_wospace_v = str_replace_all(NCP_nature_other_v, pattern = "[ ]", replacement = "") # remove whitespace
+NCP_nature_other_idx_2.10 = str_length(NCP_nature_other_wospace_v) >= 1 # does it have still more characters?
+
+NCP_nature_other_v[NCP_nature_other_idx_2.10]
+n_other_2.10 = length(which(NCP_nature_other_idx_2.10)); n_other_2.10
+# other_df_6.1= cbind(paperID= s3_single$paperID, OTHER_ANSWER_6_1 = wellbeing_indicator_other_v,ANSWER_RAW=as.character(s3_single$"6.1") )[other_idx_6.1,]
+# write.xlsx(other_df_6.1, file = "output/6.1_otheranswers.xlsx")
+
+# Count given and other answers individually
+
+NCP_nature_given_detected = sapply(nature_given_answers, FUN = function(x) str_detect(NCP_nature_other_v, pattern = x))
+
+NCP_nature_given_detected_one_na = ifelse(NCP_nature_given_detected, yes = 1, no = NA)
+
+NCP_nature_given_detected_df = data.frame(s3_single$paperID, s3_single$"2.10", NCP_nature_given_detected_one_na, other=NA)
+NCP_nature_given_detected_df<- NCP_nature_given_detected_df[-c(8)]
+colnames(NCP_nature_given_detected_df) =
+
+  colnames(NCP_nature_corrected_df)[c(1:8)] # Make sure two datasets are in the same order
+
+
 
 
 
@@ -392,9 +489,6 @@ non_material_split_v_fac = factor(non_material_split_v)
 non_material_tb_sorted = sort(table(non_material_split_v_fac), decreasing = F)
 non_material_tb_reduced = (table(non_material_split_v_fac))[which (table(non_material_split_v_fac)>1)]
 barplot(sort(non_material_tb_reduced, F), horiz=T, las=1, cex.names=0.5)
-
-
-
 
 
 split_res_2.13_df = plyr::ldply(split_res_l_2.13, rbind) # automatically decide how many columns should it have
@@ -549,4 +643,141 @@ table(s3_single$"2.16")
 par(mar=c(5, 20, 5, 5))
 barplot(table(s3_single$"2.16"), horiz = T, las = 1, cex.names = 0.5)
 
+
+
+#### Topic 3: Application descriptors
+
+## 3.1 Elicitation process: Through what process were values collected?
+
+## 3.2 The application uses or is based on data from the same spatiotemporal and socio-economic context (multiple answers possible in case of mixed/integrated methods)
+summary(s3_single$"3.2")
+table(s3_single$"3.2")
+
+split_res_l_3.2 = vector("list", length = nrow(s3_single))
+
+for (row_idx in 1:nrow(s3_single))  {
+
+  split_tmp = str_trim(str_split(s3_single$"3.2"[row_idx], pattern = ",")[[1]])
+  split_res_l_3.2[[row_idx]] = split_tmp
+}
+
+same_spatiotemporal_split_v = unlist(split_res_l_3.2)
+same_spatiotemporal_split_v_fac = factor(same_spatiotemporal_split_v)
+same_spatiotemporal_sorted = sort(table(same_spatiotemporal_split_v_fac), decreasing = F)
+
+par(mar=c(5, 20, 5, 5))
+barplot(sort(same_spatiotemporal_sorted, F), horiz=T, las=1, cex.names=0.5)
+
+# pdf("output/Fig_3.2_26Oct.pdf", width=12, height = 8, pointsize = 12)
+pie(same_spatiotemporal_sorted)
+# dev.off()
+
+
+## 3.3 How are values articulated in this application? (e.g. time spent; number of people visiting; stated or narrated importance; avoided damage costs; healthy life years; species number; rarity....) please state how the main results (from main methods) are represented in the paper. If multiple, make a list using semicolons
+length(summary(s3_single$"3.3"))
+summary(s3_single$"3.3")
+as.character(s3_single$"3.3")
+
+split_res_l_3.3 = vector("list", length = nrow(s3_single))
+
+for (row_idx in 1:nrow(s3_single))  {
+
+  split_tmp = str_trim(str_split(s3_single$"3.3"[row_idx], pattern = ";")[[1]])
+  split_res_l_3.3[[row_idx]] = split_tmp
+}
+
+articulated_split_v = unlist(split_res_l_3.3)
+articulated_split_v_fac = factor(articulated_split_v)
+articulated_sorted = sort(table(articulated_split_v_fac), decreasing = F)
+length(articulated_sorted)  # 2013
+
+other_df_3.3= cbind(paperID= s3_single$paperID, ANSWER_RAW= as.character(s3_single$"3.3") )
+write.xlsx(other_df_6.4, file = "output/3.3_allanswers.xlsx") # does it make sense to check all?
+
+## 3.4 This application presents values in following form (multiple answers possible in case of mixed/integrated methods)
+summary(s3_single$"3.4")
+length(summary(s3_single$"3.4"))
+sort(summary(s3_single$"3.4"))
+
+values_org = "artistic \\(e.g. music, paintings, drawings, poetry\\)"
+values_alt = "artistic"
+values_org_v = as.character(s3_single$"3.4")
+values_alt_v = values_org_v
+values_alt_v = str_replace_all(values_alt_v, pattern = values_org, replacement = values_alt)
+
+values_given_answers = c(
+  "artistic",# (e.g. music, paintings, drawings, poetry)
+  "narrative \\(descriptions\\)",
+  "categorical\\/nominal \\(e.g. types\\)",
+  "ordinal expression \\(ranked types e.g. worse \\- better \\/ low \\-high \\/ small \\- big\\) cardinal expression \\(in numbers\\)"
+)
+
+
+split_res_l_3.4 = vector("list", length = nrow(s3_single))
+
+values_other_v = values_alt_v
+
+for (given_idx in 1:length(values_given_answers)) {
+
+  values_other_v = str_replace_all(values_other_v, pattern = values_given_answers[given_idx], replacement = "")
+}
+
+values_other_v = str_trim(str_replace_all(values_other_v, pattern = "[,]", replacement = "")) # warning: other answers without comma and semicolon
+table(values_other_v)
+length(table(values_other_v))
+
+values_other_wospace_v = str_replace_all(values_other_v, pattern = "[ ]", replacement = "") # remove whitespace
+other_idx_3.4 = str_length(values_other_wospace_v) >= 1 # does it have still more characters?
+
+values_other_v[other_idx_3.4]
+n_other_3.4 = length(which(other_idx_3.4)); n_other_3.4
+other_df_3.4= cbind(paperID= s3_single$paperID, OTHER_ANSWER_3_4 = values_other_v, ANSWER_RAW = as.character(s3_single$"3.4") )[other_idx_3.4,]
+
+
+
+## 3.5 Aggregation: The application aggregateds different staekholders' values into an 'overall value or importance' by:
+
+summary(s3_single$"3.5")
+length(summary(s3_single$"3.5")) # 38
+sort(summary(s3_single$"3.5"))
+
+stakeholder_org = "Simple, "
+stakeholder_alt = "Simple-"
+stakeholder_org_v = as.character(s3_single$"3.5")
+stakeholder_alt_v = stakeholder_org_v
+stakeholder_alt_v = str_replace_all(stakeholder_alt_v, pattern = stakeholder_org, replacement = stakeholder_alt)
+
+stakeholder_given_answer = c(
+  "irrelevant: the method is not used to aggregate stakeholder's values",
+  "Simple-non-weighted aggregation \\(averages or summations\\) of participants\\(respondents\\) values",
+  "Simple-non-weighted aggregation \\(averages or summations\\) to a higher social scale \\(see 2.6\\)",
+  "Unclear: method of aggregation is not explained.",
+  "Weighted aggregation by numerical weighting",
+  "Weighted aggregation by a group process",
+  "Weighted aggregation by numerical weighting to a higher social scale \\(see 2.6\\)"
+)
+
+# Identify other answers
+split_res_l_3.5 = vector("list", length = nrow(s3_single))
+
+stakeholder_other_v = stakeholder_alt_v
+
+for (given_idx in 1:length(stakeholder_given_answer)) {
+
+  stakeholder_other_v = str_replace_all(stakeholder_other_v, pattern = stakeholder_given_answer[given_idx], replacement = "")
+}
+
+stakeholder_other_v = str_trim(str_replace_all(stakeholder_other_v, pattern = "[,]", replacement = "")) # warning: other answers without comma and semicolon
+table(stakeholder_other_v)
+length(table(stakeholder_other_v))
+
+stakeholder_other_wospace_v = str_replace_all(stakeholder_other_v, pattern = "[ ]", replacement = "") # remove whitespace
+other_idx_3.5 = str_length(stakeholder_other_wospace_v) >= 1 # does it have still more characters?
+
+stakeholder_other_v[other_idx_3.5]
+n_other_3.5 = length(which(other_idx_3.5)); n_other_3.5
+other_df_3.5= cbind(paperID= s3_single$paperID, OTHER_ANSWER_3_5 = stakeholder_other_v, ANSWER_RAW = as.character(s3_single$"3.5") )[other_idx_3.5,]
+#write.xlsx(other_df_6.5, file = "output/6.5_otheranswers.xlsx")
+
+# Count given and other answers individually
 
