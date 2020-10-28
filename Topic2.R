@@ -251,11 +251,11 @@ names(habitat_given_tb)= habitat_given_answer
 habitat_all_tb= c(Other = n_other_2.2, sort(habitat_given_tb, decreasing = F))
 
 #pdf("output/Fig_habitat_corrected_25Oct.pdf", width=15, height = 8, pointsize = 12)
-png("output/Fig_habitat_corrected_25Oct.png", width=800, height = 600, pointsize = 12)
+#png("output/Fig_habitat_corrected_25Oct.png", width=800, height = 600, pointsize = 12)
 
 par(mar=c(5,20,1,1))
 barplot(habitat_all_tb,  las=1, horiz=T, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(habitat_all_tb) *1.1))
-dev.off()
+#dev.off()
 
 
 ### 2.7 - The application collected data with the following temporal frequency: (only one answer)
@@ -315,10 +315,6 @@ write.xlsx(s3_single_with_other_nature_df, paste0("output/s3_single_with_other_n
 
 
 
-################ Read corrected data (from Sander)
-
-NCP_nature_corrected_df = read.xlsx("Corrected/s3_single_with_other_nature_n20-corrSJ.xlsx", sheet = 1)
-str(NCP_nature_corrected_df)
 
 # Identify other answers in the uncorrected data
 
@@ -347,10 +343,128 @@ NCP_nature_given_detected_one_na = ifelse(NCP_nature_given_detected, yes = 1, no
 
 NCP_nature_given_detected_df = data.frame(s3_single$paperID, s3_single$"2.10", NCP_nature_given_detected_one_na, other=NA)
 NCP_nature_given_detected_df<- NCP_nature_given_detected_df[-c(8)]
-colnames(NCP_nature_given_detected_df) =
 
-  colnames(NCP_nature_corrected_df)[c(1:8)] # Make sure two datasets are in the same order
+colnames(NCP_nature_given_detected_df)
 
+
+
+################ Read corrected data (from Sander)
+
+NCP_nature_corrected_df = read.xlsx("Corrected/s3_single_with_other_nature_n20-corrSJ.xlsx", sheet = 1)
+NCP_material_corrected_df = read.xlsx("Corrected/s3_single_with_other_material_n25_corrSJ.xlsx", sheet = 1)
+NCP_non_material_corrected_df = read.xlsx("Corrected/s3_single_with_other_non_material_n22_corrSJ.xlsx", sheet = 1)
+NCP_regul_corrected_df = read.xlsx("Corrected/s3_single_with_other_regul_n46-corrSJ.xlsx", sheet = 1)
+NCP_QoL_corrected_df = read.xlsx("Corrected/s3_single_with_other_QoL_n29_corrSJ.xlsx", sheet = 1)
+
+
+colnames(NCP_nature_corrected_df)
+colnames(NCP_material_corrected_df)
+colnames(NCP_non_material_corrected_df)
+colnames(NCP_regul_corrected_df)
+colnames(NCP_QoL_corrected_df)
+ dim(NCP_nature_corrected_df)
+dim(NCP_material_corrected_df)
+dim(NCP_non_material_corrected_df)
+dim(NCP_regul_corrected_df)
+dim(NCP_QoL_corrected_df)
+
+# NCP_other_l = list(NCP_nature_corrected_df, NCP_material_corrected_df, NCP_non_material_corrected_df, NCP_regul_corrected_df, NCP_QoL_corrected_df)
+
+
+
+
+# First prepare a data frame which can store all the five data frames
+CorrectedOther_paperIds = c(NCP_nature_corrected_df$paperID, NCP_material_corrected_df$paperID, NCP_non_material_corrected_df$paperID, NCP_regul_corrected_df$paperID, NCP_QoL_corrected_df$paperID)
+
+# length(CorrectedOther_paperIds)
+# length(unique(CorrectedOther_paperIds))
+CorrectedOther_paperIds = unique(CorrectedOther_paperIds)
+
+CorrectedOther_df = data.frame(matrix(nrow = length(CorrectedOther_paperIds), ncol = ncol(NCP_nature_corrected_df)))
+colnames(CorrectedOther_df) = colnames(NCP_nature_corrected_df)
+
+# Fill all values by zero
+CorrectedOther_df[,-c(1:2)] = 0
+CorrectedOther_df$paperID =CorrectedOther_paperIds
+
+NCP_nature_corrected_df[is.na(NCP_nature_corrected_df)] = 0
+NCP_material_corrected_df[is.na(NCP_material_corrected_df)] = 0
+NCP_non_material_corrected_df[is.na(NCP_non_material_corrected_df)] = 0
+NCP_regul_corrected_df[is.na(NCP_regul_corrected_df)] = 0
+NCP_QoL_corrected_df[is.na(NCP_QoL_corrected_df)] = 0
+
+
+# add up.. there are duplicated entries.
+CorrectedOther_df[match( NCP_nature_corrected_df$paperID, CorrectedOther_df$paperID), -c(1:2)] = CorrectedOther_df[match( NCP_nature_corrected_df$paperID, CorrectedOther_df$paperID), -c(1:2)] + NCP_nature_corrected_df[, -c(1:2)]
+
+CorrectedOther_df[match( NCP_material_corrected_df$paperID, CorrectedOther_df$paperID), -c(1:2)] = CorrectedOther_df[match( NCP_material_corrected_df$paperID, CorrectedOther_df$paperID), -c(1:2)] + NCP_material_corrected_df[, -c(1:2)]
+
+CorrectedOther_df[match( NCP_non_material_corrected_df$paperID, CorrectedOther_df$paperID), -c(1:2)] = CorrectedOther_df[match( NCP_non_material_corrected_df$paperID, CorrectedOther_df$paperID), -c(1:2)] + NCP_non_material_corrected_df[, -c(1:2)]
+
+CorrectedOther_df[match( NCP_regul_corrected_df$paperID, CorrectedOther_df$paperID), -c(1:2)] = CorrectedOther_df[match( NCP_regul_corrected_df$paperID, CorrectedOther_df$paperID), -c(1:2)] + NCP_regul_corrected_df[, -c(1:2)]
+
+CorrectedOther_df[match( NCP_QoL_corrected_df$paperID, CorrectedOther_df$paperID), -c(1:2)] = CorrectedOther_df[match( NCP_QoL_corrected_df$paperID, CorrectedOther_df$paperID), -c(1:2)]+ NCP_QoL_corrected_df[, -c(1:2)]
+
+# assertion fails as there are multiple entries
+# sum(CorrectedOther_df[,-c(1:2)], na.rm=T)
+#
+# sum(NCP_QoL_corrected_df[,-c(1:2)], na.rm=T) +
+#   sum(NCP_nature_corrected_df[,-c(1:2)], na.rm=T) +
+#   sum(NCP_material_corrected_df[,-c(1:2)], na.rm=T) +
+#   sum(NCP_non_material_corrected_df[,-c(1:2)], na.rm=T) +
+#   sum(NCP_regul_corrected_df[,-c(1:2)], na.rm=T)
+
+# we can ignore it as we only cares if it is > 0
+CorrectedOtherTF_df = cbind(CorrectedOther_df[, 1:2], CorrectedOther_df[, -c(1:2)] > 0)
+
+corr_cnt = sort(sapply(CorrectedOtherTF_df[, 3:35], FUN = function(x) length(which(x))))
+
+barplot(corr_cnt, horiz=T, las=1)
+
+
+
+
+
+#
+# dim(NCP_nature_given_detected_df)
+#
+# #
+# NCP_nature_given_detected_df[match(CorrectedOtherTF_df$paperID, NCP_nature_given_detected_df$s3_single.paperID), 3:8] = CorrectedOtherTF_df[, c(3:8)]
+
+
+
+
+
+
+
+
+
+
+
+
+
+colnames(NCP_nature_corrected_df)[c(1:8)] # Make sure two datasets are in the same order
+
+str(NCP_nature_given_detected_df)
+
+NCP_list <- matrix(NA, ncol = ncol(NCP_nature_corrected_df)-8, nrow = nrow(NCP_nature_given_detected_df))
+colnames(NCP_list)<- colnames(NCP_nature_corrected_df)[c(9:35)]
+
+NCP_nature_full <- cbind(NCP_nature_given_detected_df, NCP_list)
+
+# merge two datasets using paperID
+NCP_nature_full[match(NCP_nature_corrected_df$paperID, NCP_nature_full$paperID), ] = NCP_nature_corrected_df
+
+NCP_nature_full_final = colSums(NCP_nature_full[,-c(1:2)], na.rm = T)
+
+barplot(NCP_nature_full_final, horiz=T, las=2)
+
+#pdf("output/Fig_habitat_corrected_25Oct.pdf", width=15, height = 8, pointsize = 12)
+#png("output/Fig_habitat_corrected_25Oct.png", width=800, height = 600, pointsize = 12)
+
+par(mar=c(5,20,1,1))
+barplot(NCP_nature_full_final,  las=1, horiz=T, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(NCP_nature_full_final) *1.1))
+#dev.off()
 
 
 
