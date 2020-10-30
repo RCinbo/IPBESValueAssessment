@@ -637,6 +637,9 @@ barplot(socio_all_tb, las=1, horiz=T, cex.names = 0.8, col = IPbeslightgreen, bo
 
 ########-----Data Overview 6 - Valuation for ecological sustainability-----########
 #Topic 7: Ecological Sustainability
+#make this true if you want to print out the 'other' answers to an excel file
+PrintOthers<-TRUE
+
 legend71 <- data.frame(code=c('Q7.1_1', 'Q7.1_2', 'Q7.1_3', 'Q7.1_4', 'Q7.1_5', 'Q7.1_6', 'Q7.1_NA', 'Q7.1_Other'),
                        txt=c('Ecosystem health, healthy functioning of ecological processes',
                        'Resilience of ecosystems, response to perturbation, recuperation',
@@ -653,12 +656,14 @@ legendlist<-list(legend71,legend72,legend73)
 Panes <- list()
 gt <- list()
 pfam<- list()
+if(PrintOthers){M <- list()}
 for(i in 1:nrow(l)){
   legend <- legendlist[[i]]
   sbst <- s3_single[,c('paperID','MF1.key','MF2.key','MF3.key','MF4.key',as.character(l[i,'Q']))]
   for(j in 1:(nrow(legend)-1)){
     sbst[,as.character(l[i,'Q'])] <- gsub("â€™", "’", sbst[,as.character(l[i,'Q'])] )
     sbst[,as.character(l[i,'Q'])] <- gsub("&", "and", sbst[,as.character(l[i,'Q'])] )
+    sbst[,as.character(l[i,'Q'])] <- gsub("â€˜", "‘", sbst[,as.character(l[i,'Q'])] )
     A <-  str_detect(sbst[,as.character(l[i,'Q'])], pattern = fixed(as.character(legend[j,'txt'])))
     sbst[,as.character(l[i,'Q'])] <- str_replace(sbst[,as.character(l[i,'Q'])], pattern = fixed(as.character(legend[j,'txt'])),"")
     sbst <- cbind(sbst, A)
@@ -667,6 +672,12 @@ for(i in 1:nrow(l)){
   Otheridx <- (str_length(gsub("[;, ]","",sbst[,as.character(l[i,'Q'])]))>1)
   sbst <- cbind(sbst, Otheridx)
   colnames(sbst)[ncol(sbst)] <- as.character(legend[nrow(legend),'code'])
+  if(PrintOthers){
+    M[[i]] <- matrix(nrow=(sum(Otheridx)), ncol = (1+nrow(legend)))
+    colnames(M[[i]]) <- c('PaperID',as.character(legend$txt))
+    rownames(M[[i]]) <- sbst[Otheridx,as.character(l[i,'Q'])]
+    M[[i]][,1] <- sbst[Otheridx,'paperID']
+  }
   #from wide to long format
   sbst %>%
     gather(question, value, -paperID,-MF1.key,-MF2.key,-MF3.key,-MF4.key,-as.character(l[i,'Q'])) -> sbst_long
@@ -706,7 +717,8 @@ for(i in 1:nrow(l)){
   pfam[[i]] <- ggplot(familysummary) + geom_bar(aes(x = MF, fill=Answer, y=Percentage*100),stat = 'identity',position='stack') + scale_fill_manual(name = '',breaks = c('Yes','No'), labels=c('It is assessed','Not assessed'),values  = c(IPbeslightgreen, 'red')) + ylab('Percentage in the method family') + xlab('Method family') + theme_minimal() + scale_x_discrete(labels= MFLabels)
   ggsave(pfam[[i]], filename=sprintf('output/T3_Q%sByFam.pdf',l[i,'Q']), width= 8, height = 4)
   }
-
+require(openxlsx)
+write.xlsx(list("Q7.1" = M[[1]], "Q7.2" = M[[2]], "Q7.3" = M[[3]]), file = "Theme7_OtherAnswers.xlsx", row.names=T)
 
 Theme7 <- grid.arrange(gt[[1]], gt[[2]], gt[[3]],pfam[[1]],pfam[[2]],pfam[[3]],
                        nrow=2, heights=c(3,3),widths=c(7,7,7),layout_matrix = rbind(c(1,2,3),c(4,5,6)))
