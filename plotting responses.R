@@ -636,7 +636,86 @@ barplot(socio_all_tb, las=1, horiz=T, cex.names = 0.8, col = IPbeslightgreen, bo
 
 
 ########-----Data Overview 6 - Valuation for ecological sustainability-----########
-#Raïsa Topic 7
+#Topic 7: Ecological Sustainability
+legend71 <- data.frame(code=c('Q7.1_1', 'Q7.1_2', 'Q7.1_3', 'Q7.1_4', 'Q7.1_5', 'Q7.1_6', 'Q7.1_NA', 'Q7.1_Other'),
+                       txt=c('Ecosystem health, healthy functioning of ecological processes',
+                       'Resilience of ecosystems, response to perturbation, recuperation',
+                       'Naturalness of ecosystem','Biodiversity (not related to human use)',
+                       'Threatened species, extinction risk','Degradation, impacts of drivers on the ecosystem','application does not assess ecological condition','Other'))
+legend72 <- data.frame(code=c('Q7.2_1', 'Q7.2_2', 'Q7.2_3', 'Q7.2_4', 'Q7.2_5', 'Q7.2_6', 'Q7.2_NA', 'Q7.2_Other'),
+                       txt=c('Ecosystem services (potential) supply, stocks','Ecosystem service flow, delivery, use','Nature’s contributions to people','Viable populations of ‘useful’ species (Habitat suitability)','Biodiversity (related to a human use, functional biodiversity)','Quantity or quality of natural resources (related to a human use)','application does not assess ecosystem capacity','Other'))
+legend73 <- data.frame(code=c('Q7.3_1', 'Q7.3_2', 'Q7.3_3', 'Q7.3_4', 'Q7.3_NA', 'Q7.3_Other'),
+                       txt=c('Ecological thresholds, boundaries, tipping points','Maximum sustainable yield or harvest','Carrying capacity for human use/pressure','Restoration, Conservation effectiveness','application does not assess sustainable use or management','Other'))
+
+l<-data.frame(Q = c('7.1','7.2','7.3'),
+              title = c('Was ECOLOGICAL CONDITION assessed & how?','Was ECOSYSTEM CAPACITY assessed and how?','Was SUSTAINABLE USE/MANAGEMENT  of ecosystems assessed and how?'))
+legendlist<-list(legend71,legend72,legend73)
+Panes <- list()
+gt <- list()
+pfam<- list()
+for(i in 1:nrow(l)){
+  legend <- legendlist[[i]]
+  sbst <- s3_single[,c('paperID','MF1.key','MF2.key','MF3.key','MF4.key',as.character(l[i,'Q']))]
+  for(j in 1:(nrow(legend)-1)){
+    sbst[,as.character(l[i,'Q'])] <- gsub("â€™", "’", sbst[,as.character(l[i,'Q'])] )
+    sbst[,as.character(l[i,'Q'])] <- gsub("&", "and", sbst[,as.character(l[i,'Q'])] )
+    A <-  str_detect(sbst[,as.character(l[i,'Q'])], pattern = fixed(as.character(legend[j,'txt'])))
+    sbst[,as.character(l[i,'Q'])] <- str_replace(sbst[,as.character(l[i,'Q'])], pattern = fixed(as.character(legend[j,'txt'])),"")
+    sbst <- cbind(sbst, A)
+    colnames(sbst)[ncol(sbst)] <- as.character(legend[j,'code'])
+  }
+  Otheridx <- (str_length(gsub("[;, ]","",sbst[,as.character(l[i,'Q'])]))>1)
+  sbst <- cbind(sbst, Otheridx)
+  colnames(sbst)[ncol(sbst)] <- as.character(legend[nrow(legend),'code'])
+  #from wide to long format
+  sbst %>%
+    gather(question, value, -paperID,-MF1.key,-MF2.key,-MF3.key,-MF4.key,-as.character(l[i,'Q'])) -> sbst_long
+
+  pie <- ggplot() +
+    geom_bar(aes(x = factor(1), fill = str_detect(s3_single[,as.character(l[i,'Q'])],regex('application does not assess'))),width = 1) +
+    blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank())+ scale_fill_manual(name = '',breaks = c(TRUE, FALSE),labels = c('Not assessed','It is assessed'), values  = c('red', IPbeslightgreen)) +
+    xlab('') + ylab('') + coord_polar("y", start = 0,direction = 1) + theme(legend.position='bottom' )
+  #make ordered bar charts
+  cnt<-aggregate(1*(sbst_long$value),by = list(sbst_long$question), FUN=function(x)sum(x))
+  sbst_long$question<-factor(sbst_long$question, levels= cnt[order(cnt$x, decreasing = FALSE),'Group.1'])
+
+  bar <- ggplot(sbst_long[!(str_detect(sbst_long$question,regex('_NA'))),]) + geom_bar(alpha=1,size=1,color = IPbeslightgreen, fill = IPbeslightgreen,aes(x=question, y=1*value), stat = "identity") + coord_flip() + theme_bw() + scale_x_discrete(breaks = legend$code, labels = str_wrap(as.character(legend$txt),50)) + ylab('Number of papers') + xlab('')
+  Panes[[i]] <- grid.arrange(pie,bar,
+                             ncol=2, nrow=1, layout_matrix = rbind(c(1,2)), widths=c(1.7,4),
+                             top = textGrob(l[i,'title'],gp=gpar(fontsize=20,font=3)))
+  ggsave(Panes[[i]], filename=sprintf('output/T3-Q%s.pdf',l[i,'Q']), width= 10, height = 4)
+  library(cowplot)
+  title <- ggdraw() +
+    draw_label(as.character(l[i,'title']), fontface = 'bold', x = 0, hjust = 0) +
+    theme(plot.margin = margin(0, 0, 0, 7))
+  gt[[i]] <- ggdraw() +
+    draw_plot(bar) +
+    draw_plot(pie, x = 0.65, y = 0.09, width = .3, height = .4)
+   p<-grid.arrange(
+    title, gt[[i]], ncol = 1,heights = c(0.1, 1)
+  )
+  ggsave(p, filename=sprintf('output/T3_Q%sPieBar.pdf',l[i,'Q']), width= 8, height = 4)
+
+  familysummary <- data.frame(MF = c('MF1','MF1','MF2','MF2','MF3','MF3','MF4','MF4'),
+                                Answer = c('Yes','No','Yes','No','Yes','No','Yes','No'),
+                                N = NA,
+                                Percentage=NA)
+  familysummary$N <- sapply(1:nrow(familysummary),FUN=function(x) ifelse(familysummary$Answer[x] == 'No',sum(sbst[,sprintf('%s.key',as.character(familysummary$MF[x]))]==1 & str_detect(s3_single[, as.character(l[i,'Q'])],regex('application does not assess')), na.rm=T),sum(sbst[,sprintf('%s.key',as.character(familysummary$MF[x]))]==1 & !(str_detect(s3_single[, as.character(l[i,'Q'])],regex('application does not assess'))), na.rm=T)))
+  familysummary$Percentage = familysummary$N/sapply(familysummary$MF,FUN = function(x)sum(familysummary[familysummary$MF==x,'N']))
+
+  pfam[[i]] <- ggplot(familysummary) + geom_bar(aes(x = MF, fill=Answer, y=Percentage*100),stat = 'identity',position='stack') + scale_fill_manual(name = '',breaks = c('Yes','No'), labels=c('It is assessed','Not assessed'),values  = c(IPbeslightgreen, 'red')) + ylab('Percentage in the method family') + xlab('Method family') + theme_minimal() + scale_x_discrete(labels= MFLabels)
+  ggsave(pfam[[i]], filename=sprintf('output/T3_Q%sByFam.pdf',l[i,'Q']), width= 8, height = 4)
+  }
+
+
+Theme7 <- grid.arrange(gt[[1]], gt[[2]], gt[[3]],pfam[[1]],pfam[[2]],pfam[[3]],
+                       nrow=2, heights=c(3,3),widths=c(7,7,7),layout_matrix = rbind(c(1,2,3),c(4,5,6)))
+ggsave(Theme7,filename='output/Theme7.pdf',width=21, height=8)
+
+
+
+
+
 
 ########-----Data Overview 4 - Valuation of indigenous peoples' and like-minded local communities's-----########
 if(1==0){
