@@ -28,7 +28,7 @@ table(s3_single$"2.1")
 choices_org = c("local \\(incl. village, parish, municipality, town, city\\)",
 "district, county",
 "administrative region \\(as sub-national\\), \\(incl. province, state\\)",
-"cross-national or cross-region Indigenous territories/jurisdictions/lands",
+"cross-national or cross-region Indigenous territories\\/jurisdictions\\/lands",
 "cross-national or cross-region protected areas",
 "national, federal",
 "regional as multi-national",
@@ -220,10 +220,10 @@ habitat_given_answer = c( "Forests",
 "Shrublands",
 "Wetlands", #\\- peatlands, mires, bogs",
 "Mountain habitats",
-"Urban / Semi-urban",
+"Urban \\/ Semi-urban",
 "Cultivated areas",
 "Aquaculture",
-"Inland surface water and water bodies / freshwater",
+"Inland surface water and water bodies \\/ freshwater",
 "Coastal areas",
 "Deep sea", "unclear", "Irrelevant"
 )
@@ -316,10 +316,10 @@ barplot(sort(habitat_given_tb)[c()],  las=1, horiz=T, col = IPbeslightgreen, bor
 
 
 
-habitat_all_tb[1] <- habitat_all_tb[1] + habitat_all_tb[6] # 127 + 55
-names(habitat_all_tb)[9] <- "No habitat assessed"
-names(habitat_all_tb)[1] <- "Other/unclear"
-habitat_all_tb <- habitat_all_tb[-(6)]
+# habitat_all_tb[1] <- habitat_all_tb[1] + habitat_all_tb[6] # 127 + 55
+# names(habitat_all_tb)[9] <- "No habitat assessed"
+# names(habitat_all_tb)[1] <- "Other/unclear"
+# habitat_all_tb <- habitat_all_tb[-(6)]
 
 #pdf("output/Fig_habitat_corrected_30Oct.pdf", width=15, height = 8, pointsize = 12)
 #png("output/Fig_habitat_corrected_30Oct.png", width=800, height = 600, pointsize = 12)
@@ -1036,7 +1036,7 @@ par(mar=c(5, 20, 5, 5))
 barplot(table(s3_single$"2.16"), horiz = T, las = 1, cex.names = 0.5)
 
 
-
+## TODO:
 #### Topic 3: Application descriptors
 
 ## 3.1 Elicitation process: Through what process were values collected?
@@ -1100,22 +1100,29 @@ values_alt_v = str_replace_all(values_alt_v, pattern = values_org, replacement =
 values_given_answers = c(
   "artistic",# (e.g. music, paintings, drawings, poetry)
   "narrative \\(descriptions\\)",
-  "categorical\\/nominal \\(e.g. types\\)",
-  "ordinal expression \\(ranked types e.g. worse \\- better \\/ low \\-high \\/ small \\- big\\) cardinal expression \\(in numbers\\)"
+  "categorical\\/nominal  \\(e.g. types\\)",
+  "ordinal expression \\(ranked types e.g. worse \\- better \\/ low \\-high \\/ small \\- big\\)",
+  "cardinal expression \\(in numbers\\)"
 )
+
+help(stringr)
 
 
 split_res_l_3.4 = vector("list", length = nrow(s3_single))
 
 values_other_v = values_alt_v
 
+
 for (given_idx in 1:length(values_given_answers)) {
 
   values_other_v = str_replace_all(values_other_v, pattern = values_given_answers[given_idx], replacement = "")
 }
+names(table(values_other_v))
 
 values_other_v = str_trim(str_replace_all(values_other_v, pattern = "[,]", replacement = "")) # warning: other answers without comma and semicolon
 table(values_other_v)
+names(table(values_other_v))
+
 length(table(values_other_v))
 
 values_other_wospace_v = str_replace_all(values_other_v, pattern = "[ ]", replacement = "") # remove whitespace
@@ -1139,14 +1146,16 @@ stakeholder_org_v = as.character(s3_single$"3.5")
 stakeholder_alt_v = stakeholder_org_v
 stakeholder_alt_v = str_replace_all(stakeholder_alt_v, pattern = stakeholder_org, replacement = stakeholder_alt)
 
+names(table(stakeholder_alt_v))
+
 stakeholder_given_answer = c(
   "irrelevant: the method is not used to aggregate stakeholder's values",
   "Simple-non-weighted aggregation \\(averages or summations\\) of participants\\(respondents\\) values",
   "Simple-non-weighted aggregation \\(averages or summations\\) to a higher social scale \\(see 2.6\\)",
   "Unclear: method of aggregation is not explained.",
+  "Weighted aggregation by numerical weighting to a higher social scale \\(see 2.6\\)", # should be replaced earlier than the shorter one
   "Weighted aggregation by numerical weighting",
-  "Weighted aggregation by a group process",
-  "Weighted aggregation by numerical weighting to a higher social scale \\(see 2.6\\)"
+  "Weighted aggregation by a group process"
 )
 
 # Identify other answers
@@ -1156,11 +1165,17 @@ stakeholder_other_v = stakeholder_alt_v
 
 for (given_idx in 1:length(stakeholder_given_answer)) {
 
+  # stakeholder_other_v = str_replace_all(stakeholder_other_v, pattern = stakeholder_given_answer[given_idx], replacement = LETTERS[given_idx])
   stakeholder_other_v = str_replace_all(stakeholder_other_v, pattern = stakeholder_given_answer[given_idx], replacement = "")
-}
+
+  }
+ names(table(stakeholder_other_v))
 
 stakeholder_other_v = str_trim(str_replace_all(stakeholder_other_v, pattern = "[,]", replacement = "")) # warning: other answers without comma and semicolon
-table(stakeholder_other_v)
+names(table(stakeholder_other_v))
+
+
+
 length(table(stakeholder_other_v))
 
 stakeholder_other_wospace_v = str_replace_all(stakeholder_other_v, pattern = "[ ]", replacement = "") # remove whitespace

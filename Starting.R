@@ -143,8 +143,9 @@ paperid_ids_multiple_sampled = sapply(paperid_ids_multiple_non_zero, FUN = funct
 s3_multi = s3_reduced[paperid_ids_multiple_sampled, ]
 nrow(s3_reduced) - nrow(s3_single) ; nrow(s3_multi)
 
-
-s3_single = rbind(subset(s3_reduced, subset = !(paperID %in% paperid_ids_multiple)),
+# redefine s3_single
+s3_single = rbind(subset(s3_reduced, subset = !(paperID %in% paperid_ids_multiple)),s3_multi)
+nrow(s3_reduced) - nrow(s3_single) ; nrow(s3_multi)
 
 
 ##### Short and full questions
