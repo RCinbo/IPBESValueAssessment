@@ -123,7 +123,8 @@ pie(table(split_cnt_v), col = brewer.YlGnBu(5), labels = NA)
 # Max 5 items
 str(split_res_df)
 head(split_res_df)
-tail(split_res_df)table(split_cnt_v)
+tail(split_res_df)
+table(split_cnt_v)
 tail(s3_single$"2.1")
 table(split_res_df)
 
@@ -167,7 +168,11 @@ scale_given_detected_df = data.frame(s3_single$paperID, s3_single$"2.1", scale_g
 colnames(scale_given_detected_df) = colnames(scale_corrected_df) # Make sure two datasets are in the same order
 
 # merge two datasets using paperID
-scale_given_detected_df[match(scale_corrected_df$paperID, scale_given_detected_df$s3_single.paperID), ] = scale_corrected_df
+scale_given_detected_df[match(scale_corrected_df$paperID, scale_given_detected_df$paperID), ] = scale_corrected_df
+
+
+
+
 
 scale_tb_final = colSums(scale_given_detected_df[,-c(1:2)], na.rm = T)
 
@@ -229,6 +234,7 @@ barplot(habitat_tb_sorted, log="x", las=1, horiz=T, cex.names = 0.5)
 habitat_tb_reduced = (table(habitat_split_v_fac))[which (table(habitat_split_v_fac)>5)]
 barplot(sort(habitat_tb_reduced, F), horiz=T, las=1, cex.names=0.5)
 
+# don't use escaping! as we don't use regexp-like functions below
 habitat_given_answer = c( "Forests",
 "Savannah",
 "Deserts",
@@ -236,10 +242,10 @@ habitat_given_answer = c( "Forests",
 "Shrublands",
 "Wetlands", #\\- peatlands, mires, bogs",
 "Mountain habitats",
-"Urban \\/ Semi-urban",
+"Urban / Semi-urban",
 "Cultivated areas",
 "Aquaculture",
-"Inland surface water and water bodies \\/ freshwater",
+"Inland surface water and water bodies / freshwater",
 "Coastal areas",
 "Deep sea", "unclear", "Irrelevant"
 )
@@ -250,6 +256,7 @@ split_res_2.2_df = plyr::ldply(split_res_l_2.2, rbind) # automatically decide ho
 
 split_res_2.2_df = sapply(split_res_2.2_df, FUN = function(x) as.character(x))
 
+names(table(split_res_2.2_df))
 
 # Extract Paper IDs of the choice_malformed
 
@@ -329,20 +336,19 @@ names(habitat_given_tb)= habitat_given_answer
 
 names(habitat_given_tb)[15] <- "No habitat assessed"
 
-barplot(sort(habitat_given_tb)[c()],  las=1, horiz=T, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(habitat_all_tb) *1.1))
-
 
 
 # habitat_all_tb[1] <- habitat_all_tb[1] + habitat_all_tb[6] # 127 + 55
 # names(habitat_all_tb)[9] <- "No habitat assessed"
 # names(habitat_all_tb)[1] <- "Other/unclear"
 # habitat_all_tb <- habitat_all_tb[-(6)]
+# barplot(sort(habitat_given_tb)[c()],  las=1, horiz=T, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(habitat_all_tb) *1.1))
 
 #pdf("output/Fig_habitat_corrected_30Oct.pdf", width=15, height = 8, pointsize = 12)
 #png("output/Fig_habitat_corrected_30Oct.png", width=800, height = 600, pointsize = 12)
 
-par(mar=c(5,20,1,1))
-barplot(habitat_all_tb[c(8,1:7,9:15)],  las=1, horiz=T, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(habitat_all_tb) *1.1))
+# par(mar=c(5,20,1,1))
+# barplot(habitat_all_tb[c(8,1:7,9:15)],  las=1, horiz=T, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(habitat_all_tb) *1.1))
 #dev.off()
 
 
@@ -1100,7 +1106,7 @@ elicitation_org = c("Individual responses face-to-face, phone or similar  respon
                     "Obtaining information about biophysical indicators using secondary data \\(expert estimates, land use maps, satellite images, species Atlas data etc\\)"
                     )
 
-elicitation_alt = c("Individual responses",
+elicitation_alt = c("Individual responses personal",
                     "Obtaining information by observing biological aspects in real-time",
                     "Obtaining information by collecting measurement data over a period of time",
                     "Obtaining information about biophysical indicators using secondary data")
@@ -1130,31 +1136,39 @@ barplot(elici_tb_sorted, horiz = T, las =1) # until here, everything is fine.. T
 
 
 
+
 split_res_3.1_df = plyr::ldply(split_res_l_3.1, rbind) # automatically decide how many columns should it have
 
 split_res_3.1_df = sapply(split_res_3.1_df, FUN = function(x) as.character(x))
 
+
+
+# don't do escaping
 elicit_given_answer = c(
   "Individuals written responses to questions",
   "Individual responses following a group discussion",
-  "Individual responses", # face-to-face, phone or similar responses",
+  "Individual responses personal", # face-to-face, phone or similar responses",
   "Group responses to the valuation question",
   "Obtaining information from transactions in markets",
-  "Obtaining information from documents \\(policy\\/legal\\/historical texts\\)",
+  "Obtaining information from documents (policy/legal/historical texts)",
   "Observing individual practices/behaviors",
-  "Observing group practices\\/behaviors",
+  "Observing group practices/behaviors",
   "Obtaining information by observing biological aspects in real-time", # (e.g. recording bee visitation of flowers, counting birds, measuring biomass of trees)
   "Obtaining information by collecting measurement data over a period of time", # (e.g. weather data, sediments, nutrients etc. )
   "Obtaining information about biophysical indicators using secondary data", # (expert estimates, land use maps, satellite images, species Atlas data etc)
   "unclear"
 )
 
+######### USE this function where stringr::functions() used
+escapeForStringR = function(x) (gsub("([.|()\\^{}+$*?/-]|\\[|\\])", "\\\\\\1", x))
+# we can escape input characters for being used in Stringr functions
+escapeForStringR(elicit_given_answer)
 
 # Be aware of the NA values when counting
-elicit_other_choice_cnt =  apply(split_res_3.1_df, MARGIN = 1, FUN = function(x) length(which(!(x[!is.na(x)] %in% elicit_given_answer)))) # how many choices (non-NA) are not in the given well-formed answers
-# length(idx1)
-# TODO
-table(elicit_other_choice_cnt > 0 ) # 200 studies??? # it doesn't find the shorted answers TODO
+elicit_other_choice_cnt = apply(split_res_3.1_df, MARGIN = 1, FUN = function(x) length(which(!(x[!is.na(x)] %in% elicit_given_answer)))) # how many choices (non-NA) are not in the given well-formed answers
+# length(elicit_other_choice_cnt)
+
+table(elicit_other_choice_cnt > 0 ) # 78 studies; it doesn't find the shortened answers TODO (solved?)
 cnt_otherchoice_elicit = length(which(elicit_other_choice_cnt > 0))
 # studies including other choices
 s3_single$paperID[elicit_other_choice_cnt > 0 ]
@@ -1168,7 +1182,7 @@ s3_single_with_other_elicit_df = s3_single[elicit_other_choice_cnt > 0, c("paper
 elicit_other_v = elicitation_alt_v
 
 for (given_idx in 1:length(elicit_given_answer)) {
-  elicit_other_v = str_replace_all(elicit_other_v, pattern = elicit_given_answer[given_idx], replacement = "")
+  elicit_other_v = str_replace_all(elicit_other_v, pattern = escapeForStringR(elicit_given_answer[given_idx]), replacement = "") # escaped using escapeForStringR
 }
 
 elicit_other_v = str_trim(str_replace_all(elicit_other_v, pattern = "[,;]", replacement = "")) # warning: other answers without comma and semicolon
