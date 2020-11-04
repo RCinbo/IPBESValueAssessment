@@ -1,6 +1,9 @@
 library(stringr)
 # library(doSNOW) # foreach()
 library(openxlsx)
+library(plyr)
+library(RColorBrewer)
+library(openxlsx)
 
 source("Starting.R")
 
@@ -9,6 +12,9 @@ IPbesdarkgreen <- rgb(92/255, 102/255, 93/255) #5c665d
 IPbeslightgreen <- rgb(181/255, 212/255, 141/255) #b5d48d
 colfunc <- colorRampPalette(c(rgb(92/255, 102/255, 93/255), rgb(181/255, 212/255, 141/255)))
 
+brewer.YlGnBu <- colorRampPalette(brewer.pal(9, "YlGnBu"), interpolate = "spline")
+brewer.BuPu <- colorRampPalette(brewer.pal(9, "BuPu"), interpolate = "spline")
+brewer.Greens <- colorRampPalette(brewer.pal(9, "Greens"), interpolate = "spline")
 
 ######  Topic 2 - Context of application
 
@@ -74,11 +80,11 @@ barplot(choice_tb_sorted, log="x", las=1, horiz=T, cex.names = 0.5)
 choice_tb_reduced = (table(choice_split_v_fac))[which (table(choice_split_v_fac)>2)]
 
 barplot(sort(choice_tb_reduced, F), horiz=T, las=1, cex.names=0.5)
- barplot(sort(table(choice_split_v_fac), F), log="x", las=1, horiz=T, cex.names = 0.5)
+barplot(sort(table(choice_split_v_fac), F), log="x", las=1, horiz=T, cex.names = 0.5)
 
 
  # split list to data frame
- library(plyr)
+
  split_res_df = plyr::ldply(split_res_l, rbind) # automatically decide how many columns should it have
 
  split_res_df = sapply(split_res_df, FUN = function(x) as.character(x))
@@ -94,24 +100,30 @@ cnt_otherchoice = length(which(other_choice_cnt > 0))
 # studies including other choices
 s3_single$paperID[other_choice_cnt > 0 ]
 
-s3_single_with_other_choices_df = s3_single[other_choice_cnt > 0, c("paperID", "2.1")]
-write.xlsx(s3_single_with_other_choices_df, paste0("output/s3_single_with_other_choices_n", cnt_otherchoice, ".xlsx"))
+s3_single_with_other_choices_df = s3_single[other_choice_cnt > 0, c("paperID", "2.1")] # "MF1.key"    "MF2.key"    "MF3.key"    "MF4.key"    "MFA.key"    "MFB.key" )]
+#write.xlsx(s3_single_with_other_choices_df, paste0("output/s3_single_with_other_choices_n", cnt_otherchoice, ".xlsx"))
 
 
- split_cnt_v = sapply(split_res_l, FUN = length)
+split_cnt_v = sapply(split_res_l, FUN = length)
 stopifnot(max(split_cnt_v) == ncol(split_res_df))
 
+
+# Multi scale studies
 table(split_cnt_v)
 # split_cnt_v
 #    1    2    3    4    5
-# 1042   86   10    1    1
-barplot(table(split_cnt_v), las= 1)
+# 1065   86   10    1    1
 
+#pdf("output/Fig_NumberofScalesPerApp.pdf", width=15, height = 8, pointsize = 12)
+barplot(table(split_cnt_v), las= 1, col = IPbeslightgreen, border = IPbeslightgreen, ylim = c(0, 1200), xlab = "# of scales per application", ylab = "# of application")
+#dev.off()
+
+pie(table(split_cnt_v), col = brewer.YlGnBu(5), labels = NA)
 
 # Max 5 items
 str(split_res_df)
 head(split_res_df)
-tail(split_res_df)
+tail(split_res_df)table(split_cnt_v)
 tail(s3_single$"2.1")
 table(split_res_df)
 
@@ -119,10 +131,7 @@ table(split_res_df)
 s3_single_2.1_comparison_df = cbind(split_res_df, RawData_2.1 = as.character(s3_single$"2.1"))
 colnames(s3_single_2.1_comparison_df)[1:5] = paste0("Scale_Split_", 1:5)
 
-library(openxlsx)
-write.xlsx(s3_single_2.1_comparison_df, file = "output/s3_single_2.1_for_comparison.xlsx")
-
-
+#write.xlsx(s3_single_2.1_comparison_df, file = "output/s3_single_2.1_for_comparison.xlsx")
 
 ################ Read corrected data (from Raphael)
 
@@ -162,12 +171,23 @@ scale_given_detected_df[match(scale_corrected_df$paperID, scale_given_detected_d
 
 scale_tb_final = colSums(scale_given_detected_df[,-c(1:2)], na.rm = T)
 
-scale.names = c(choices_org, "other")
-scale.names[1] <- "local"
-barplot(scale_tb_final, horiz=T, las=2, names.arg = scale.names, las = 1 )
-#TODO: Check the correction again..
+scale.names = c("Local (incl. village, parish, municipality, town, city)",
+                "District, county",
+                "Administrative region",
+                "Cross-national or cross-region \nIndigenous territories/jurisdictions/lands",
+                "Cross-national or cross-region protected areas",
+                "National, federal",
+                "Regional as multi-national",
+                "Continental",
+                "Global")
 
-#
+#pdf("output/Fig_2.1_scale_corrected.pdf", width=15, height = 8, pointsize = 12)
+par(mar=c(5,20,1,1))
+barplot(rev(scale_tb_final[-10]), horiz=T, names.arg = rev(scale.names), las = 1, col = IPbeslightgreen, border = IPbeslightgreen, xlim = c(0, 400) )
+#dev.off()
+
+
+
 # scale_given_cnt= apply(scale_given_detected, MARGIN = 1,  FUN = function(x) (which(x)))
 # scale_given_tb = table(unlist(scale_given_cnt))
 # names(scale_given_tb) = choices_org
@@ -181,11 +201,7 @@ barplot(scale_tb_final, horiz=T, las=2, names.arg = scale.names, las = 1 )
 
 ### 2.2 - The application assesses the following habitats (multiple possible)
 summary(s3_single$"2.2")
-
-
 # write.xlsx(table(s3_single$"2.2"), file = "output/summary_s3_single_2.2_raw.xlsx")
-
-
 
 # Multiple answers are separated by ','
 
@@ -238,8 +254,9 @@ split_res_2.2_df = sapply(split_res_2.2_df, FUN = function(x) as.character(x))
 # Extract Paper IDs of the choice_malformed
 
 # Be aware of the NA values when counting
-habitat_other_choice_cnt =  apply(split_res_2.2_df, MARGIN = 1, FUN = function(x) length(which(!(x[!is.na(x)] %in% habitat_given_answer)))) # how many choices (non-NA) are not in the given well-formed answers
-# length(idx1)
+habitat_other_choice_cnt = apply(split_res_2.2_df, MARGIN = 1, FUN = function(x) length(which(!(x[!is.na(x)] %in% habitat_given_answer)))) # how many choices (non-NA) are not in the given well-formed answers
+
+
 table(habitat_other_choice_cnt > 0 ) # 127 studies
 cnt_otherchoice_habitat = length(which(habitat_other_choice_cnt > 0))
 # studies including other choices
@@ -334,9 +351,41 @@ summary(s3_single$"2.7")
 table(s3_single$"2.7")
 barplot(table(s3_single$"2.7"))
 
+#pdf("output/Fig_2.7_temporal frequency.pdf", width=8, height = 8, pointsize = 12)
+barplot(table(s3_single$"2.7"), las = 1, col = IPbeslightgreen, border = IPbeslightgreen, ylab = "# of applications", xlab = "temporal frequency")
+#dev.off()
+
+
+
 ### 2.8 - The application assesses values change over time:
 summary(s3_single$"2.8")
-pie(table(s3_single$"2.8"))
+
+#pdf("output/Fig_2.8_overTime.pdf", width=8, height = 8, pointsize = 12)
+pie(table(s3_single$"2.8"), labels = c("No", "Yes"), main = "The application assesses values change over time")
+#dev.off()
+
+
+
+### 2.9 The application assesses following temporal changes :
+summary(s3_single$"2.9")
+sort(table(s3_single$"2.9"))
+
+split_res_l_2.9 = vector("list", length = nrow(s3_single))
+
+for (row_idx in 1:nrow(s3_single)) {
+
+  split_tmp = str_trim(str_split(as.character(s3_single$"2.9")[row_idx], pattern = ",")[[1]])
+  split_res_l_2.9[[row_idx]] = split_tmp
+}
+
+time_split_v = unlist(split_res_l_2.9)
+time_split_v_fac = factor(time_split_v)
+time_tb_sorted = sort(table(time_split_v_fac), decreasing = F)
+
+#pdf("output/Fig_2.9_overTime.pdf", width=12, height = 8, pointsize = 12)
+par(mar=c(5,20,5,5))
+barplot(sort(time_tb_sorted, F), horiz=T, las=1, xlim = c(0, 1000), col = IPbeslightgreen, border = IPbeslightgreen)
+#dev.off()
 
 
 ### 2.10 There are multiple classifications of 'what is valued'. We want to know how these fit in the IPBES categories. The application assesses the following 'targets of valuation' regarding Nature Itself (multiple possible)
@@ -1040,6 +1089,134 @@ barplot(table(s3_single$"2.16"), horiz = T, las = 1, cex.names = 0.5)
 #### Topic 3: Application descriptors
 
 ## 3.1 Elicitation process: Through what process were values collected?
+summary(s3_single$"3.1")
+table(s3_single$"3.1")
+
+
+# Multiple answers are separated by ','
+elicitation_org = c("Individual responses face-to-face, phone or similar  responses",
+                    "Obtaining information by observing biological aspects in real-time \\(e.g. recording bee visitation of flowers, counting birds, measuring biomass of trees\\)",
+                    "Obtaining information by collecting measurement data over a period of time \\(e.g. weather data, sediments, nutrients etc. \\)",
+                    "Obtaining information about biophysical indicators using secondary data \\(expert estimates, land use maps, satellite images, species Atlas data etc\\)"
+                    )
+
+elicitation_alt = c("Individual responses",
+                    "Obtaining information by observing biological aspects in real-time",
+                    "Obtaining information by collecting measurement data over a period of time",
+                    "Obtaining information about biophysical indicators using secondary data")
+
+
+elicitation_org_v = as.character(s3_single$"3.1")
+elicitation_alt_v = elicitation_org_v
+
+
+# Replace well-defined options to simple format
+for (o_idx in 1:length(elicitation_org)) {
+  elicitation_alt_v = str_replace_all(elicitation_alt_v, pattern = elicitation_org[o_idx], replacement = elicitation_alt[o_idx])
+}
+
+split_res_l_3.1 = vector("list", length = nrow(s3_single))
+
+for (row_idx in 1:nrow(s3_single)) {
+
+  split_tmp = str_trim(str_split(elicitation_alt_v[row_idx], pattern = ",")[[1]])
+  split_res_l_3.1[[row_idx]] = split_tmp
+}
+
+elicitation_split_v = unlist(split_res_l_3.1)
+elicitation_split_v_fac = factor(elicitation_split_v)
+elici_tb_sorted = sort(table(elicitation_split_v_fac), decreasing = F)
+barplot(elici_tb_sorted, horiz = T, las =1) # until here, everything is fine.. Then, it doesn't find the shorted answers..
+
+
+
+split_res_3.1_df = plyr::ldply(split_res_l_3.1, rbind) # automatically decide how many columns should it have
+
+split_res_3.1_df = sapply(split_res_3.1_df, FUN = function(x) as.character(x))
+
+elicit_given_answer = c(
+  "Individuals written responses to questions",
+  "Individual responses following a group discussion",
+  "Individual responses", # face-to-face, phone or similar responses",
+  "Group responses to the valuation question",
+  "Obtaining information from transactions in markets",
+  "Obtaining information from documents \\(policy\\/legal\\/historical texts\\)",
+  "Observing individual practices/behaviors",
+  "Observing group practices\\/behaviors",
+  "Obtaining information by observing biological aspects in real-time", # (e.g. recording bee visitation of flowers, counting birds, measuring biomass of trees)
+  "Obtaining information by collecting measurement data over a period of time", # (e.g. weather data, sediments, nutrients etc. )
+  "Obtaining information about biophysical indicators using secondary data", # (expert estimates, land use maps, satellite images, species Atlas data etc)
+  "unclear"
+)
+
+
+# Be aware of the NA values when counting
+elicit_other_choice_cnt =  apply(split_res_3.1_df, MARGIN = 1, FUN = function(x) length(which(!(x[!is.na(x)] %in% elicit_given_answer)))) # how many choices (non-NA) are not in the given well-formed answers
+# length(idx1)
+# TODO
+table(elicit_other_choice_cnt > 0 ) # 200 studies??? # it doesn't find the shorted answers TODO
+cnt_otherchoice_elicit = length(which(elicit_other_choice_cnt > 0))
+# studies including other choices
+s3_single$paperID[elicit_other_choice_cnt > 0 ]
+s3_single_with_other_elicit_df = s3_single[elicit_other_choice_cnt > 0, c("paperID", "3.1")]
+
+#write.xlsx(s3_single_with_other_elicit_df, paste0("output/s3_single_with_other_elicit_n", cnt_otherchoice_elicit, ".xlsx"))
+
+
+# Identify other answers in the uncorrected data
+
+elicit_other_v = elicitation_alt_v
+
+for (given_idx in 1:length(elicit_given_answer)) {
+  elicit_other_v = str_replace_all(elicit_other_v, pattern = elicit_given_answer[given_idx], replacement = "")
+}
+
+elicit_other_v = str_trim(str_replace_all(elicit_other_v, pattern = "[,;]", replacement = "")) # warning: other answers without comma and semicolon
+table(elicit_other_v)
+
+eclit_other_wospace_v = str_replace_all(elicit_other_v, pattern = "[ ]", replacement = "") # remove whitespace
+elicit_other_idx_3.1 = str_length(eclit_other_wospace_v) >= 1 # does it have still more characters?
+
+elicit_other_v[elicit_other_idx_3.1]
+n_other_2.11 = length(which(NCP_regul_other_idx_2.11)); n_other_2.11
+
+# Count given and other answers individually
+
+NCP_regul_given_detected = sapply(regul_given_answer, FUN = function(x) str_detect(flow_alt_v, pattern = x))
+
+NCP_regul_given_detected_one_na = ifelse(NCP_regul_given_detected, yes = 1, no = NA)
+
+NCP_regul_given_detected_df = data.frame(s3_single$paperID, s3_single$"2.11", NCP_regul_given_detected_one_na, other=NA)
+NCP_regul_given_detected_df <- NCP_regul_given_detected_df[-c(13:14)]
+
+colnames(NCP_regul_given_detected_df)
+
+NCP_regul_given_detected_df[is.na(NCP_regul_given_detected_df)] = 0
+
+colSums(NCP_regul_given_detected_df[-c(1:2)])
+
+## create a full matrix
+
+# colnames(NCP_nature_corrected_df)
+
+ncol(NCP_regul_given_detected_df)
+nrow(NCP_nature_given_detected_df) ; nrow(NCP_regul_given_detected_df)
+
+# NCP_list <- matrix(NA, ncol = ncol(NCP_nature_corrected_df)-12, nrow = nrow(NCP_regul_given_detected_df))
+#
+# colnames(NCP_list[c(1:8)]) ) <- colnames(NCP_nature_corrected_df)[c(1:8)]
+#
+# NCP_nature_full <- cbind(NCP_nature_given_detected_df, NCP_list)
+# NCP_nature_full[is.na(NCP_nature_full)] = 0
+#
+# dim(NCP_nature_full)
+# colnames(NCP_nature_full[,c(7:16)])
+#
+
+
+
+
+
 
 ## 3.2 The application uses or is based on data from the same spatiotemporal and socio-economic context (multiple answers possible in case of mixed/integrated methods)
 summary(s3_single$"3.2")
@@ -1058,7 +1235,23 @@ same_spatiotemporal_split_v_fac = factor(same_spatiotemporal_split_v)
 same_spatiotemporal_sorted = sort(table(same_spatiotemporal_split_v_fac), decreasing = F)
 
 par(mar=c(5, 20, 5, 5))
-barplot(sort(same_spatiotemporal_sorted, F), horiz=T, las=1, cex.names=0.5)
+barplot(sort(same_spatiotemporal_sorted, F), horiz=T, las=1, col = IPbeslightgreen, border = IPbeslightgreen, xlim = c(0, 1100))
+
+split_res_3.2_df = plyr::ldply(split_res_l_3.2, rbind) # automatically decide how many columns should it have
+
+split_res_3.2_df = sapply(split_res_3.2_df, FUN = function(x) as.character(x))
+
+other_data_cnt =  apply(split_res_3.2_df, MARGIN = 1, FUN = function(x) length(which((x[!is.na(x)] %in% c("data transferred from other context(s)", "unclear"))))) # how many choices (non-NA) are not in the given well-formed answers
+# length(idx1)
+table(other_data_cnt == 1) # 148 (125 + 23)
+cnt_otherdata = length(which(other_data_cnt == 1))
+# studies including other choices
+s3_single$paperID[other_data_cnt == 1]
+
+s3_single_with_other_data_df = s3_single[other_data_cnt == 1, c("paperID", "3.2")]
+write.xlsx(s3_single_with_other_data_df, paste0("output/s3_single_with_other_data_n", cnt_otherdata, ".xlsx"))
+
+
 
 # pdf("output/Fig_3.2_26Oct.pdf", width=12, height = 8, pointsize = 12)
 pie(same_spatiotemporal_sorted)
@@ -1084,7 +1277,7 @@ articulated_sorted = sort(table(articulated_split_v_fac), decreasing = F)
 length(articulated_sorted)  # 2013
 
 other_df_3.3= cbind(paperID= s3_single$paperID, ANSWER_RAW= as.character(s3_single$"3.3") )
-write.xlsx(other_df_6.4, file = "output/3.3_allanswers.xlsx") # does it make sense to check all?
+write.xlsx(other_df_3.3, file = "output/3.3_allanswers.xlsx") # does it make sense to check all?
 
 ## 3.4 This application presents values in following form (multiple answers possible in case of mixed/integrated methods)
 summary(s3_single$"3.4")
