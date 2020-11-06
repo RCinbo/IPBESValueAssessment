@@ -51,6 +51,7 @@ for(i in 1:ncol(L)){
 ggsave(plotCertainty, filename = 'output/CertaintyLikertPlot.pdf', width= 8, height = 5)
 
 
+
 ####------Question 2.17 and 2.18 stacked bar charts----------####
 # This figure only needs s3_single as an input. Make sure you have this in your environment through making in using 'Starting.R' or load it from your data folder.
 # First, we need to disentangle the options in 2.18
@@ -94,6 +95,7 @@ write_xlsx(
     format_headers = TRUE,
     use_zip64 = FALSE
 )
+
 
 
 
@@ -274,6 +276,7 @@ ggsave(Pane2,filename='output/T3-Q41-45.pdf',width=10, height=3.5)
 Theme4 <- grid.arrange(mylegend, Pane1, Pane2, Pane3, Pane4,
                        nrow=4, heights=c(1,10,1,10),widths=c(10,0.5,10),layout_matrix = rbind(c(1,NA,NA),c(2,NA,3),c(NA,NA,NA),c(4,NA,5)))
 ggsave(Theme4,filename='output/Theme4.pdf',width=18, height=8)
+
 
 
 
@@ -635,7 +638,8 @@ barplot(socio_all_tb, las=1, horiz=T, cex.names = 0.8, col = IPbeslightgreen, bo
 
 
 
-########-----Data Overview 6 - Valuation for ecological sustainability-----########
+
+########-----Data Overview 6 (theme 7)- Valuation for ecological sustainability-----########
 #Topic 7: Ecological Sustainability
 #make this true if you want to print out the 'other' answers to an excel file
 PrintOthers<-TRUE
@@ -723,6 +727,7 @@ write.xlsx(list("Q7.1" = M[[1]], "Q7.2" = M[[2]], "Q7.3" = M[[3]]), file = "Them
 Theme7 <- grid.arrange(gt[[1]], gt[[2]], gt[[3]],pfam[[1]],pfam[[2]],pfam[[3]],
                        nrow=2, heights=c(3,3),widths=c(7,7,7),layout_matrix = rbind(c(1,2,3),c(4,5,6)))
 ggsave(Theme7,filename='output/Theme7.pdf',width=21, height=8)
+
 
 
 
@@ -877,3 +882,112 @@ Theme5 <- grid.arrange(gt, Panes[[1]], Panes[[2]], Panes[[3]], Panes[[4]], Panes
                        nrow=3, heights=c(4,4,4),widths=c(7,7),layout_matrix = rbind(c(1,2),c(3,4),c(5,6)))
 ggsave(Theme5,filename='output/Theme5.pdf',width=20, height=12)
 
+
+
+############-----Data Overview 7 (theme 8) Valuation for distributive justice & recognition
+#distributive justice: Q8.1 - Q8.2
+#Who is part of the community of justice?: Q8.14
+#Recognition: Q8.9 - Q8.13
+PrintOthers<-TRUE
+
+legend81 <- data.frame(code=c('Q8.1_1', 'Q8.1_2', 'Q8.1_3', 'Q8.1_4', 'Q8.1_NA', 'Q8.1_Other'),
+                       txt=c('presenting benefits or costs disaggregated by different groups of people (e.g, by stakeholder type, livelihood, socio-demographic characteristics, location, country, etc)','estimating inequality using an index/indicator of inequality (e.g., Gini, HHI, )','assessing participants\' perceptions of intragenerational justice, or of the (in)equality of distribution of gains and losses - with respect to how people think the distribution of outcomes ought to be;','assessing weights / importance of prioritising needs of disadvantaged groups (e.g. in welfare function, a weight on an indicator in an MCA, in discussions)','the application does not assess intra-generational justice','Other'))
+legend82 <- data.frame(code=c('Q8.2_1', 'Q8.2_2', 'Q8.2_3', 'Q8.2_NA', 'Q8.2_Other'),
+                       txt=c('how values compare over time (using discounting, overtaking, Chichilnisky criteria, etc)','values, benefits or costs disaggregated by generations','future or past generations\' needs, wants, values, or ability to live a good life by explicitly discussing these','the application does not assess intergenerational justice','Other'))
+legend814 <- data.frame(code=c('Q8.14_1', 'Q8.14_2', 'Q8.14_3', 'Q8.14_4', 'Q8.14_5', 'Q8.14_6', 'Q8.14_NA', 'Q8.14_Other'),
+                       txt=c('A specific part of the current people','All current people','Future people','Past people, ancestors, spirits','Non-human beings','Mother earth','irrelevant','Other'))
+
+l<-data.frame(Q = c('8.1','8.2','8.14'),
+              title = c('Was INTRA-GENERATIONAL JUSTICE assessed & how?','Was INTER-GENERATIONAL JUSTICE assessed and how?','Who is part of the community of justice?'))
+legendlist<-list(legend81,legend82,legend814)
+Panes <- list()
+gt <- list()
+pfam <- list()
+title <-list()
+if(PrintOthers){M <- list()}
+for(i in 1:nrow(l)){
+  legend <- legendlist[[i]]
+  sbst <- s3_single[,c('paperID','MF1.key','MF2.key','MF3.key','MF4.key',as.character(l[i,'Q']))]
+  for(j in 1:(nrow(legend)-1)){
+    sbst[,as.character(l[i,'Q'])] <- gsub("â€™", "’", sbst[,as.character(l[i,'Q'])] )
+    sbst[,as.character(l[i,'Q'])] <- gsub("&", "and", sbst[,as.character(l[i,'Q'])] )
+    sbst[,as.character(l[i,'Q'])] <- gsub("â€˜", "‘", sbst[,as.character(l[i,'Q'])] )
+    A <-  str_detect(sbst[,as.character(l[i,'Q'])], pattern = fixed(as.character(legend[j,'txt'])))
+    sbst[,as.character(l[i,'Q'])] <- str_replace(sbst[,as.character(l[i,'Q'])], pattern = fixed(as.character(legend[j,'txt'])),"")
+    sbst <- cbind(sbst, A)
+    colnames(sbst)[ncol(sbst)] <- as.character(legend[j,'code'])
+  }
+  Otheridx <- (str_length(gsub("[;, ]","",sbst[,as.character(l[i,'Q'])]))>1)
+  sbst <- cbind(sbst, Otheridx)
+  colnames(sbst)[ncol(sbst)] <- as.character(legend[nrow(legend),'code'])
+  if(PrintOthers){
+    M[[i]] <- matrix(nrow=(sum(Otheridx)), ncol = (1+nrow(legend)))
+    colnames(M[[i]]) <- c('PaperID',as.character(legend$txt))
+    rownames(M[[i]]) <- sbst[Otheridx,as.character(l[i,'Q'])]
+    M[[i]][,1] <- sbst[Otheridx,'paperID']
+  }
+  #from wide to long format
+  sbst %>%
+    gather(question, value, -paperID,-MF1.key,-MF2.key,-MF3.key,-MF4.key,-as.character(l[i,'Q'])) -> sbst_long
+  Lbls<-matrix(c('It is assessed','Not assessed','It is assessed','Not assessed','Justice is assessed','No justice aspects were assessed'), byrow = T,nrow = 3)
+
+  pie <- ggplot() +
+    geom_bar(aes(x = factor(1), fill = (str_detect(s3_single[,as.character(l[i,'Q'])],regex('application does not assess'))|str_detect(s3_single[,as.character(l[i,'Q'])],regex('irrelevant')))),width = 1) +
+    blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank())+ scale_fill_manual(name = '',breaks = c(TRUE, FALSE),labels = rev(Lbls[i,]), values  = c('red', IPbeslightgreen)) +
+    xlab('') + ylab('') + coord_polar("y", start = 0,direction = 1) + theme(legend.position='bottom' )
+  #make ordered bar charts
+  cnt<-aggregate(1*(sbst_long$value),by = list(sbst_long$question), FUN=function(x)sum(x))
+  sbst_long$question<-factor(sbst_long$question, levels= cnt[order(cnt$x, decreasing = FALSE),'Group.1'])
+
+  bar <- ggplot(sbst_long[!(str_detect(sbst_long$question,regex('_NA'))),]) + geom_bar(alpha=1,size=1,color = IPbeslightgreen, fill = IPbeslightgreen,aes(x=question, y=1*value), stat = "identity") + coord_flip() + theme_bw() + scale_x_discrete(breaks = legend$code, labels = str_wrap(as.character(legend$txt),50)) + ylab('Number of papers') + xlab('')
+  Panes[[i]] <- grid.arrange(pie,bar,
+                             ncol=2, nrow=1, layout_matrix = rbind(c(1,2)), widths=c(1.7,4),
+                             top = textGrob(l[i,'title'],gp=gpar(fontsize=20,font=3)))
+  ggsave(Panes[[i]], filename=sprintf('output/T3-Q%s.pdf',l[i,'Q']), width= 10, height = 4)
+  library(cowplot)
+  title[[i]] <- ggdraw() +
+    draw_label(as.character(l[i,'title']), fontface = 'bold', x = 0, hjust = 0) +
+    theme(plot.margin = margin(0, 0, 0, 7))
+  gt[[i]]<- ggdraw() +
+    draw_plot(bar) +
+    draw_plot(pie, x = 0.65, y = 0.09, width = .3, height = .4)
+  p<-grid.arrange(
+    title[[i]], gt[[i]], ncol = 1,heights = c(0.1, 1)
+  )
+  ggsave(p, filename=sprintf('output/T3_Q%sPieBar.pdf',l[i,'Q']), width= 8, height = 4)
+
+  familysummary <- data.frame(MF = c('MF1','MF1','MF2','MF2','MF3','MF3','MF4','MF4'),
+                              Answer = c('Yes','No','Yes','No','Yes','No','Yes','No'),
+                              N = NA,
+                              Percentage=NA)
+  familysummary$N <- sapply(1:nrow(familysummary),FUN=function(x) ifelse(familysummary$Answer[x] == 'No',sum(sbst[,sprintf('%s.key',as.character(familysummary$MF[x]))]==1 & (str_detect(s3_single[, as.character(l[i,'Q'])],regex('application does not assess'))|str_detect(s3_single[,as.character(l[i,'Q'])],regex('irrelevant'))), na.rm=T),sum(sbst[,sprintf('%s.key',as.character(familysummary$MF[x]))]==1 & !(str_detect(s3_single[, as.character(l[i,'Q'])],regex('application does not assess'))), na.rm=T)))
+  familysummary$Percentage = familysummary$N/sapply(familysummary$MF,FUN = function(x)sum(familysummary[familysummary$MF==x,'N']))
+
+
+    pfam[[i]] <- ggplot(familysummary) + geom_bar(aes(x = MF, fill=Answer, y=Percentage*100),stat = 'identity',position='stack') + scale_fill_manual(name = '',breaks = c('Yes','No'), labels = Lbls[i,],values  = c(IPbeslightgreen, 'red')) + ylab('Percentage in the method family') + xlab('Method family') + theme_minimal() + scale_x_discrete(labels= MFLabels)
+  ggsave(pfam[[i]], filename=sprintf('output/T3_Q%sByFam.pdf',l[i,'Q']), width= 8, height = 4)
+}
+
+Theme8 <- grid.arrange(title[[1]],title[[2]],title[[3]],gt[[1]], gt[[2]], gt[[3]], pfam[[1]],pfam[[2]],pfam[[3]],
+                       nrow=3, heights=c(1,6,6),widths=c(9,9,9),layout_matrix = rbind(c(1,2,3),c(4,5,6),c(7,8,9)))
+
+ggsave(Theme8,filename='output/Theme8-1.pdf',width=20, height=12)
+
+
+#########Recognition graphs (heatmaps)#####
+#Recognition: knowledge types
+#Q8.9 The application explicitly distinguishes and mentions the following types of knowledge:
+
+#Recognition: broad values
+#Q8.10 Recognition of broad values
+
+#Recognition: value types
+#Q8.12 - The application assesses the following types of values:
+
+#Recognition: value dimensions
+#Q8.13 Value justification: the application has an emphasis on:
+
+#Also print out the open question Q8.11
+
+########-----Data overview 8 (theme 8) Procedural justice
+#Procedural justice : Q8.3 - Q8.8
