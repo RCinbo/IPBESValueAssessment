@@ -2,6 +2,8 @@
 #first run Consistency_Applicationsurvey to have s3
 
 library(dplyr)
-check=count(s3, rater, sort=T)
+s3=s3_full
+colnames(s3)
+check=count(s3, Email.Address, sort=T)
 check
 sum (check$n)
