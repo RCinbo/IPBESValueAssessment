@@ -1159,7 +1159,13 @@ participants/respondents','Other'))
                                                    MF3 = sum(value==TRUE & MF3.key==1),
                                                    MF4 = sum(value==TRUE & MF4.key==1),
                                                    AllArticles = sum(value==TRUE))%>% as.data.frame() %>% gather(MethodFamily, Number, -question)-> smmrysbst
+    sbst_long %>% group_by(question) %>% summarise(MF1 = round(sum(value==TRUE & MF1.key==1)/sum(MF1.key==1)*100,2),
+                                                   MF2 = round(sum(value==TRUE & MF2.key==1)/sum(MF2.key==1)*100,2),
+                                                   MF3 = round(sum(value==TRUE & MF3.key==1)/sum(MF3.key==1)*100,2),
+                                                   MF4 = round(sum(value==TRUE & MF4.key==1)/sum(MF4.key==1)*100,2),
+                                                   AllArticles = round(sum(value==TRUE)/sum(MF1.key==1|MF2.key==1|MF3.key==1|MF4.key==1)*100,2))%>% as.data.frame() %>% gather(MethodFamily, Number, -question)-> smmrysbstPerc
     heatmap<- ggplot(smmrysbst[!str_detect(smmrysbst$question,regex('NA')),], aes(x=MethodFamily, y = question, fill=Number)) + geom_tile() + geom_text(aes(label = Number)) + scale_y_discrete(breaks = legend$code, labels = str_wrap(as.character(legend$txt),50)) + scale_fill_gradient(low = IPbeslightgreen, high=IPbesdarkgreen) + ylab('') + scale_x_discrete(labels=MFLabels)
+    heatmap2<- ggplot(smmrysbstPerc[!str_detect(smmrysbstPerc$question,regex('NA')),], aes(x=MethodFamily, y = question, fill=Number)) + geom_tile() + geom_text(aes(label = Number)) + scale_y_discrete(breaks = legend$code, labels = str_wrap(as.character(legend$txt),50)) + scale_fill_gradient(low = IPbeslightgreen, high=IPbesdarkgreen) + ylab('') + scale_x_discrete(labels=MFLabels)
 
 
     pie[[i]] <- ggplot() +
