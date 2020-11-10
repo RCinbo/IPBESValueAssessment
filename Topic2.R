@@ -187,7 +187,7 @@ scale.names = c("Local (incl. village, parish, municipality, town, city)",
 
 #pdf("output/Fig_2.1_scale_corrected.pdf", width=15, height = 8, pointsize = 12)
 par(mar=c(5,20,1,1))
-barplot(rev(scale_tb_final[-10]), horiz=T, names.arg = rev(scale.names), las = 1, col = IPbeslightgreen, border = IPbeslightgreen, xlim = c(0, 400) )
+barplot(rev(scale_tb_final[-10]), horiz=T, names.arg = rev(scale.names), las = 1, col = IPbeslightgreen, border = IPbeslightgreen, xlim = c(0, 400), main = "Scale of application")
 #dev.off()
 
 
@@ -378,8 +378,7 @@ habitat_tb_final <-  habitat_tb_final[-(14)]
 #pdf("output/Fig_habitat_corrected_4Nov.pdf", width=15, height = 8, pointsize = 12)
 
 par(mar=c(5,20,1,1))
-barplot(rev(habitat_tb_final), las=1, horiz=T, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(habitat_tb_final) *1.1), xlab = "# of applications")
-
+barplot(rev(habitat_tb_final), las=1, horiz=T, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(habitat_tb_final) *1.1), xlab = "# of applications", main = "The application assesses the following habitats ")
 #dev.off()
 
 #pdf("output/Fig_habitat_corrected_30Oct.pdf", width=15, height = 8, pointsize = 12)
@@ -1221,9 +1220,110 @@ value_split_v = unlist(split_res_l_2.15)
 value_split_v_fac = factor(value_split_v)
 value_tb_sorted = sort(table(value_split_v_fac), decreasing = F)
 value_tb_reduced = (table(value_split_v_fac))[which (table(value_split_v_fac)>1)]
+value_tb_reduced_temporary = as.numeric(value_tb_reduced)
 
-par(mar=c(5, 20, 5, 5))
-barplot(sort(value_tb_reduced, F), horiz=T, las=1, cex.names = 0.7)
+short.names.multivalues = c(
+  "Bringing them together by converting all values to a common unit",
+  "Bringing them together and assigning weights \nto individual value targets based on \nresearcher defined (or even) weights",
+  "Bringing them together and assign weights \nto individual value targets based on a group discussion \nabout acceptable weights given to different values",
+  "Keeping the results from the study of \nthe separate value and use the results \nas a basis for a group discussion.",
+  "The application assesses multiple values \nas bundles and do not attempt \nto weight individual value targets",
+  "The application asks respondents or participants \nto rank options including multiple values \nand infer the weight of individual components from their ranking.",
+  "unclear: method of bringing values together is not explained",
+  "irrelevant: application does not attempt to bring the different values together"
+)
+names(value_tb_reduced_temporary) = names(short.names.multivalues)
+value_tb_reduced_temporary["other"]=17
+
+par(mar=c(5, 25, 5, 5))
+barplot( rev(value_tb_reduced_temporary), horiz=T, las=1, cex.names = 0.7)
+
+
+split_res_2.15_df = plyr::ldply(split_res_l_2.15, rbind) # automatically decide how many columns should it have
+
+split_res_2.15_df = sapply(split_res_2.15_df, FUN = function(x) as.character(x))
+
+multivalue_given_answer = c(
+  "Bringing them together by converting all values to a common unit",
+  "Bringing them together and assigning weights to individual value targets based on researcher defined (or even) weights",
+  "Bringing them together and assign weights to individual value targets based on a group discussion about acceptable weights given to different values",
+  "Keeping the results from the study of the separate value and use the results as a basis for a group discussion.",
+  "The application assesses multiple values as bundles and do not attempt to weight individual value targets",
+  "The application asks respondents or participants to rank options including multiple values and infer the weight of individual components from their ranking.",
+  "unclear: method of bringing values together is not explained",
+  "irrelevant: application does not attempt to bring the different values together"
+)
+
+
+# Be aware of the NA values when counting
+multivalue_other_choice_cnt =  apply(split_res_2.15_df, MARGIN = 1, FUN = function(x) length(which(!(x[!is.na(x)] %in% multivalue_given_answer)))) # how many choices (non-NA) are not in the given well-formed answers
+# length(idx1)
+table(multivalue_other_choice_cnt > 0 ) # 17 studies
+cnt_otherchoice_multivalue = length(which(multivalue_other_choice_cnt > 0))
+# studies including other choices
+s3_single$paperID[multivalue_other_choice_cnt > 0 ]
+s3_single_with_other_multivalue_df = s3_single[multivalue_other_choice_cnt > 0, c("paperID", "2.15")]
+
+write.xlsx(s3_single_with_other_multivalue_df, paste0("output/s3_single_with_other_multivalue2_15_n", cnt_otherchoice_multivalue, ".xlsx"))
+
+
+
+
+NCP_non_material_other_v = as.character(s3_single$"2.13")
+
+for (given_idx in 1:length(non_material_given_answer)) {
+  NCP_non_material_other_v = str_replace_all(NCP_non_material_other_v, pattern = non_material_given_answer[given_idx], replacement = "")
+}
+
+NCP_non_material_other_v = str_trim(str_replace_all(NCP_non_material_other_v, pattern = "[,;]", replacement = "")) # warning: other answers without comma and semicolon
+table(NCP_non_material_other_v)
+
+NCP_non_material_other_wospace_v = str_replace_all(NCP_non_material_other_v, pattern = "[ ]", replacement = "") # remove whitespace
+NCP_non_material_other_idx_2.13 = str_length(NCP_non_material_other_wospace_v) >= 1 # does it have still more characters?
+
+NCP_non_material_other_v[NCP_non_material_other_idx_2.13]
+n_other_2.13 = length(which(NCP_non_material_other_idx_2.13)); n_other_2.13
+
+# Count given and other answers individually
+
+NCP_non_material_given_detected = sapply(non_material_given_answer, FUN = function(x) str_detect(as.character(s3_single$"2.13"), pattern = x))
+
+NCP_non_material_given_detected_one_na = ifelse(NCP_non_material_given_detected, yes = 1, no = NA)
+
+NCP_non_material_given_detected_df = data.frame(s3_single$paperID, s3_single$"2.13", NCP_non_material_given_detected_one_na, other=NA)
+colnames(NCP_non_material_given_detected_df)
+NCP_non_material_given_detected_df <- NCP_non_material_given_detected_df[-c(6:7)]
+
+colnames(NCP_non_material_given_detected_df)
+
+NCP_non_material_given_detected_df[is.na(NCP_non_material_given_detected_df)] = 0
+
+colSums(NCP_non_material_given_detected_df[-c(1:2)])
+
+
+MF_cols = paste0("MF", 1:4, ".key")
+s3_single_MF = s3_single[,c("paperID", MF_cols)]
+
+# Sum all the nature given answers
+NCP_non_material_sum_v =rowSums(NCP_non_material_given_detected_df[, 3:5], na.rm=T)
+
+# Tabulate by MF
+NCP_non_material_by_mf_df = sapply(MF_cols, FUN = function(mf_colname) tapply(NCP_non_material_sum_v, INDEX = s3_single_MF[,mf_colname], FUN = sum, na.rm=T))
+NCP_non_material_by_mf_df = NCP_non_material_by_mf_df["1", ]
+
+names(NCP_non_material_by_mf_df) = c("MF1", "MF2", "MF3", "MF4")
+
+barplot(NCP_non_material_by_mf_df)
+
+# pdf("output/Fig_non_material_MF.pdf", width=10, height = 10, pointsize = 12)
+pie(NCP_non_material_by_mf_df, col = viridis(4), main = "Non Material Nature Contribution to People")
+# dev.off()
+
+
+
+
+
+
 
 
 

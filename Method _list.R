@@ -1,6 +1,20 @@
 library(openxlsx)
 source("Starting.R")
 
+
+############Define a color scheme#####################
+IPbesdarkgreen <- rgb(92/255, 102/255, 93/255) #5c665d
+IPbeslightgreen <- rgb(181/255, 212/255, 141/255) #b5d48d
+colfunc <- colorRampPalette(c(rgb(92/255, 102/255, 93/255), rgb(181/255, 212/255, 141/255)))
+
+brewer.YlGnBu <- colorRampPalette(brewer.pal(9, "YlGnBu"), interpolate = "spline")
+brewer.BuPu <- colorRampPalette(brewer.pal(9, "BuPu"), interpolate = "spline")
+brewer.Greens <- colorRampPalette(brewer.pal(9, "Greens"), interpolate = "spline")
+
+
+
+### Topic 1: Methods and their use
+
 # 1.This script is to compile a list of method mentioned in the survey
 # This looks at the Question 1.2, 1.4
 
@@ -320,7 +334,7 @@ levels(cut_1.1) = c(1,2,3,"more than 4")
 cut_1.1
 
 #pdf("output/Fig_1.1.pdf", width=5, height = 5, pointsize = 12)
-pie(table(cut_1.1))
+pie(table(cut_1.1), main = "Number of main methods per application")
 #dev.off()
 
 pie(table(s3_single$"1.1"))
@@ -356,8 +370,16 @@ s3_single[s3_single$"1.3" >= 4, "paperID"]
 # [37] 22816 41028 14021 16915  6493 25781 25094  6674 20245 38947 66234 69734
 # [49] 20317  7586
 
+# using cut
+cut_1.3 = cut(s3_single$"1.3", breaks = c(0, 0.9, 1.5, 2.5, 3.5, max(s3_single$"1.1")))
+levels(cut_1.3) = c(0, 1,2,3,"more than 4")
+cut_1.3
 
+cut_1.3[is.na(cut_1.3)] = 0
 
+#pdf("output/Fig_1.3.pdf", width=5, height = 5, pointsize = 12)
+pie(table(cut_1.3), main = "Number of additional methods per application")
+#dev.off()
 
 ########### 1.4. List of additional methods..
 s3_1.2_mainlist_corrected = read.csv(url(s3_1.2_mainlist_corrected_web), header = T)
@@ -599,7 +621,7 @@ goal_tb_sorted = sort(table(goal_split_v_fac), decreasing = F)
 goal_tb_sorted_reduced =  c(sum(goal_tb_sorted[goal_tb_sorted<5]), goal_tb_sorted[goal_tb_sorted>=5])
 names(goal_tb_sorted_reduced)[1] = "Other"
 
-#pdf("output/Fig_1.5.pdf", width=10, height = 5, pointsize = 12)
-par(mar=c(5, 20, 5, 5))
-barplot(goal_tb_sorted_reduced, las=1, horiz=T, cex.names = 0.7, xlim=c(0, max(goal_tb_sorted_reduced) * 1.2 ))
-#dev.off()
+pdf("output/Fig_1.5.pdf", width=10, height = 5, pointsize = 12)
+par(mar=c(5, 25, 5, 5))
+barplot(goal_tb_sorted_reduced, las=1, horiz=T, xlim=c(0, max(goal_tb_sorted_reduced) * 1.2 ), col = IPbeslightgreen, border = IPbeslightgreen, main = "the goal of combining valuation methods")
+dev.off()
