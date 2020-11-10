@@ -1,6 +1,9 @@
 library(stringr)
 # library(doSNOW) # foreach()
 library(openxlsx)
+library(plyr)
+library(RColorBrewer)
+library(openxlsx)
 
 source("Starting.R")
 
@@ -9,12 +12,14 @@ IPbesdarkgreen <- rgb(92/255, 102/255, 93/255) #5c665d
 IPbeslightgreen <- rgb(181/255, 212/255, 141/255) #b5d48d
 colfunc <- colorRampPalette(c(rgb(92/255, 102/255, 93/255), rgb(181/255, 212/255, 141/255)))
 
+brewer.YlGnBu <- colorRampPalette(brewer.pal(9, "YlGnBu"), interpolate = "spline")
+brewer.BuPu <- colorRampPalette(brewer.pal(9, "BuPu"), interpolate = "spline")
+brewer.Greens <- colorRampPalette(brewer.pal(9, "Greens"), interpolate = "spline")
 
 ######  Topic 2 - Context of application
 
 ### 2.1- The application addresses the following spatial scales (multiple possible)
 ### Their multiple answers are separated by ','
-
 
 summary(s3_single$"2.1")
 # how many are 'multiple scales' ?
@@ -28,14 +33,16 @@ table(s3_single$"2.1")
 choices_org = c("local \\(incl. village, parish, municipality, town, city\\)",
 "district, county",
 "administrative region \\(as sub-national\\), \\(incl. province, state\\)",
-"cross-national or cross-region Indigenous territories/jurisdictions/lands",
+"cross-national or cross-region Indigenous territories\\/jurisdictions\\/lands",
 "cross-national or cross-region protected areas",
 "national, federal",
-"regional as multi-national continental",
-"global",
-"Option 9"
+"regional as multi-national",
+"continental",
+"global"
+#"Option 9"
 )
-choices_alt = c("O1_Local", "O2_District", "O3_Administrative", "O4_CrossNationalIndigenous", "O5_CrossNationalProtected", "O6_National", "O7_Continental", "O8_Global", "O9_Other", "O10")
+
+choices_alt = c("O1_Local", "O2_District", "O3_Administrative", "O4_CrossNationalIndigenous", "O5_CrossNationalProtected", "O6_National", "07_Regional", "O8_Continental", "O9_Global") # "Other")
 
 
 choice_org_v = as.character(s3_single$"2.1")
@@ -72,11 +79,11 @@ barplot(choice_tb_sorted, log="x", las=1, horiz=T, cex.names = 0.5)
 choice_tb_reduced = (table(choice_split_v_fac))[which (table(choice_split_v_fac)>2)]
 
 barplot(sort(choice_tb_reduced, F), horiz=T, las=1, cex.names=0.5)
- barplot(sort(table(choice_split_v_fac), F), log="x", las=1, horiz=T, cex.names = 0.5)
+barplot(sort(table(choice_split_v_fac), F), log="x", las=1, horiz=T, cex.names = 0.5)
 
 
  # split list to data frame
- library(plyr)
+
  split_res_df = plyr::ldply(split_res_l, rbind) # automatically decide how many columns should it have
 
  split_res_df = sapply(split_res_df, FUN = function(x) as.character(x))
@@ -92,24 +99,31 @@ cnt_otherchoice = length(which(other_choice_cnt > 0))
 # studies including other choices
 s3_single$paperID[other_choice_cnt > 0 ]
 
-s3_single_with_other_choices_df = s3_single[other_choice_cnt > 0, c("paperID", "2.1")]
-write.xlsx(s3_single_with_other_choices_df, paste0("output/s3_single_with_other_choices_n", cnt_otherchoice, ".xlsx"))
+s3_single_with_other_choices_df = s3_single[other_choice_cnt > 0, c("paperID", "2.1")] # "MF1.key"    "MF2.key"    "MF3.key"    "MF4.key"    "MFA.key"    "MFB.key" )]
+#write.xlsx(s3_single_with_other_choices_df, paste0("output/s3_single_with_other_choices_n", cnt_otherchoice, ".xlsx"))
 
 
- split_cnt_v = sapply(split_res_l, FUN = length)
+split_cnt_v = sapply(split_res_l, FUN = length)
 stopifnot(max(split_cnt_v) == ncol(split_res_df))
 
+
+# Multi scale studies
 table(split_cnt_v)
 # split_cnt_v
 #    1    2    3    4    5
-# 1042   86   10    1    1
-barplot(table(split_cnt_v), las= 1)
+# 1065   86   10    1    1
 
+#pdf("output/Fig_NumberofScalesPerApp.pdf", width=15, height = 8, pointsize = 12)
+barplot(table(split_cnt_v), las= 1, col = IPbeslightgreen, border = IPbeslightgreen, ylim = c(0, 1200), xlab = "# of scales per application", ylab = "# of application")
+#dev.off()
+
+pie(table(split_cnt_v), col = brewer.YlGnBu(5), labels = NA)
 
 # Max 5 items
 str(split_res_df)
 head(split_res_df)
 tail(split_res_df)
+table(split_cnt_v)
 tail(s3_single$"2.1")
 table(split_res_df)
 
@@ -117,17 +131,107 @@ table(split_res_df)
 s3_single_2.1_comparison_df = cbind(split_res_df, RawData_2.1 = as.character(s3_single$"2.1"))
 colnames(s3_single_2.1_comparison_df)[1:5] = paste0("Scale_Split_", 1:5)
 
-library(openxlsx)
-write.xlsx(s3_single_2.1_comparison_df, file = "output/s3_single_2.1_for_comparison.xlsx")
+#write.xlsx(s3_single_2.1_comparison_df, file = "output/s3_single_2.1_for_comparison.xlsx")
+
+################ Read corrected data (from Raphael)
+
+scale_corrected_df = read.xlsx("Corrected/s3_single_with_other_choices_n189_Raphael_NoComment.xlsx", sheet = 1)
+str(scale_corrected_df)
+
+# Identify other answers in the uncorrected data
+
+scale_other_v = choice_alt_v
+
+for (given_idx in 1:length(choices_alt)) {
+
+  scale_other_v = str_replace_all(scale_other_v, pattern = choices_alt[given_idx], replacement = "")
+}
+
+scale_other_v = str_trim(str_replace_all(scale_other_v, pattern = "[,;]", replacement = "")) # warning: other answers without comma and semicolon
+table(scale_other_v)
+
+
+scale_other_wospace_v = str_replace_all(scale_other_v, pattern = "[ ]", replacement = "") # remove whitespace
+scale_other_idx_2.1 = str_length(scale_other_wospace_v) >= 1 # does it have still more characters?
+
+scale_other_v[scale_other_idx_2.1]
+n_other_2.1 = length(which(scale_other_idx_2.1)); n_other_2.1
+
+# Count given and other answers individually
+
+scale_given_detected = sapply(choices_alt, FUN = function(x) str_detect(choice_alt_v, pattern = x))
+
+scale_given_detected_one_na = ifelse(scale_given_detected, yes = 1, no = NA)
+
+scale_given_detected_df = data.frame(s3_single$paperID, s3_single$"2.1", scale_given_detected_one_na, other=NA)
+colnames(scale_given_detected_df) = colnames(scale_corrected_df) # Make sure two datasets are in the same order
+
+# merge two datasets using paperID
+scale_given_detected_df[match(scale_corrected_df$paperID, scale_given_detected_df$paperID), ] = scale_corrected_df
+
+
+
+
+
+scale_tb_final = colSums(scale_given_detected_df[,-c(1:2)], na.rm = T)
+
+scale.names = c("Local (incl. village, parish, municipality, town, city)",
+                "District, county",
+                "Administrative region",
+                "Cross-national or cross-region \nIndigenous territories/jurisdictions/lands",
+                "Cross-national or cross-region protected areas",
+                "National, federal",
+                "Regional as multi-national",
+                "Continental",
+                "Global")
+
+#pdf("output/Fig_2.1_scale_corrected.pdf", width=15, height = 8, pointsize = 12)
+par(mar=c(5,20,1,1))
+barplot(rev(scale_tb_final[-10]), horiz=T, names.arg = rev(scale.names), las = 1, col = IPbeslightgreen, border = IPbeslightgreen, xlim = c(0, 400), main = "Scale of application")
+#dev.off()
+
+
+MF_cols = paste0("MF", 1:4, ".key")
+s3_single_MF = s3_single[,c("paperID", MF_cols)]
+
+
+scale_by_mf_df = foreach (scale_idx =  1:9, .combine = "rbind") %do% {
+  print(scale.names[scale_idx])
+  scale_by_mf = sapply(MF_cols, FUN = function(mf_colname) by(scale_given_detected_df[,scale_idx +2 ], INDICES = s3_single_MF[,mf_colname], FUN = sum, na.rm=T))
+  return(scale_by_mf["1",])
+}
+
+rownames(scale_by_mf_df) =scale.names
+colnames(scale_by_mf_df) = paste0("MF", 1:4)
+
+#pdf("output/Fig_2.1_scale_corrected_MF.pdf", width=15, height = 8, pointsize = 12)
+
+par(mar=c(5,20,1,1))
+barplot(t(scale_by_mf_df)[,c(9:1)], names.arg = rev(scale.names), col = viridis(4), las=1, horiz=T)
+legend("bottomright", #inset=c(1,0),
+       fill=viridis(4),
+       legend=paste0("MF", 1:4))
+
+#dev.off()
+
+
+barplot(scale_by_mf_df, names.arg = paste0("MF", 1:4), col = viridis(9))
+
+
+# scale_given_cnt= apply(scale_given_detected, MARGIN = 1,  FUN = function(x) (which(x)))
+# scale_given_tb = table(unlist(scale_given_cnt))
+# names(scale_given_tb) = choices_org
+#
+# scale_all_tb= c(Other = n_other_2.1, sort(scale_given_tb, decreasing = F))
+#
+# par(mar=c(5,20,1,1))
+# barplot(scale_all_tb,  las=1, horiz=T, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(habitat_all_tb) *1.1))
+# #dev.off()
 
 
 ### 2.2 - The application assesses the following habitats (multiple possible)
 summary(s3_single$"2.2")
-
-
 # write.xlsx(table(s3_single$"2.2"), file = "output/summary_s3_single_2.2_raw.xlsx")
-
-
 
 # Multiple answers are separated by ','
 
@@ -155,6 +259,7 @@ barplot(habitat_tb_sorted, log="x", las=1, horiz=T, cex.names = 0.5)
 habitat_tb_reduced = (table(habitat_split_v_fac))[which (table(habitat_split_v_fac)>5)]
 barplot(sort(habitat_tb_reduced, F), horiz=T, las=1, cex.names=0.5)
 
+# don't use escaping! as we don't use regexp-like functions below
 habitat_given_answer = c( "Forests",
 "Savannah",
 "Deserts",
@@ -176,12 +281,13 @@ split_res_2.2_df = plyr::ldply(split_res_l_2.2, rbind) # automatically decide ho
 
 split_res_2.2_df = sapply(split_res_2.2_df, FUN = function(x) as.character(x))
 
+names(table(split_res_2.2_df))
 
 # Extract Paper IDs of the choice_malformed
 
 # Be aware of the NA values when counting
-habitat_other_choice_cnt =  apply(split_res_2.2_df, MARGIN = 1, FUN = function(x) length(which(!(x[!is.na(x)] %in% habitat_given_answer)))) # how many choices (non-NA) are not in the given well-formed answers
-# length(idx1)
+habitat_other_choice_cnt = apply(split_res_2.2_df, MARGIN = 1, FUN = function(x) length(which(!(x[!is.na(x)] %in% habitat_given_answer)))) # how many choices (non-NA) are not in the given well-formed answers
+
 table(habitat_other_choice_cnt > 0 ) # 127 studies
 cnt_otherchoice_habitat = length(which(habitat_other_choice_cnt > 0))
 # studies including other choices
@@ -199,7 +305,7 @@ s3_single_with_other_habitat_df = s3_single[habitat_other_choice_cnt > 0, c("pap
 
 head(s3_single_with_other_habitat_df)
 
-write.xlsx(s3_single_with_other_habitat_df, paste0("output/s3_single_with_other_habitat_n", cnt_otherchoice_habitat, ".xlsx"))
+# write.xlsx(s3_single_with_other_habitat_df, paste0("output/s3_single_with_other_habitat_n", cnt_otherchoice_habitat, ".xlsx"))
 
 
 
@@ -243,19 +349,44 @@ habitat_given_detected_df[match(habitat_corrected_df$paperID, habitat_given_dete
 habitat_tb_final = colSums(habitat_given_detected_df[,-c(1:2)], na.rm = T)
 
 barplot(habitat_tb_final, horiz=T, las=2)
+names(habitat_tb_final)
+habitat_tb_final[16] <- habitat_tb_final[16] + habitat_tb_final[14] # other + unclear
+habitat.name.plot <- c("Forests",
+                      "Savannah",
+                      "Deserts",
+                      "Grasslands",
+                      "Shrublands",
+                      "Wetlands",
+                      "Mountain habitats",
+                      "Urban / Semi-urban",
+                      "Cultivated areas",
+                      "Aquaculture",
+                      "Inland surface water and water bodies / freshwater",
+                       "Coastal areas",
+                       "Deep sea",
+                       "unclear",
+                      "No habitat assessed",
+                       "Other / Unclear")
+#
+# names(habitat_tb_final)[15] <- "No habitat assessed"
+#
+# names(habitat_tb_final[16]) <- "Other and unclear"
+names(habitat_tb_final) <- habitat.name.plot
+habitat_tb_final <-  habitat_tb_final[-(14)]
 
-habitat_given_cnt= apply(habitat_given_detected, MARGIN = 1,  FUN = function(x) (which(x)))
-habitat_given_tb = table(unlist(habitat_given_cnt))
-names(habitat_given_tb)= habitat_given_answer
 
-habitat_all_tb= c(Other = n_other_2.2, sort(habitat_given_tb, decreasing = F))
-
-#pdf("output/Fig_habitat_corrected_25Oct.pdf", width=15, height = 8, pointsize = 12)
-png("output/Fig_habitat_corrected_25Oct.png", width=800, height = 600, pointsize = 12)
+#pdf("output/Fig_habitat_corrected_4Nov.pdf", width=15, height = 8, pointsize = 12)
 
 par(mar=c(5,20,1,1))
-barplot(habitat_all_tb,  las=1, horiz=T, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(habitat_all_tb) *1.1))
-dev.off()
+barplot(rev(habitat_tb_final), las=1, horiz=T, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(habitat_tb_final) *1.1), xlab = "# of applications", main = "The application assesses the following habitats ")
+#dev.off()
+
+#pdf("output/Fig_habitat_corrected_30Oct.pdf", width=15, height = 8, pointsize = 12)
+#png("output/Fig_habitat_corrected_30Oct.png", width=800, height = 600, pointsize = 12)
+
+# par(mar=c(5,20,1,1))
+# barplot(habitat_all_tb[c(8,1:7,9:15)],  las=1, horiz=T, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(habitat_all_tb) *1.1))
+#dev.off()
 
 
 ### 2.7 - The application collected data with the following temporal frequency: (only one answer)
@@ -263,9 +394,41 @@ summary(s3_single$"2.7")
 table(s3_single$"2.7")
 barplot(table(s3_single$"2.7"))
 
+#pdf("output/Fig_2.7_temporal frequency.pdf", width=8, height = 8, pointsize = 12)
+barplot(table(s3_single$"2.7"), las = 1, col = IPbeslightgreen, border = IPbeslightgreen, ylab = "# of applications", xlab = "temporal frequency")
+#dev.off()
+
+
+
 ### 2.8 - The application assesses values change over time:
 summary(s3_single$"2.8")
-pie(table(s3_single$"2.8"))
+
+#pdf("output/Fig_2.8_overTime.pdf", width=8, height = 8, pointsize = 12)
+pie(table(s3_single$"2.8"), labels = c("No", "Yes"), main = "The application assesses values change over time")
+#dev.off()
+
+
+
+### 2.9 The application assesses following temporal changes :
+summary(s3_single$"2.9")
+sort(table(s3_single$"2.9"))
+
+split_res_l_2.9 = vector("list", length = nrow(s3_single))
+
+for (row_idx in 1:nrow(s3_single)) {
+
+  split_tmp = str_trim(str_split(as.character(s3_single$"2.9")[row_idx], pattern = ",")[[1]])
+  split_res_l_2.9[[row_idx]] = split_tmp
+}
+
+time_split_v = unlist(split_res_l_2.9)
+time_split_v_fac = factor(time_split_v)
+time_tb_sorted = sort(table(time_split_v_fac), decreasing = F)
+
+#pdf("output/Fig_2.9_overTime.pdf", width=12, height = 8, pointsize = 12)
+par(mar=c(5,20,5,5))
+barplot(sort(time_tb_sorted, F), horiz=T, las=1, xlim = c(0, 1000), col = IPbeslightgreen, border = IPbeslightgreen)
+#dev.off()
 
 
 ### 2.10 There are multiple classifications of 'what is valued'. We want to know how these fit in the IPBES categories. The application assesses the following 'targets of valuation' regarding Nature Itself (multiple possible)
@@ -311,14 +474,8 @@ cnt_otherchoice_nature = length(which(nature_other_choice_cnt > 0))
 s3_single$paperID[nature_other_choice_cnt > 0 ]
 s3_single_with_other_nature_df = s3_single[nature_other_choice_cnt > 0, c("paperID", "2.10")]
 
-write.xlsx(s3_single_with_other_nature_df, paste0("output/s3_single_with_other_nature_n", cnt_otherchoice_nature, ".xlsx"))
+#write.xlsx(s3_single_with_other_nature_df, paste0("output/s3_single_with_other_nature_n", cnt_otherchoice_nature, ".xlsx"))
 
-
-
-################ Read corrected data (from Sander)
-
-NCP_nature_corrected_df = read.xlsx("Corrected/s3_single_with_other_nature_n20-corrSJ.xlsx", sheet = 1)
-str(NCP_nature_corrected_df)
 
 # Identify other answers in the uncorrected data
 
@@ -341,18 +498,65 @@ n_other_2.10 = length(which(NCP_nature_other_idx_2.10)); n_other_2.10
 
 # Count given and other answers individually
 
-NCP_nature_given_detected = sapply(nature_given_answers, FUN = function(x) str_detect(NCP_nature_other_v, pattern = x))
+NCP_nature_given_detected = sapply(nature_given_answers, FUN = function(x) str_detect(as.character(s3_single$"2.10"), pattern = x))
 
 NCP_nature_given_detected_one_na = ifelse(NCP_nature_given_detected, yes = 1, no = NA)
 
 NCP_nature_given_detected_df = data.frame(s3_single$paperID, s3_single$"2.10", NCP_nature_given_detected_one_na, other=NA)
-NCP_nature_given_detected_df<- NCP_nature_given_detected_df[-c(8)]
-colnames(NCP_nature_given_detected_df) =
+NCP_nature_given_detected_df<- NCP_nature_given_detected_df[-c(8:9)]
 
-  colnames(NCP_nature_corrected_df)[c(1:8)] # Make sure two datasets are in the same order
+colnames(NCP_nature_given_detected_df)
+
+NCP_nature_given_detected_df[is.na(NCP_nature_given_detected_df)] = 0
+
+colSums(NCP_nature_given_detected_df[-c(1:2)])
+
+
+MF_cols = paste0("MF", 1:4, ".key")
+s3_single_MF = s3_single[,c("paperID", MF_cols)]
+
+
+# Sum all the nature given answers
+NCP_nature_sum_v =rowSums(NCP_nature_given_detected_df[, 3:7], na.rm=T)
+
+# Tabulate by MF
+NCP_nature_by_mf_df = sapply(MF_cols, FUN = function(mf_colname) tapply(NCP_nature_sum_v, INDEX = s3_single_MF[,mf_colname], FUN = sum, na.rm=T))
+NCP_nature_by_mf_df = NCP_nature_by_mf_df["1", ]
+
+names(NCP_nature_by_mf_df) = c("MF1", "MF2", "MF3", "MF4")
+
+barplot(NCP_nature_by_mf_df)
+
+pdf("output/Fig_nature_MF.pdf", width=10, height = 10, pointsize = 12)
+pie(NCP_nature_by_mf_df, col = viridis(4), main = "NCP Nature")
+dev.off()
 
 
 
+
+
+# dim(NCP_nature_given_detected_df)
+#
+# #
+# NCP_nature_given_detected_df[match(CorrectedOtherTF_df$paperID, NCP_nature_given_detected_df$s3_single.paperID), 3:8] = CorrectedOtherTF_df[, c(3:8)]
+
+#
+# NCP_list[match(NCP_nature_corrected_df$paperID, NCP_nature_full$paperID), ] = NCP_nature_corrected_df
+#
+# # merge two datasets using paperID
+# NCP_nature_full[match(NCP_nature_corrected_df$paperID, NCP_nature_full$paperID), ] = NCP_nature_corrected_df
+#
+# NCP_nature_full_final = colSums(NCP_nature_full[,-c(1:2)], na.rm = T)
+#
+# barplot(NCP_nature_full_final, horiz=T, las=2)
+#
+# #pdf("output/Fig_habitat_corrected_25Oct.pdf", width=15, height = 8, pointsize = 12)
+# #png("output/Fig_habitat_corrected_25Oct.png", width=800, height = 600, pointsize = 12)
+#
+# par(mar=c(5,20,1,1))
+# barplot(NCP_nature_full_final,  las=1, horiz=T, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(NCP_nature_full_final) *1.1))
+# #dev.off()
+#
 
 
 ### 2.11 There are multiple classifications of 'what is valued'. We want to know how these fit in the IPBES categories. The application assesses the following 'targets of valuation' regarding REgulating Nature Contributions To People (multiple possible)
@@ -416,7 +620,82 @@ s3_single$paperID[regul_other_choice_cnt > 0 ]
 s3_single_with_other_regul_df = s3_single[regul_other_choice_cnt > 0, c("paperID", "2.11")]
 
 
-write.xlsx(s3_single_with_other_regul_df, paste0("output/s3_single_with_other_regul_n", cnt_otherchoice_regul, ".xlsx"))
+# write.xlsx(s3_single_with_other_regul_df, paste0("output/s3_single_with_other_regul_n", cnt_otherchoice_regul, ".xlsx"))
+
+
+
+
+# Identify other answers in the uncorrected data
+
+NCP_regul_other_v = flow_alt_v
+
+for (given_idx in 1:length(regul_given_answer)) {
+  NCP_regul_other_v = str_replace_all(NCP_regul_other_v, pattern = regul_given_answer[given_idx], replacement = "")
+}
+
+NCP_regul_other_v = str_trim(str_replace_all(NCP_regul_other_v, pattern = "[,;]", replacement = "")) # warning: other answers without comma and semicolon
+table(NCP_regul_other_v)
+
+NCP_regul_other_wospace_v = str_replace_all(NCP_regul_other_v, pattern = "[ ]", replacement = "") # remove whitespace
+NCP_regul_other_idx_2.11 = str_length(NCP_regul_other_wospace_v) >= 1 # does it have still more characters?
+
+NCP_regul_other_v[NCP_regul_other_idx_2.11]
+n_other_2.11 = length(which(NCP_regul_other_idx_2.11)); n_other_2.11
+
+# Count given and other answers individually
+
+NCP_regul_given_detected = sapply(regul_given_answer, FUN = function(x) str_detect(flow_alt_v, pattern = x))
+
+NCP_regul_given_detected_one_na = ifelse(NCP_regul_given_detected, yes = 1, no = NA)
+
+NCP_regul_given_detected_df = data.frame(s3_single$paperID, s3_single$"2.11", NCP_regul_given_detected_one_na, other=NA)
+NCP_regul_given_detected_df <- NCP_regul_given_detected_df[-c(13:14)]
+
+colnames(NCP_regul_given_detected_df)
+
+NCP_regul_given_detected_df[is.na(NCP_regul_given_detected_df)] = 0
+
+colSums(NCP_regul_given_detected_df[-c(1:2)])
+
+## create a full matrix
+
+# colnames(NCP_nature_corrected_df)
+
+ncol(NCP_regul_given_detected_df)
+# nrow(NCP_nature_given_detected_df) ; nrow(NCP_regul_given_detected_df)
+
+# NCP_list <- matrix(NA, ncol = ncol(NCP_nature_corrected_df)-12, nrow = nrow(NCP_regul_given_detected_df))
+#
+# colnames(NCP_list[c(1:8)]) ) <- colnames(NCP_nature_corrected_df)[c(1:8)]
+#
+# NCP_nature_full <- cbind(NCP_nature_given_detected_df, NCP_list)
+# NCP_nature_full[is.na(NCP_nature_full)] = 0
+#
+# dim(NCP_nature_full)
+# colnames(NCP_nature_full[,c(7:16)])
+#
+
+MF_cols = paste0("MF", 1:4, ".key")
+s3_single_MF = s3_single[,c("paperID", MF_cols)]
+
+# Sum all the nature given answers
+NCP_regul_sum_v =rowSums(NCP_regul_given_detected_df[, 3:12], na.rm=T)
+
+# Tabulate by MF
+NCP_regul_by_mf_df = sapply(MF_cols, FUN = function(mf_colname) tapply(NCP_regul_sum_v, INDEX = s3_single_MF[,mf_colname], FUN = sum, na.rm=T))
+NCP_regul_by_mf_df = NCP_regul_by_mf_df["1", ]
+
+names(NCP_regul_by_mf_df) = c("MF1", "MF2", "MF3", "MF4")
+
+barplot(NCP_regul_by_mf_df)
+
+# pdf("output/Fig_regult_MF.pdf", width=10, height = 10, pointsize = 12)
+pie(NCP_regul_by_mf_df, col = viridis(4), main = "Regulating Nature Contribution to People")
+# dev.off()
+
+# pie(NCP_nature_by_mf_df, col = viridis(4), main = "NCP Nature")
+
+
 
 
 
@@ -468,9 +747,57 @@ s3_single$paperID[material_other_choice_cnt > 0 ]
 s3_single_with_other_material_df = s3_single[material_other_choice_cnt > 0, c("paperID", "2.12")]
 
 
-write.xlsx(s3_single_with_other_material_df, paste0("output/s3_single_with_other_material_n", cnt_otherchoice_material, ".xlsx"))
+#write.xlsx(s3_single_with_other_material_df, paste0("output/s3_single_with_other_material_n", cnt_otherchoice_material, ".xlsx"))
 
 
+NCP_material_other_v = medi_alt_v
+
+for (given_idx in 1:length(material_given_answer)) {
+  NCP_material_other_v = str_replace_all(NCP_material_other_v, pattern = material_given_answer[given_idx], replacement = "")
+}
+
+NCP_material_other_v = str_trim(str_replace_all(NCP_material_other_v, pattern = "[,;]", replacement = "")) # warning: other answers without comma and semicolon
+table(NCP_material_other_v)
+
+NCP_material_other_wospace_v = str_replace_all(NCP_material_other_v, pattern = "[ ]", replacement = "") # remove whitespace
+NCP_material_other_idx_2.12 = str_length(NCP_material_other_wospace_v) >= 1 # does it have still more characters?
+
+NCP_material_other_v[NCP_material_other_idx_2.12]
+n_other_2.12 = length(which(NCP_material_other_idx_2.12)); n_other_2.12
+
+# Count given and other answers individually
+
+NCP_material_given_detected = sapply(material_given_answer, FUN = function(x) str_detect(medi_alt_v, pattern = x))
+
+NCP_material_given_detected_one_na = ifelse(NCP_material_given_detected, yes = 1, no = NA)
+
+NCP_material_given_detected_df = data.frame(s3_single$paperID, s3_single$"2.12", NCP_material_given_detected_one_na, other=NA)
+NCP_material_given_detected_df <- NCP_material_given_detected_df[-c(7:8)]
+
+colnames(NCP_material_given_detected_df)
+
+NCP_material_given_detected_df[is.na(NCP_material_given_detected_df)] = 0
+
+colSums(NCP_material_given_detected_df[-c(1:2)])
+
+
+MF_cols = paste0("MF", 1:4, ".key")
+s3_single_MF = s3_single[,c("paperID", MF_cols)]
+
+# Sum all the nature given answers
+NCP_material_sum_v =rowSums(NCP_material_given_detected_df[, 3:6], na.rm=T)
+
+# Tabulate by MF
+NCP_material_by_mf_df = sapply(MF_cols, FUN = function(mf_colname) tapply(NCP_material_sum_v, INDEX = s3_single_MF[,mf_colname], FUN = sum, na.rm=T))
+NCP_material_by_mf_df = NCP_material_by_mf_df["1", ]
+
+names(NCP_material_by_mf_df) = c("MF1", "MF2", "MF3", "MF4")
+
+barplot(NCP_material_by_mf_df)
+
+# pdf("output/Fig_material_MF.pdf", width=10, height = 10, pointsize = 12)
+pie(NCP_material_by_mf_df, col = viridis(4), main = "Material Nature Contribution to People")
+# dev.off()
 
 
 ### 2.13 There are multiple classifications of 'what is valued'. We want to know how these fit in the IPBES categories. The application assesses the following 'targets of valuation' regarding non-material Nature Contributions To People (multiple possible)
@@ -513,7 +840,59 @@ s3_single$paperID[non_material_other_choice_cnt > 0 ]
 s3_single_with_other_non_material_df = s3_single[non_material_other_choice_cnt > 0, c("paperID", "2.13")]
 
 
-write.xlsx(s3_single_with_other_non_material_df, paste0("output/s3_single_with_other_non_material_n", cnt_otherchoice_non_material, ".xlsx"))
+#write.xlsx(s3_single_with_other_non_material_df, paste0("output/s3_single_with_other_non_material_n", cnt_otherchoice_non_material, ".xlsx"))
+
+
+NCP_non_material_other_v = as.character(s3_single$"2.13")
+
+for (given_idx in 1:length(non_material_given_answer)) {
+  NCP_non_material_other_v = str_replace_all(NCP_non_material_other_v, pattern = non_material_given_answer[given_idx], replacement = "")
+}
+
+NCP_non_material_other_v = str_trim(str_replace_all(NCP_non_material_other_v, pattern = "[,;]", replacement = "")) # warning: other answers without comma and semicolon
+table(NCP_non_material_other_v)
+
+NCP_non_material_other_wospace_v = str_replace_all(NCP_non_material_other_v, pattern = "[ ]", replacement = "") # remove whitespace
+NCP_non_material_other_idx_2.13 = str_length(NCP_non_material_other_wospace_v) >= 1 # does it have still more characters?
+
+NCP_non_material_other_v[NCP_non_material_other_idx_2.13]
+n_other_2.13 = length(which(NCP_non_material_other_idx_2.13)); n_other_2.13
+
+# Count given and other answers individually
+
+NCP_non_material_given_detected = sapply(non_material_given_answer, FUN = function(x) str_detect(as.character(s3_single$"2.13"), pattern = x))
+
+NCP_non_material_given_detected_one_na = ifelse(NCP_non_material_given_detected, yes = 1, no = NA)
+
+NCP_non_material_given_detected_df = data.frame(s3_single$paperID, s3_single$"2.13", NCP_non_material_given_detected_one_na, other=NA)
+colnames(NCP_non_material_given_detected_df)
+NCP_non_material_given_detected_df <- NCP_non_material_given_detected_df[-c(6:7)]
+
+colnames(NCP_non_material_given_detected_df)
+
+NCP_non_material_given_detected_df[is.na(NCP_non_material_given_detected_df)] = 0
+
+colSums(NCP_non_material_given_detected_df[-c(1:2)])
+
+
+MF_cols = paste0("MF", 1:4, ".key")
+s3_single_MF = s3_single[,c("paperID", MF_cols)]
+
+# Sum all the nature given answers
+NCP_non_material_sum_v =rowSums(NCP_non_material_given_detected_df[, 3:5], na.rm=T)
+
+# Tabulate by MF
+NCP_non_material_by_mf_df = sapply(MF_cols, FUN = function(mf_colname) tapply(NCP_non_material_sum_v, INDEX = s3_single_MF[,mf_colname], FUN = sum, na.rm=T))
+NCP_non_material_by_mf_df = NCP_non_material_by_mf_df["1", ]
+
+names(NCP_non_material_by_mf_df) = c("MF1", "MF2", "MF3", "MF4")
+
+barplot(NCP_non_material_by_mf_df)
+
+# pdf("output/Fig_non_material_MF.pdf", width=10, height = 10, pointsize = 12)
+pie(NCP_non_material_by_mf_df, col = viridis(4), main = "Non Material Nature Contribution to People")
+# dev.off()
+
 
 
 
@@ -533,8 +912,6 @@ QoL_split_v_fac = factor(QoL_split_v)
 QoL_tb_sorted = sort(table(QoL_split_v_fac), decreasing = F)
 QoL_tb_reduced = (table(QoL_split_v_fac))[which (table(QoL_split_v_fac)>1)]
 barplot(sort(QoL_tb_reduced, F), horiz=T, las=1, cex.names=0.5)
-
-
 
 split_res_2.14_df = plyr::ldply(split_res_l_2.14, rbind) # automatically decide how many columns should it have
 
@@ -566,7 +943,57 @@ s3_single$paperID[QoL_other_choice_cnt > 0 ]
 s3_single_with_other_QoL_df = s3_single[QoL_other_choice_cnt > 0, c("paperID", "2.14")]
 
 
-write.xlsx(s3_single_with_other_QoL_df, paste0("output/s3_single_with_other_QoL_n", cnt_otherchoice_QoL, ".xlsx"))
+#write.xlsx(s3_single_with_other_QoL_df, paste0("output/s3_single_with_other_QoL_n", cnt_otherchoice_QoL, ".xlsx"))
+
+NCP_QoL_other_v = as.character(s3_single$"2.14")
+
+for (given_idx in 1:length(QoL_given_answer)) {
+  NCP_QoL_other_v = str_replace_all(NCP_QoL_other_v, pattern = QoL_given_answer[given_idx], replacement = "")
+}
+
+NCP_QoL_other_v = str_trim(str_replace_all(NCP_QoL_other_v, pattern = "[,;]", replacement = "")) # warning: other answers without comma and semicolon
+table(NCP_QoL_other_v)
+
+NCP_QoL_other_wospace_v = str_replace_all(NCP_QoL_other_v, pattern = "[ ]", replacement = "") # remove whitespace
+NCP_QoL_other_idx_2.14 = str_length(NCP_QoL_other_wospace_v) >= 1 # does it have still more characters?
+
+NCP_QoL_other_v[NCP_QoL_other_idx_2.14]
+n_other_2.14 = length(which(NCP_QoL_other_idx_2.14)); n_other_2.14
+
+# Count given and other answers individually
+
+NCP_QoL_given_detected = sapply(QoL_given_answer, FUN = function(x) str_detect(as.character(s3_single$"2.14"), pattern = x))
+
+NCP_QoL_given_detected_one_na = ifelse(NCP_QoL_given_detected, yes = 1, no = NA)
+
+NCP_QoL_given_detected_df = data.frame(s3_single$paperID, s3_single$"2.14", NCP_QoL_given_detected_one_na, other=NA)
+colnames(NCP_QoL_given_detected_df)
+NCP_QoL_given_detected_df <- NCP_QoL_given_detected_df[-c(14:15)]
+
+colnames(NCP_QoL_given_detected_df)
+
+NCP_QoL_given_detected_df[is.na(NCP_QoL_given_detected_df)] = 0
+
+colSums(NCP_QoL_given_detected_df[-c(1:2)])
+
+
+MF_cols = paste0("MF", 1:4, ".key")
+s3_single_MF = s3_single[,c("paperID", MF_cols)]
+
+# Sum all the nature given answers
+NCP_QoL_sum_v =rowSums(NCP_QoL_given_detected_df[, 3:13], na.rm=T)
+
+# Tabulate by MF
+NCP_QoL_by_mf_df = sapply(MF_cols, FUN = function(mf_colname) tapply(NCP_QoL_sum_v, INDEX = s3_single_MF[,mf_colname], FUN = sum, na.rm=T))
+NCP_QoL_by_mf_df = NCP_QoL_by_mf_df["1", ]
+
+names(NCP_QoL_by_mf_df) = c("MF1", "MF2", "MF3", "MF4")
+
+barplot(NCP_QoL_by_mf_df)
+
+# pdf("output/Fig_QoL_MF.pdf", width=10, height = 10, pointsize = 12)
+pie(NCP_QoL_by_mf_df, col = viridis(4), main = "People's quality of life")
+# dev.off()
 
 
 
@@ -592,7 +1019,8 @@ colnames(ES_cnt_df) = c("Nature", "Regulation", "Material", "Non-material", "Qua
 boxplot(ES_cnt_df)
 
 ES_cnt_tb_l = (apply(ES_cnt_df, MARGIN = 2,  table))
-par(mfrow=c(2,2))
+
+par(mfrow=c(2,3))
 pie(ES_cnt_tb_l[[1]], main = "Nature")
 pie(ES_cnt_tb_l[[2]], main = "Regulation")
 pie(ES_cnt_tb_l[[3]], main = "Material")
@@ -603,7 +1031,9 @@ dev.off()
 # how many ES were studied in each application?
 boxplot(rowSums(ES_cnt_df))
 
-barplot(table(rowSums(ES_cnt_df)), main = "How many ES were studied per application? ")
+#pdf("output/howmanyNCPperApp.pdf", width=10, height = 10, pointsize = 12)
+barplot(table(rowSums(ES_cnt_df)), las = 1, ylim = c(0, 350), main = "How many NCP were studied per application?", ylab = "# of applications", xlab = "3 of NCP per application")
+#dev.off()
 
 # were there studies with no ES category studied?
 table(rowSums(ES_cnt_df) == 0 ) # no
@@ -613,10 +1043,167 @@ ES_category_cnt_v = rowSums(ES_cnt_df > 0)
 boxplot(ES_category_cnt_v)
 ES_category_cnt_tb =(table(ES_category_cnt_v))
 
-pie(ES_category_cnt_tb, main = "# of ES categories per application")
+#pdf("output/howmanyNCPCategoriesperApp.pdf", width=10, height = 10, pointsize = 12)
+pie(ES_category_cnt_tb, main = "# of NCP categories per application", col = brewer.YlGnBu(5))
+dev.off()
+
+##### Add up them all
+All_paperIds = c(NCP_nature_given_detected_df$s3_single.paperID, NCP_regul_given_detected_df$s3_single.paperID, NCP_material_given_detected_df$s3_single.paperID, NCP_non_material_given_detected_df$s3_single.paperID,  NCP_QoL_given_detected_df$s3_single.paperID)
+
+length(All_paperIds)
+length(unique(All_paperIds))
+All_paperIds = unique(All_paperIds)
 
 
 
+NCP_nature_corrected_df = read.xlsx("Corrected/s3_single_with_other_nature_n20-corrSJ.xlsx", sheet = 1)
+dim(NCP_nature_corrected_df); colnames(NCP_nature_corrected_df)
+
+colnames(NCP_nature_corrected_df)[c(1:7)] # Make sure two datasets are in the same order
+
+str(NCP_nature_given_detected_df)
+
+NCP_list <- matrix(NA, ncol = ncol(NCP_nature_corrected_df)-6, nrow = nrow(NCP_nature_given_detected_df))
+colnames(NCP_list) <- colnames(NCP_nature_corrected_df)[-c(1:6)]
+
+NCP_nature_full <- cbind(NCP_nature_given_detected_df, NCP_list)
+NCP_nature_full[is.na(NCP_nature_full)] = 0
+
+colnames(NCP_nature_full)[7] = "Maintenance.of.options.org"
+
+dim(NCP_nature_full)
+
+colnames(NCP_nature_full)
+colnames(NCP_nature_given_detected_df) # 2.11
+colnames(NCP_regul_given_detected_df) # 2.11
+colnames(NCP_material_given_detected_df) # 2.12
+colnames(NCP_non_material_given_detected_df) # 2.13
+colnames(NCP_QoL_given_detected_df) # 2.14
+
+NCP_nature_full[,c(8:17)][match(NCP_regul_given_detected_df$s3_single.paperID, NCP_nature_full$s3_single.paperID),  ] = NCP_regul_given_detected_df[,-c(1:2)]
+
+NCP_nature_full[,c(18:21)][match(NCP_material_given_detected_df$s3_single.paperID, NCP_nature_full$s3_single.paperID),  ] = NCP_material_given_detected_df[,-c(1:2)]
+
+NCP_nature_full[,c(22:24)][match(NCP_non_material_given_detected_df$s3_single.paperID, NCP_nature_full$s3_single.paperID), ] = NCP_non_material_given_detected_df[,-c(1:2)]
+
+NCP_nature_full[,c(25:35)][match(NCP_QoL_given_detected_df$s3_single.paperID, NCP_nature_full$s3_single.paperID),  ] = NCP_QoL_given_detected_df[,-c(1:2)]
+
+# merge duplicated colummns
+NCP_nature_full$Maintenance.of.options = NCP_nature_full$Maintenance.of.options.org + NCP_nature_full$Maintenance.of.options
+
+NCP_nature_full = subset(NCP_nature_full, select= -Maintenance.of.options.org)
+
+
+colnames(NCP_nature_full)
+
+# Check the col sum of the integrated dataset
+colSums(NCP_nature_full[-c(1:2)])
+colSums(NCP_nature_given_detected_df[-c(1:2)])
+colSums(NCP_regul_given_detected_df[-c(1:2)])
+colSums(NCP_material_given_detected_df[-c(1:2)])
+colSums(NCP_non_material_given_detected_df[-c(1:2)])
+colSums(NCP_QoL_given_detected_df[-c(1:2)])
+
+
+
+################ Read corrected data (from Sander)
+
+NCP_nature_corrected_df = read.xlsx("Corrected/s3_single_with_other_nature_n20-corrSJ.xlsx", sheet = 1)
+NCP_material_corrected_df = read.xlsx("Corrected/s3_single_with_other_material_n25_corrSJ.xlsx", sheet = 1)
+NCP_non_material_corrected_df = read.xlsx("Corrected/s3_single_with_other_non_material_n22_corrSJ.xlsx", sheet = 1)
+NCP_regul_corrected_df = read.xlsx("Corrected/s3_single_with_other_regul_n46-corrSJ.xlsx", sheet = 1)
+NCP_QoL_corrected_df = read.xlsx("Corrected/s3_single_with_other_QoL_n29_corrSJ.xlsx", sheet = 1)
+
+
+colnames(NCP_nature_corrected_df)
+colnames(NCP_material_corrected_df)
+colnames(NCP_non_material_corrected_df)
+colnames(NCP_regul_corrected_df)
+colnames(NCP_QoL_corrected_df)
+dim(NCP_nature_corrected_df)
+dim(NCP_material_corrected_df)
+dim(NCP_non_material_corrected_df)
+dim(NCP_regul_corrected_df)
+dim(NCP_QoL_corrected_df)
+
+# NCP_other_l = list(NCP_nature_corrected_df, NCP_material_corrected_df, NCP_non_material_corrected_df, NCP_regul_corrected_df, NCP_QoL_corrected_df)
+
+
+Allanswers_paperIds = c(NCP_nature_given_detected_df$paperID, NCP_material_corrected_df$paperID, NCP_non_material_corrected_df$paperID, NCP_regul_corrected_df$paperID, NCP_QoL_corrected_df$paperID)
+
+# length(CorrectedOther_paperIds)
+# length(unique(CorrectedOther_paperIds))
+
+
+
+# First prepare a data frame which can store all the five data frames
+CorrectedOther_paperIds = c(NCP_nature_corrected_df$paperID, NCP_material_corrected_df$paperID, NCP_non_material_corrected_df$paperID, NCP_regul_corrected_df$paperID, NCP_QoL_corrected_df$paperID)
+
+# length(CorrectedOther_paperIds)
+# length(unique(CorrectedOther_paperIds))
+CorrectedOther_paperIds = unique(CorrectedOther_paperIds)
+
+CorrectedOther_df = data.frame(matrix(nrow = length(CorrectedOther_paperIds), ncol = ncol(NCP_nature_corrected_df)))
+colnames(CorrectedOther_df) = colnames(NCP_nature_corrected_df)
+
+# Fill all values by zero
+CorrectedOther_df[,-c(1:2)] = 0
+CorrectedOther_df$paperID =CorrectedOther_paperIds
+
+NCP_nature_corrected_df[is.na(NCP_nature_corrected_df)] = 0
+NCP_material_corrected_df[is.na(NCP_material_corrected_df)] = 0
+NCP_non_material_corrected_df[is.na(NCP_non_material_corrected_df)] = 0
+NCP_regul_corrected_df[is.na(NCP_regul_corrected_df)] = 0
+NCP_QoL_corrected_df[is.na(NCP_QoL_corrected_df)] = 0
+
+# add up.. there are duplicated entries.
+CorrectedOther_df[match( NCP_nature_corrected_df$paperID, CorrectedOther_df$paperID), -c(1:2)] = CorrectedOther_df[match( NCP_nature_corrected_df$paperID, CorrectedOther_df$paperID), -c(1:2)] + NCP_nature_corrected_df[, -c(1:2)]
+
+CorrectedOther_df[match( NCP_material_corrected_df$paperID, CorrectedOther_df$paperID), -c(1:2)] = CorrectedOther_df[match( NCP_material_corrected_df$paperID, CorrectedOther_df$paperID), -c(1:2)] + NCP_material_corrected_df[, -c(1:2)]
+
+CorrectedOther_df[match( NCP_non_material_corrected_df$paperID, CorrectedOther_df$paperID), -c(1:2)] = CorrectedOther_df[match( NCP_non_material_corrected_df$paperID, CorrectedOther_df$paperID), -c(1:2)] + NCP_non_material_corrected_df[, -c(1:2)]
+
+CorrectedOther_df[match( NCP_regul_corrected_df$paperID, CorrectedOther_df$paperID), -c(1:2)] = CorrectedOther_df[match( NCP_regul_corrected_df$paperID, CorrectedOther_df$paperID), -c(1:2)] + NCP_regul_corrected_df[, -c(1:2)]
+
+CorrectedOther_df[match( NCP_QoL_corrected_df$paperID, CorrectedOther_df$paperID), -c(1:2)] = CorrectedOther_df[match( NCP_QoL_corrected_df$paperID, CorrectedOther_df$paperID), -c(1:2)]+ NCP_QoL_corrected_df[, -c(1:2)]
+
+# assertion fails as there are multiple entries
+# sum(CorrectedOther_df[,-c(1:2)], na.rm=T)
+#
+# sum(NCP_QoL_corrected_df[,-c(1:2)], na.rm=T) +
+#   sum(NCP_nature_corrected_df[,-c(1:2)], na.rm=T) +
+#   sum(NCP_material_corrected_df[,-c(1:2)], na.rm=T) +
+#   sum(NCP_non_material_corrected_df[,-c(1:2)], na.rm=T) +
+#   sum(NCP_regul_corrected_df[,-c(1:2)], na.rm=T)
+
+# we can ignore it as we only cares if it is > 0
+CorrectedOtherTF_df = cbind(CorrectedOther_df[, 1:2], CorrectedOther_df[, -c(1:2)] > 0)
+
+corr_cnt = sapply(CorrectedOtherTF_df[, 3:34], FUN = function(x) length(which(x)))
+
+barplot(corr_cnt, horiz=T, las=1)
+
+
+## Correct the NCP_nature_full with the corrected answer by Sander
+
+# NCP_nature_full[match(CorrectedOther_df$paperID, NCP_nature_full$s3_single.paperID,)] = CorrectedOther_df
+
+# NCP_nature_full$s3_single.paperID[CorrectedOther_df$paperID]
+
+names(NCP_nature_full) <- names(CorrectedOther_df)
+combined.data <- rbind(NCP_nature_full, CorrectedOther_df)
+nrow(combined.data)
+
+
+NCP_short_names <- c(nature_given_answers[-6], regul_given_answer[-c(1, 11)], material_given_answer[-5], non_material_given_answer[-4], QoL_given_answer[-12])
+NCP_short_names[1] <- "Individual organisms"
+length(NCP_short_names)
+
+#pdf("output/Fig_FullNCP_4Nov.pdf", width=16, height = 18, pointsize = 12)
+# png("output/Fig_FullNCP_30Oct.png", width=800, height = 1000, pointsize = 12)
+par(mar = c(5, 25, 5, 5))
+barplot(colSums(combined.data[-c(1:2)]), horiz = T, las = 1, col= c(rep("palegreen3", 5), rep("lightblue1", 9), rep("skyblue2", 4), rep("blue", 3), rep("peachpuff", 11)), border = c(rep("palegreen3", 5), rep("lightblue1", 9), rep("skyblue3", 4), rep("blue", 3), rep("peachpuff", 11)), names.arg  = NCP_short_names, xlab = "# of applications")
+#dev.off()
 
 ### 2.15 The application assesses multiple values and brings thme together into an 'overall value' or importance by: (check all that apply)
 summary(s3_single$"2.15")
@@ -633,8 +1220,113 @@ value_split_v = unlist(split_res_l_2.15)
 value_split_v_fac = factor(value_split_v)
 value_tb_sorted = sort(table(value_split_v_fac), decreasing = F)
 value_tb_reduced = (table(value_split_v_fac))[which (table(value_split_v_fac)>1)]
-par(mar=c(5, 20, 5, 5))
-barplot(sort(value_tb_reduced, F), horiz=T, las=1, cex.names=0.5)
+value_tb_reduced_temporary = as.numeric(value_tb_reduced)
+
+short.names.multivalues = c(
+  "Bringing them together by converting all values to a common unit",
+  "Bringing them together and assigning weights \nto individual value targets based on \nresearcher defined (or even) weights",
+  "Bringing them together and assign weights \nto individual value targets based on a group discussion \nabout acceptable weights given to different values",
+  "Keeping the results from the study of \nthe separate value and use the results \nas a basis for a group discussion.",
+  "The application assesses multiple values \nas bundles and do not attempt \nto weight individual value targets",
+  "The application asks respondents or participants \nto rank options including multiple values \nand infer the weight of individual components from their ranking.",
+  "unclear: method of bringing values together is not explained",
+  "irrelevant: application does not attempt to bring the different values together"
+)
+names(value_tb_reduced_temporary) = names(short.names.multivalues)
+value_tb_reduced_temporary["other"]=17
+
+par(mar=c(5, 25, 5, 5))
+barplot( rev(value_tb_reduced_temporary), horiz=T, las=1, cex.names = 0.7)
+
+
+split_res_2.15_df = plyr::ldply(split_res_l_2.15, rbind) # automatically decide how many columns should it have
+
+split_res_2.15_df = sapply(split_res_2.15_df, FUN = function(x) as.character(x))
+
+multivalue_given_answer = c(
+  "Bringing them together by converting all values to a common unit",
+  "Bringing them together and assigning weights to individual value targets based on researcher defined (or even) weights",
+  "Bringing them together and assign weights to individual value targets based on a group discussion about acceptable weights given to different values",
+  "Keeping the results from the study of the separate value and use the results as a basis for a group discussion.",
+  "The application assesses multiple values as bundles and do not attempt to weight individual value targets",
+  "The application asks respondents or participants to rank options including multiple values and infer the weight of individual components from their ranking.",
+  "unclear: method of bringing values together is not explained",
+  "irrelevant: application does not attempt to bring the different values together"
+)
+
+
+# Be aware of the NA values when counting
+multivalue_other_choice_cnt =  apply(split_res_2.15_df, MARGIN = 1, FUN = function(x) length(which(!(x[!is.na(x)] %in% multivalue_given_answer)))) # how many choices (non-NA) are not in the given well-formed answers
+# length(idx1)
+table(multivalue_other_choice_cnt > 0 ) # 17 studies
+cnt_otherchoice_multivalue = length(which(multivalue_other_choice_cnt > 0))
+# studies including other choices
+s3_single$paperID[multivalue_other_choice_cnt > 0 ]
+s3_single_with_other_multivalue_df = s3_single[multivalue_other_choice_cnt > 0, c("paperID", "2.15")]
+
+write.xlsx(s3_single_with_other_multivalue_df, paste0("output/s3_single_with_other_multivalue2_15_n", cnt_otherchoice_multivalue, ".xlsx"))
+
+
+
+
+NCP_non_material_other_v = as.character(s3_single$"2.13")
+
+for (given_idx in 1:length(non_material_given_answer)) {
+  NCP_non_material_other_v = str_replace_all(NCP_non_material_other_v, pattern = non_material_given_answer[given_idx], replacement = "")
+}
+
+NCP_non_material_other_v = str_trim(str_replace_all(NCP_non_material_other_v, pattern = "[,;]", replacement = "")) # warning: other answers without comma and semicolon
+table(NCP_non_material_other_v)
+
+NCP_non_material_other_wospace_v = str_replace_all(NCP_non_material_other_v, pattern = "[ ]", replacement = "") # remove whitespace
+NCP_non_material_other_idx_2.13 = str_length(NCP_non_material_other_wospace_v) >= 1 # does it have still more characters?
+
+NCP_non_material_other_v[NCP_non_material_other_idx_2.13]
+n_other_2.13 = length(which(NCP_non_material_other_idx_2.13)); n_other_2.13
+
+# Count given and other answers individually
+
+NCP_non_material_given_detected = sapply(non_material_given_answer, FUN = function(x) str_detect(as.character(s3_single$"2.13"), pattern = x))
+
+NCP_non_material_given_detected_one_na = ifelse(NCP_non_material_given_detected, yes = 1, no = NA)
+
+NCP_non_material_given_detected_df = data.frame(s3_single$paperID, s3_single$"2.13", NCP_non_material_given_detected_one_na, other=NA)
+colnames(NCP_non_material_given_detected_df)
+NCP_non_material_given_detected_df <- NCP_non_material_given_detected_df[-c(6:7)]
+
+colnames(NCP_non_material_given_detected_df)
+
+NCP_non_material_given_detected_df[is.na(NCP_non_material_given_detected_df)] = 0
+
+colSums(NCP_non_material_given_detected_df[-c(1:2)])
+
+
+MF_cols = paste0("MF", 1:4, ".key")
+s3_single_MF = s3_single[,c("paperID", MF_cols)]
+
+# Sum all the nature given answers
+NCP_non_material_sum_v =rowSums(NCP_non_material_given_detected_df[, 3:5], na.rm=T)
+
+# Tabulate by MF
+NCP_non_material_by_mf_df = sapply(MF_cols, FUN = function(mf_colname) tapply(NCP_non_material_sum_v, INDEX = s3_single_MF[,mf_colname], FUN = sum, na.rm=T))
+NCP_non_material_by_mf_df = NCP_non_material_by_mf_df["1", ]
+
+names(NCP_non_material_by_mf_df) = c("MF1", "MF2", "MF3", "MF4")
+
+barplot(NCP_non_material_by_mf_df)
+
+# pdf("output/Fig_non_material_MF.pdf", width=10, height = 10, pointsize = 12)
+pie(NCP_non_material_by_mf_df, col = viridis(4), main = "Non Material Nature Contribution to People")
+# dev.off()
+
+
+
+
+
+
+
+
+
 
 
 ### 2.16 - The application mentions interests and conflicts
@@ -648,6 +1340,132 @@ barplot(table(s3_single$"2.16"), horiz = T, las = 1, cex.names = 0.5)
 #### Topic 3: Application descriptors
 
 ## 3.1 Elicitation process: Through what process were values collected?
+summary(s3_single$"3.1")
+table(s3_single$"3.1")
+
+
+# Multiple answers are separated by ','
+elicitation_org = c("Individual responses face-to-face, phone or similar  responses",
+                    "Obtaining information by observing biological aspects in real-time \\(e.g. recording bee visitation of flowers, counting birds, measuring biomass of trees\\)",
+                    "Obtaining information by collecting measurement data over a period of time \\(e.g. weather data, sediments, nutrients etc. \\)",
+                    "Obtaining information about biophysical indicators using secondary data \\(expert estimates, land use maps, satellite images, species Atlas data etc\\)"
+                    )
+
+elicitation_alt = c("Individual responses personal",
+                    "Obtaining information by observing biological aspects in real-time",
+                    "Obtaining information by collecting measurement data over a period of time",
+                    "Obtaining information about biophysical indicators using secondary data")
+
+
+elicitation_org_v = as.character(s3_single$"3.1")
+elicitation_alt_v = elicitation_org_v
+
+
+# Replace well-defined options to simple format
+for (o_idx in 1:length(elicitation_org)) {
+  elicitation_alt_v = str_replace_all(elicitation_alt_v, pattern = elicitation_org[o_idx], replacement = elicitation_alt[o_idx])
+}
+
+split_res_l_3.1 = vector("list", length = nrow(s3_single))
+
+for (row_idx in 1:nrow(s3_single)) {
+
+  split_tmp = str_trim(str_split(elicitation_alt_v[row_idx], pattern = ",")[[1]])
+  split_res_l_3.1[[row_idx]] = split_tmp
+}
+
+elicitation_split_v = unlist(split_res_l_3.1)
+elicitation_split_v_fac = factor(elicitation_split_v)
+elici_tb_sorted = sort(table(elicitation_split_v_fac), decreasing = F)
+barplot(elici_tb_sorted, horiz = T, las =1) # until here, everything is fine.. Then, it doesn't find the shorted answers..
+
+
+split_res_3.1_df = plyr::ldply(split_res_l_3.1, rbind) # automatically decide how many columns should it have
+
+split_res_3.1_df = sapply(split_res_3.1_df, FUN = function(x) as.character(x))
+
+
+
+# don't do escaping
+elicit_given_answer = c(
+  "Individuals written responses to questions",
+  "Individual responses following a group discussion",
+  "Individual responses personal", # face-to-face, phone or similar responses",
+  "Group responses to the valuation question",
+  "Obtaining information from transactions in markets",
+  "Obtaining information from documents (policy/legal/historical texts)",
+  "Observing individual practices/behaviors",
+  "Observing group practices/behaviors",
+  "Obtaining information by observing biological aspects in real-time", # (e.g. recording bee visitation of flowers, counting birds, measuring biomass of trees)
+  "Obtaining information by collecting measurement data over a period of time", # (e.g. weather data, sediments, nutrients etc. )
+  "Obtaining information about biophysical indicators using secondary data", # (expert estimates, land use maps, satellite images, species Atlas data etc)
+  "unclear"
+)
+
+######### USE this function where stringr::functions() used
+escapeForStringR = function(x) {
+  gsub("([.|()\\^{}+$*?/-]|\\[|\\])", "\\\\\\1", x)
+}
+
+# we can escape input characters for being used in Stringr functions
+escapeForStringR(elicit_given_answer)
+
+# Be aware of the NA values when counting
+elicit_other_choice_cnt = apply(split_res_3.1_df, MARGIN = 1, FUN = function(x) length(which(!(x[!is.na(x)] %in% elicit_given_answer)))) # how many choices (non-NA) are not in the given well-formed answers
+# length(elicit_other_choice_cnt)
+
+table(elicit_other_choice_cnt > 0 ) # 78 studies; it doesn't find the shortened answers TODO (solved?)
+cnt_otherchoice_elicit = length(which(elicit_other_choice_cnt > 0))
+# studies including other choices
+s3_single$paperID[elicit_other_choice_cnt > 0 ]
+s3_single_with_other_elicit_df = s3_single[elicit_other_choice_cnt > 0, c("paperID", "3.1")]
+
+write.xlsx(s3_single_with_other_elicit_df, paste0("output/s3_single_with_other_elicit_n", cnt_otherchoice_elicit, ".xlsx"))
+
+
+# Identify other answers in the uncorrected data
+
+elicit_other_v = elicitation_alt_v
+
+for (given_idx in 1:length(elicit_given_answer)) {
+  elicit_other_v = str_replace_all(elicit_other_v, pattern = escapeForStringR(elicit_given_answer[given_idx]), replacement = "") # escaped using escapeForStringR
+}
+
+elicit_other_v = str_trim(str_replace_all(elicit_other_v, pattern = "[,;]", replacement = "")) # warning: other answers without comma and semicolon
+table(elicit_other_v)
+
+eclit_other_wospace_v = str_replace_all(elicit_other_v, pattern = "[ ]", replacement = "") # remove whitespace
+elicit_other_idx_3.1 = str_length(eclit_other_wospace_v) >= 1 # does it have still more characters?
+
+elicit_other_v[elicit_other_idx_3.1]
+n_other_3.1 = length(which(elicit_other_idx_3.1)); n_other_3.1
+
+# Count given and other answers individually
+
+NCP_elicit_given_detected = sapply(escapeForStringR(elicit_given_answer), FUN = function(x) str_detect(elicitation_alt_v, pattern = x))
+dim(NCP_elicit_given_detected)
+
+
+NCP_elicit_given_detected_one_na = ifelse(NCP_elicit_given_detected, yes = 1, no = NA)
+
+NCP_elicit_given_detected_df = data.frame(s3_single$paperID, s3_single$"3.1", NCP_elicit_given_detected_one_na, other=NA)
+NCP_elicit_given_detected_df <- NCP_elicit_given_detected_df[-c(15)]
+
+colnames(NCP_elicit_given_detected_df)
+
+NCP_elicit_given_detected_df[is.na(NCP_elicit_given_detected_df)] = 0
+
+NCP_elicit_given_detected_final <- colSums(NCP_elicit_given_detected_df[-c(1:2)])
+
+names(NCP_elicit_given_detected_final) <- elicit_given_answer
+
+
+pdf("output/Fig_3.1_4Nov.pdf", width=16, height = 18, pointsize = 12)
+par(mar = c(5, 30, 5, 5))
+barplot(rev(NCP_elicit_given_detected_final), horiz = T, las= 1, col = IPbeslightgreen, border = IPbeslightgreen)
+dev.off()
+
+
 
 ## 3.2 The application uses or is based on data from the same spatiotemporal and socio-economic context (multiple answers possible in case of mixed/integrated methods)
 summary(s3_single$"3.2")
@@ -666,7 +1484,23 @@ same_spatiotemporal_split_v_fac = factor(same_spatiotemporal_split_v)
 same_spatiotemporal_sorted = sort(table(same_spatiotemporal_split_v_fac), decreasing = F)
 
 par(mar=c(5, 20, 5, 5))
-barplot(sort(same_spatiotemporal_sorted, F), horiz=T, las=1, cex.names=0.5)
+barplot(sort(same_spatiotemporal_sorted, F), horiz=T, las=1, col = IPbeslightgreen, border = IPbeslightgreen, xlim = c(0, 1100))
+
+split_res_3.2_df = plyr::ldply(split_res_l_3.2, rbind) # automatically decide how many columns should it have
+
+split_res_3.2_df = sapply(split_res_3.2_df, FUN = function(x) as.character(x))
+
+other_data_cnt =  apply(split_res_3.2_df, MARGIN = 1, FUN = function(x) length(which((x[!is.na(x)] %in% c("data transferred from other context(s)", "unclear"))))) # how many choices (non-NA) are not in the given well-formed answers
+# length(idx1)
+table(other_data_cnt == 1) # 148 (125 + 23)
+cnt_otherdata = length(which(other_data_cnt == 1))
+# studies including other choices
+s3_single$paperID[other_data_cnt == 1]
+
+s3_single_with_other_data_df = s3_single[other_data_cnt == 1, c("paperID", "3.2")]
+write.xlsx(s3_single_with_other_data_df, paste0("output/s3_single_with_other_data_n", cnt_otherdata, ".xlsx"))
+
+
 
 # pdf("output/Fig_3.2_26Oct.pdf", width=12, height = 8, pointsize = 12)
 pie(same_spatiotemporal_sorted)
@@ -692,7 +1526,10 @@ articulated_sorted = sort(table(articulated_split_v_fac), decreasing = F)
 length(articulated_sorted)  # 2013
 
 other_df_3.3= cbind(paperID= s3_single$paperID, ANSWER_RAW= as.character(s3_single$"3.3") )
-write.xlsx(other_df_6.4, file = "output/3.3_allanswers.xlsx") # does it make sense to check all?
+write.xlsx(other_df_3.3, file = "output/3.3_allanswers.xlsx") # does it make sense to check all?
+
+
+
 
 ## 3.4 This application presents values in following form (multiple answers possible in case of mixed/integrated methods)
 summary(s3_single$"3.4")
@@ -705,33 +1542,106 @@ values_org_v = as.character(s3_single$"3.4")
 values_alt_v = values_org_v
 values_alt_v = str_replace_all(values_alt_v, pattern = values_org, replacement = values_alt)
 
+values_org_v = as.character(s3_single$"3.4")
+values_alt_v = values_org_v
+
+
+# Replace well-defined options to simple format
+for (o_idx in 1:length(values_org)) {
+  values_alt_v = str_replace_all(values_alt_v, pattern = values_org[o_idx], replacement = values_alt[o_idx])
+}
+
+split_res_l_3.4 = vector("list", length = nrow(s3_single))
+
+for (row_idx in 1:nrow(s3_single)) {
+
+  split_tmp = str_trim(str_split(values_alt_v[row_idx], pattern = ",")[[1]])
+  split_res_l_3.4[[row_idx]] = split_tmp
+}
+
+values_split_v = unlist(split_res_l_3.4)
+values_split_v_fac = factor(values_split_v)
+values_tb_sorted = sort(table(values_split_v_fac), decreasing = F)
+barplot(values_tb_sorted, horiz = T, las =1) # until here, everything is fine.. Then, it doesn't find the shorted answers..
+
+
+split_res_3.4_df = plyr::ldply(split_res_l_3.4, rbind) # automatically decide how many columns should it have
+
+split_res_3.4_df = sapply(split_res_3.4_df, FUN = function(x) as.character(x))
+
 values_given_answers = c(
-  "artistic",# (e.g. music, paintings, drawings, poetry)
-  "narrative \\(descriptions\\)",
-  "categorical\\/nominal \\(e.g. types\\)",
-  "ordinal expression \\(ranked types e.g. worse \\- better \\/ low \\-high \\/ small \\- big\\) cardinal expression \\(in numbers\\)"
+  "artistic", # (e.g. music, paintings, drawings, poetry)
+  "narrative (descriptions)",
+  "categorical/nominal  (e.g. types)",
+  "ordinal expression (ranked types e.g. worse - better / low -high / small - big)",
+  "cardinal expression (in numbers)"
 )
 
 
-split_res_l_3.4 = vector("list", length = nrow(s3_single))
+# Be aware of the NA values when counting
+values_other_choice_cnt = apply(split_res_3.4_df, MARGIN = 1, FUN = function(x) length(which(!(x[!is.na(x)] %in% values_given_answers)))) # how many choices (non-NA) are not in the given well-formed answers
+# length(elicit_other_choice_cnt)
+
+table(values_other_choice_cnt > 0 ) # 59 studies
+cnt_otherchoice_values = length(which(values_other_choice_cnt > 0)); cnt_otherchoice_values
+# studies including other choices
+s3_single$paperID[values_other_choice_cnt > 0 ]
+s3_single_with_other_values_df = s3_single[values_other_choice_cnt > 0, c("paperID", "3.4")]
+
+write.xlsx(s3_single_with_other_values_df, paste0("output/s3_single_with_other_values_n", cnt_otherchoice_values, ".xlsx"))
+
+
+escapeForStringR = function(x) {
+  gsub("([.|()\\^{}+$*?/-]|\\[|\\])", "\\\\\\1", x)
+}
+
+# we can escape input characters for being used in Stringr functions
+escapeForStringR(values_given_answers)
+
+# Identify other answers in the uncorrected data
 
 values_other_v = values_alt_v
 
 for (given_idx in 1:length(values_given_answers)) {
-
-  values_other_v = str_replace_all(values_other_v, pattern = values_given_answers[given_idx], replacement = "")
+  values_other_v = str_replace_all(values_other_v, pattern = escapeForStringR(values_given_answers[given_idx]), replacement = "") # escaped using escapeForStringR
 }
 
-values_other_v = str_trim(str_replace_all(values_other_v, pattern = "[,]", replacement = "")) # warning: other answers without comma and semicolon
+
+values_other_v = str_trim(str_replace_all(values_other_v, pattern = "[,;]", replacement = "")) # warning: other answers without comma and semicolon
 table(values_other_v)
-length(table(values_other_v))
 
 values_other_wospace_v = str_replace_all(values_other_v, pattern = "[ ]", replacement = "") # remove whitespace
-other_idx_3.4 = str_length(values_other_wospace_v) >= 1 # does it have still more characters?
+values_other_idx_3.4 = str_length(values_other_wospace_v) >= 1 # does it have still more characters?
 
-values_other_v[other_idx_3.4]
-n_other_3.4 = length(which(other_idx_3.4)); n_other_3.4
-other_df_3.4= cbind(paperID= s3_single$paperID, OTHER_ANSWER_3_4 = values_other_v, ANSWER_RAW = as.character(s3_single$"3.4") )[other_idx_3.4,]
+values_other_v[values_other_idx_3.4]
+n_other_3.4 = length(which(values_other_idx_3.4)); n_other_3.4
+
+
+# Count given and other answers individually
+
+values_given_detected = sapply(escapeForStringR(values_given_answers), FUN = function(x) str_detect(values_alt_v, pattern = x))
+dim(values_given_detected)
+
+values_given_detected_one_na = ifelse(values_given_detected, yes = 1, no = NA)
+
+values_given_detected_df = data.frame(s3_single$paperID, s3_single$"3.4", values_given_detected_one_na, other=NA)
+# NCP_elicit_given_detected_df <- values_given_detected_df[-c(15)]
+
+colnames(values_given_detected_df)
+
+values_given_detected_df[is.na(values_given_detected_df)] = 0
+
+values_given_detected_df_final <- colSums(values_given_detected_df[-c(1:2)])
+
+names(values_given_detected_df_final) <- values_given_answers
+values_given_detected_df_final <- values_given_detected_df_final[-(6)]
+
+names(values_given_detected_df_final)[4] <- "ordinal expression \n(ranked types e.g. worse - better / low -high / small - big)"
+
+pdf("output/Fig_3.4_4Nov.pdf", width=16, height = 18, pointsize = 12)
+par(mar = c(5, 25, 5, 5))
+barplot(rev(values_given_detected_df_final), horiz = T, las= 1, col = IPbeslightgreen, border = IPbeslightgreen)
+dev.off()
 
 
 
@@ -747,15 +1657,119 @@ stakeholder_org_v = as.character(s3_single$"3.5")
 stakeholder_alt_v = stakeholder_org_v
 stakeholder_alt_v = str_replace_all(stakeholder_alt_v, pattern = stakeholder_org, replacement = stakeholder_alt)
 
+stakeholder_org_v = as.character(s3_single$"3.5")
+stakeholder_alt_v = stakeholder_org_v
+
+
+# Replace well-defined options to simple format
+for (o_idx in 1:length(stakeholder_org)) {
+  stakeholder_alt_v = str_replace_all(stakeholder_alt_v, pattern = stakeholder_org[o_idx], replacement = stakeholder_alt[o_idx])
+}
+
+split_res_l_3.5 = vector("list", length = nrow(s3_single))
+
+for (row_idx in 1:nrow(s3_single)) {
+
+  split_tmp = str_trim(str_split(stakeholder_alt_v[row_idx], pattern = ",")[[1]])
+  split_res_l_3.5[[row_idx]] = split_tmp
+}
+
+stakeholder_split_v = unlist(split_res_l_3.5)
+stakeholder_split_v_fac = factor(stakeholder_split_v)
+stakeholder_tb_sorted = sort(table(stakeholder_split_v_fac), decreasing = F)
+barplot(stakeholder_tb_sorted, horiz = T, las =1) # until here, everything is fine.. Then, it doesn't find the shorted answers..
+
+
+split_res_3.5_df = plyr::ldply(split_res_l_3.5, rbind) # automatically decide how many columns should it have
+
+split_res_3.5_df = sapply(split_res_3.5_df, FUN = function(x) as.character(x))
+
+
 stakeholder_given_answer = c(
   "irrelevant: the method is not used to aggregate stakeholder's values",
-  "Simple-non-weighted aggregation \\(averages or summations\\) of participants\\(respondents\\) values",
-  "Simple-non-weighted aggregation \\(averages or summations\\) to a higher social scale \\(see 2.6\\)",
+  "Simple-non-weighted aggregation (averages or summations) of participants(respondents) values",
+  "Simple-non-weighted aggregation (averages or summations) to a higher social scale (see 2.6)",
   "Unclear: method of aggregation is not explained.",
+  "Weighted aggregation by numerical weighting to a higher social scale \\(see 2.6\\)", # should be replaced earlier than the shorter one
   "Weighted aggregation by numerical weighting",
-  "Weighted aggregation by a group process",
-  "Weighted aggregation by numerical weighting to a higher social scale \\(see 2.6\\)"
+  "Weighted aggregation by a group process"
 )
+
+
+# Be aware of the NA values when counting
+stakeholder_other_choice_cnt = apply(split_res_3.5_df, MARGIN = 1, FUN = function(x) length(which(!(x[!is.na(x)] %in% stakeholder_given_answer)))) # how many choices (non-NA) are not in the given well-formed answers
+# length(elicit_other_choice_cnt)
+
+table(stakeholder_other_choice_cnt > 0 ) # 38 studies
+cnt_otherchoice_stakeholder = length(which(stakeholder_other_choice_cnt > 0)); cnt_otherchoice_stakeholder
+# studies including other choices
+s3_single$paperID[stakeholder_other_choice_cnt > 0 ]
+s3_single_with_other_stakeholder_df = s3_single[stakeholder_other_choice_cnt > 0, c("paperID", "3.5")]
+
+write.xlsx(s3_single_with_other_stakeholder_df, paste0("output/s3_single_with_other_stakeholder_n", cnt_otherchoice_stakeholder, ".xlsx"))
+
+
+escapeForStringR = function(x) {
+  gsub("([.|()\\^{}+$*?/-]|\\[|\\])", "\\\\\\1", x)
+}
+
+# we can escape input characters for being used in Stringr functions
+escapeForStringR(stakeholder_given_answer)
+
+# Identify other answers in the uncorrected data
+
+stakeholder_other_v = stakeholder_alt_v
+
+for (given_idx in 1:length(stakeholder_given_answer)) {
+  stakeholder_other_v = str_replace_all(stakeholder_other_v, pattern = escapeForStringR(stakeholder_given_answer[given_idx]), replacement = "") # escaped using escapeForStringR
+}
+
+
+stakeholder_other_v = str_trim(str_replace_all(stakeholder_other_v, pattern = "[,;]", replacement = "")) # warning: other answers without comma and semicolon
+table(stakeholder_other_v)
+
+stakeholder_other_wospace_v = str_replace_all(stakeholder_other_v, pattern = "[ ]", replacement = "") # remove whitespace
+stakeholder_other_idx_3.5 = str_length(stakeholder_other_wospace_v) >= 1 # does it have still more characters?
+
+stakeholder_other_v[stakeholder_other_idx_3.5]
+n_other_3.5 = length(which(stakeholder_other_idx_3.5)); n_other_3.5
+
+
+# Count given and other answers individually
+
+stakeholder_given_detected = sapply(escapeForStringR(stakeholder_given_answer), FUN = function(x) str_detect(stakeholder_alt_v, pattern = x))
+dim(stakeholder_given_detected)
+
+stakeholder_given_detected_one_na = ifelse(stakeholder_given_detected, yes = 1, no = NA)
+
+stakeholder_given_detected_df = data.frame(s3_single$paperID, s3_single$"3.5", stakeholder_given_detected_one_na, other=NA)
+# NCP_elicit_given_detected_df <- values_given_detected_df[-c(15)]
+
+colnames(stakeholder_given_detected_df)
+
+stakeholder_given_detected_df[is.na(stakeholder_given_detected_df)] = 0
+
+stakeholder_given_detected_df_final <- colSums(stakeholder_given_detected_df[-c(1:2)])
+
+
+stakeholder.name.short <- c("Irrelevant","Simple: non-weighted aggregation nof participants values", "Simple: non-weighted aggregation to a higher social scale", "Unclear", "Weighted aggregation by numerical weighting to a higher social scale", "Weighted aggregation by numerical weighting", "Weighted aggregation by a group process")
+
+
+names(stakeholder_given_detected_df_final)[-(8)] <- stakeholder.name.short
+
+stakeholder_given_detected_df_final <- stakeholder_given_detected_df_final[-(8)]
+
+
+pdf("output/Fig_3.5_4Nov.pdf", width=16, height = 18, pointsize = 12)
+par(mar = c(5, 30, 5, 5))
+barplot(rev(stakeholder_given_detected_df_final), horiz = T, las= 1, col = IPbeslightgreen, border = IPbeslightgreen)
+dev.off()
+
+
+
+
+
+names(table(stakeholder_alt_v))
 
 # Identify other answers
 split_res_l_3.5 = vector("list", length = nrow(s3_single))
@@ -764,11 +1778,21 @@ stakeholder_other_v = stakeholder_alt_v
 
 for (given_idx in 1:length(stakeholder_given_answer)) {
 
-  stakeholder_other_v = str_replace_all(stakeholder_other_v, pattern = stakeholder_given_answer[given_idx], replacement = "")
+  # stakeholder_other_v = str_replace_all(stakeholder_other_v, pattern = stakeholder_given_answer[given_idx], replacement = LETTERS[given_idx])
+  stakeholder_other_v = str_replace_all(stakeholder_other_v, pattern = escapeForStringR(stakeholder_given_answer[given_idx]), replacement = "")
+
 }
 
+
+
+
+ names(table(stakeholder_other_v))
+
 stakeholder_other_v = str_trim(str_replace_all(stakeholder_other_v, pattern = "[,]", replacement = "")) # warning: other answers without comma and semicolon
-table(stakeholder_other_v)
+names(table(stakeholder_other_v))
+
+
+
 length(table(stakeholder_other_v))
 
 stakeholder_other_wospace_v = str_replace_all(stakeholder_other_v, pattern = "[ ]", replacement = "") # remove whitespace

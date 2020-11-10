@@ -44,7 +44,14 @@ s2_full$RowID = 1:nrow(s2_full)
 # s2_clean=cbind(s2paperID,s2Rater,s2scores)
 #s2=s2_clean # i think it is not a good idea to overlap the name.
 
-s2_reduced = s2_full[, c(3,2,4:11)] # s2 cleaned # do not remove the first 13 rows -c(1:13)
+
+
+# @TODO test data up to the 66 rows? Shoul we delete them?
+s2_full$X0.1...what.s.the.paper.ID[1:68]
+
+s2_row_test_idx = 1:66 # 1:16
+
+s2_reduced = s2_full[-s2_row_test_idx, c(3,2,4:11)] # s2 cleaned # do not remove the first 13 rows -c(1:13)
 colnames(s2_reduced)=c("paperID","rater","first_auth","valuation","application","multiple","appl_nr","appl_names","self_rel","comments")
 
 ### remove papers reviewed by multiple students (i.e. duplicated paperIDs)
@@ -92,7 +99,14 @@ col = matrix(data = colnames(s3_full)[1:86], nrow = 86, ncol = 1 )
 # s3_clean=cbind(s3paperID,s3Rater,s3scores)
 # #list with full colnames
 # #n=dim(s3)[2]
-s3_reduced = s3_full[, c(3,2,4:86)] # do not remove the first 16 testing rows -c(1:16)
+
+
+# @TODO test data up to the 60 rows? Shoul we delete them?
+s3_full$what.s.the.paper.ID[1:62]
+
+s3_row_test_idx = 1:60 # 1:16
+
+s3_reduced = s3_full[-s3_row_test_idx, c(3,2,4:86)] # do not remove the first 16 testing rows -c(1:16)
 
 
 colnames(s3_reduced)=c("paperID","rater","first_auth","appl_ID","warning",
@@ -107,14 +121,32 @@ colnames(s3_reduced)=c("paperID","rater","first_auth","appl_ID","warning",
 
 
 
-
 # Remove the studies omitted in the above for S2 (i.e. reviewed multiple times)
 
 s3_single = subset(s3_reduced, subset = !(paperID %in% paperid_ids_multiple))
 nrow(s3_reduced) - nrow(s3_single)
 which(s3_single$paperID %in% paperid_ids_multiple)
 
-s3_single
+
+# sample a row per duplicated studies
+s3_row_ids =  1:nrow(s3_reduced)
+
+paperid_ids_multiple_zero_idx = sapply(paperid_ids_multiple, FUN = function (x) length(s3_row_ids[s3_reduced$paperID ==x])>0)
+# @TODO there are studies non-existent in s3_full/s3_reduced
+paperid_ids_multiple[!paperid_ids_multiple_zero_idx]
+# consider only the avail. studies
+paperid_ids_multiple_non_zero = paperid_ids_multiple[paperid_ids_multiple_zero_idx]
+
+# sample one per each
+set.seed(2020) # seeding
+paperid_ids_multiple_sampled = sapply(paperid_ids_multiple_non_zero, FUN = function (x)  sample(s3_row_ids[s3_reduced$paperID ==x], 1))
+s3_multi = s3_reduced[paperid_ids_multiple_sampled, ]
+nrow(s3_reduced) - nrow(s3_single) ; nrow(s3_multi)
+
+# redefine s3_single
+s3_single = rbind(subset(s3_reduced, subset = !(paperID %in% paperid_ids_multiple)),s3_multi)
+nrow(s3_reduced) - nrow(s3_single) ; nrow(s3_multi)
+
 
 ##### Short and full questions
 colnames_s3_lookup_tb = data.frame(SHORTNAME= colnames(s3_reduced), NAME = colnames(s3_full)[c(3,2,4:86)])
