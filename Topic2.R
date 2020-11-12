@@ -533,9 +533,9 @@ names(NCP_nature_by_mf_df) = c("MF1", "MF2", "MF3", "MF4")
 
 barplot(NCP_nature_by_mf_df)
 
-pdf("output/Fig_nature_MF.pdf", width=10, height = 10, pointsize = 12)
-pie(NCP_nature_by_mf_df, col = viridis(4), main = "NCP Nature")
-dev.off()
+# pdf("output/Fig_nature_MF_12Nov.pdf", width=10, height = 10, pointsize = 12)
+pie(NCP_nature_by_mf_df, col = viridis(4), main = "NCP Nature", init.angle = 90, labels = NA)
+# dev.off()
 
 
 
@@ -695,8 +695,8 @@ names(NCP_regul_by_mf_df) = c("MF1", "MF2", "MF3", "MF4")
 
 barplot(NCP_regul_by_mf_df)
 
-# pdf("output/Fig_regult_MF.pdf", width=10, height = 10, pointsize = 12)
-pie(NCP_regul_by_mf_df, col = viridis(4), main = "Regulating Nature Contribution to People")
+# pdf("output/Fig_regult_MF_12Nov.pdf", width=10, height = 10, pointsize = 12)
+pie(NCP_regul_by_mf_df, col = viridis(4), main = "Regulating Nature Contribution to People", init.angle = 90, labels = NA)
 # dev.off()
 
 # pie(NCP_nature_by_mf_df, col = viridis(4), main = "NCP Nature")
@@ -801,9 +801,9 @@ names(NCP_material_by_mf_df) = c("MF1", "MF2", "MF3", "MF4")
 
 barplot(NCP_material_by_mf_df)
 
-# pdf("output/Fig_material_MF.pdf", width=10, height = 10, pointsize = 12)
-pie(NCP_material_by_mf_df, col = viridis(4), main = "Material Nature Contribution to People")
-# dev.off()
+ # pdf("output/Fig_material_MF_12Nov.pdf", width=10, height = 10, pointsize = 12)
+pie(NCP_material_by_mf_df, col = viridis(4), main = "Material Nature Contribution to People", init.angle = 90, labels = NA)
+ # dev.off()
 
 
 ### 2.13 There are multiple classifications of 'what is valued'. We want to know how these fit in the IPBES categories. The application assesses the following 'targets of valuation' regarding non-material Nature Contributions To People (multiple possible)
@@ -895,9 +895,9 @@ names(NCP_non_material_by_mf_df) = c("MF1", "MF2", "MF3", "MF4")
 
 barplot(NCP_non_material_by_mf_df)
 
-# pdf("output/Fig_non_material_MF.pdf", width=10, height = 10, pointsize = 12)
-pie(NCP_non_material_by_mf_df, col = viridis(4), main = "Non Material Nature Contribution to People")
-# dev.off()
+ # pdf("output/Fig_non_material_MF_12Nov.pdf", width=10, height = 10, pointsize = 12)
+pie(NCP_non_material_by_mf_df, col = viridis(4), main = "Non Material Nature Contribution to People", init.angle = 90, labels = NA)
+ # dev.off()
 
 
 
@@ -997,9 +997,9 @@ names(NCP_QoL_by_mf_df) = c("MF1", "MF2", "MF3", "MF4")
 
 barplot(NCP_QoL_by_mf_df)
 
-# pdf("output/Fig_QoL_MF.pdf", width=10, height = 10, pointsize = 12)
-pie(NCP_QoL_by_mf_df, col = viridis(4), main = "People's quality of life")
-# dev.off()
+ # pdf("output/Fig_QoL_MF_12Nov.pdf", width=10, height = 10, pointsize = 12)
+pie(NCP_QoL_by_mf_df, col = viridis(4), main = "People's quality of life", init.angle = 90, labels = NA)
+ # dev.off()
 
 
 
@@ -1202,11 +1202,14 @@ NCP_short_names <- c(nature_given_answers[-6], regul_given_answer[-c(1, 11)], ma
 NCP_short_names[1] <- "Individual organisms"
 length(NCP_short_names)
 
-pdf("output/Fig_FullNCP_12Nov.pdf", width=16, height = 18, pointsize = 12)
+
+
+
+# pdf("output/Fig_FullNCP_12Nov.pdf", width=16, height = 18, pointsize = 18)
 # png("output/Fig_FullNCP_30Oct.png", width=800, height = 1000, pointsize = 12)
 par(mar = c(5, 25, 5, 5))
 barplot(colSums(NCP_nature_full[-c(1:2)]), horiz = T, las = 1, col= c(rep("palegreen3", 5), rep("lightblue1", 9), rep("skyblue2", 4), rep("blue", 3), rep("peachpuff", 11)), border = c(rep("palegreen3", 5), rep("lightblue1", 9), rep("skyblue3", 4), rep("blue", 3), rep("peachpuff", 11)), names.arg  = NCP_short_names, xlab = "# of applications")
-dev.off()
+# dev.off()
 
 
 
@@ -1233,15 +1236,19 @@ combinedNCP_by_mf_rela1_df = apply(combinedNCP_by_mf_df, MARGIN = 1, FUN = funct
 # dim(combinedNCP_by_mf_rela1_df)
 # colSums(combinedNCP_by_mf_rela1_df)
 
+
+# pdf("output/Fig_FullNCP_MF_rowRatio12Nov.pdf", width=16, height = 18, pointsize = 20)
 levelplot(combinedNCP_by_mf_rela1_df, col.regions = rev(viridis(31)), main = "MF (%) per NCP", ylab="", xlab="")
+# dev.off()
 
 combinedNCP_by_mf_rela2_df = apply(combinedNCP_by_mf_df, MARGIN = 2, FUN = function(x) x / sum(x, na.rm=T))
 
 dim(combinedNCP_by_mf_rela2_df)
 colSums(combinedNCP_by_mf_rela2_df)
 
-
+# pdf("output/Fig_FullNCP_MF_ColRatio12Nov.pdf", width=16, height = 18, pointsize = 20)
 levelplot(t(combinedNCP_by_mf_rela2_df), col.regions = rev(viridis(31)), main = "MF dist.", ylab="", xlab="")
+# dev.off()
 
 
 
@@ -1770,17 +1777,17 @@ stakeholder_given_detected_df_final["other"] <- cnt_otherchoice_stakeholder
 stakeholder_sum <- c(sum(stakeholder_given_detected_df_final[-c(1)]), stakeholder_given_detected_df_final[1])
 
 
-pdf("output/Fig_3.5_pie_11Nov.pdf", width=10, height = 10, pointsize = 18)
+# pdf("output/Fig_3.5_pie_11Nov.pdf", width=10, height = 10, pointsize = 18)
 pie(stakeholder_sum,  col = c(IPbeslightgreen, 'red'), labels = NA, init.angle = 90, border = F)
 legend("bottomright", c('It is assessed', 'Not assessed'), fill = c(IPbeslightgreen, 'red'), bty = "n", border = F, horiz = T)
-dev.off()
+# dev.off()
 
 
 
-pdf("output/Fig_3.5_12Nov.pdf", width=18, height = 8, pointsize = 18)
+# pdf("output/Fig_3.5_12Nov.pdf", width=18, height = 8, pointsize = 18)
 par(mar = c(5, 30, 5, 5))
 barplot(rev(stakeholder_given_detected_df_final[-c(1)]), horiz = T, las= 1, col = IPbeslightgreen, border = IPbeslightgreen, xlab = "Number of applications")
-dev.off()
+# dev.off()
 
 
 
@@ -2024,9 +2031,9 @@ legend("bottomright", #inset=c(1,0),
 
 
 
-pdf("output/Fig_6.1_wellbeing_MF.pdf", width=8, height = 8, pointsize = 18)
+# pdf("output/Fig_6.1_wellbeing_MF.pdf", width=8, height = 8, pointsize = 18)
 barplot(colSums(wellbeing_by_mf_df[-10, ]), las = 1, col = IPbesdarkgreen, border = IPbesdarkgreen, ylab = "Number of applications", ylim = c(0,300))
-dev.off()
+# dev.off()
 
 
 
