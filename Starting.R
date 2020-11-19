@@ -6,10 +6,10 @@ library(tidyverse)
 # 3. Make short names for the col_names (more workable names)
 # 4. Subset those studies scored multiple times (those will come back after consistency analysis)
 
-step2="https://docs.google.com/spreadsheets/d/e/2PACX-1vQa2_J5d1RiSCZTTFJslWmA0zsaqNmoVCOnl9GeNOAHzfLQorqsrfWk2jgc6baPXgQZfWzsqDVOdYfo/pub?output=csv"
+# step2="https://docs.google.com/spreadsheets/d/e/2PACX-1vQa2_J5d1RiSCZTTFJslWmA0zsaqNmoVCOnl9GeNOAHzfLQorqsrfWk2jgc6baPXgQZfWzsqDVOdYfo/pub?output=csv"
+# s2_full=read.csv(url(step2))
 
-
-s2_full=read.csv(url(step2))
+s2_full= read.csv("STEP 2 - paper screening (Responses) - Form Responses 1.csv")
 dim(s2_full)
 colnames(s2_full)
 # str(s2_full)
@@ -69,8 +69,10 @@ s2_single
 ##later, include one of each back in the table##
 
 # STEP 3
-step3="https://docs.google.com/spreadsheets/d/e/2PACX-1vQPN4pJeP4JjJIvlbRwjqCCLSTwUSicDsBaACqvm3_E8S9yh4z2ujsLUysuA9bATmCKksTzaQe8B4S7/pub?output=csv"
-s3_full=read.csv(url(step3))
+# step3="https://docs.google.com/spreadsheets/d/e/2PACX-1vQPN4pJeP4JjJIvlbRwjqCCLSTwUSicDsBaACqvm3_E8S9yh4z2ujsLUysuA9bATmCKksTzaQe8B4S7/pub?output=csv"
+# s3_full=read.csv(url(step3))
+
+s3_full = read.csv("STEP 3 - Application survey - topic 1-8  (Responses) - Form Responses 1.csv")
 dim(s3_full)
 colnames(s3_full)
 head(s3_full)[,2]

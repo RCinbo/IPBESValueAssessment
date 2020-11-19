@@ -348,8 +348,8 @@ which(s3_single$"1.1" >= 4)
 
 
 ####### Corrected Methods
-new_method_lutb = read.xlsx("Corrected/New_Methods_List.xlsx", startRow = 2)
-method.corrected.data = read.xlsx("Corrected/Step3_1.2_all_2020-10-20_luiza.xlsx", sheet = 1)
+new_method_lutb = read.csv("Corrected/Step3_1.2_all_2020-10-20_luiza.csv")
+# method.corrected.data = read.xlsx("Corrected/Step3_1.2_all_2020-10-20_luiza.xlsx", sheet = 1)
 method.corrected.data = readxl::read_xlsx("Corrected/Step3_1.2_all_2020-10-20_luiza.xlsx", sheet = 1)
 
 sum(table((method.corrected.data$MethodID)))
