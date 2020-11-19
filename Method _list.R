@@ -347,6 +347,49 @@ which(s3_single$"1.1" >= 4)
 
 
 
+####### Corrected Methods
+new_method_lutb = read.xlsx("Corrected/New_Methods_List.xlsx", startRow = 2)
+method.corrected.data = read.xlsx("Corrected/Step3_1.2_all_2020-10-20_luiza.xlsx", sheet = 1)
+method.corrected.data = readxl::read_xlsx("Corrected/Step3_1.2_all_2020-10-20_luiza.xlsx", sheet = 1)
+
+sum(table((method.corrected.data$MethodID)))
+
+method.corrected.data[,"MethodID"] = factor(as.character(method.corrected.data[,"MethodID"]))
+
+# Let's first consider only well-formed values
+
+method_tb2 = table(method.corrected.data[,"MethodID"])
+(method_tb2)
+sort(method_tb2, decreasing = T)
+
+barplot(sort(method_tb2, decreasing = T), las=2)
+
+method_tb_code_new = names(method_tb2)
+method_tb_name =new_method_lutb$Method.name[match(method_tb_code_new, new_method_lutb$`#ID.(as.it.appears.on.the.survey.answers)`)]
+names(method_tb2) = method_tb_name
+
+barplot(method_tb2, las=2)
+
+#pdf("output/Main_Method_list.pdf", width = 12, height = 8)
+par(mar=c(4,17,4,4))
+barplot(sort(method_tb2, F), las=1, cex.names = 0.5, horiz = T, xlab = "# of applications")
+dev.off()
+
+
+# figure out what was not found
+
+method_not_found_idx = which(is.na(match(method_lutb$ID, method_tb_code)))
+
+n=method_lutb$Method.name[method_not_found_idx]
+length(method_lutb$Method.name[method_not_found_idx])
+
+#which(str_detect(s3_single$"1.2", pattern ="SolVES"))
+# which(str_detect(s3_single$"1.4", pattern ="Solv"))
+# s3_single$"1.4"[996]
+
+
+
+
 
 # # First we get the well-formed answers after splitting
 # row_idx = 1
@@ -621,7 +664,7 @@ goal_tb_sorted = sort(table(goal_split_v_fac), decreasing = F)
 goal_tb_sorted_reduced =  c(sum(goal_tb_sorted[goal_tb_sorted<5]), goal_tb_sorted[goal_tb_sorted>=5])
 names(goal_tb_sorted_reduced)[1] = "Other"
 
-pdf("output/Fig_1.5.pdf", width=10, height = 5, pointsize = 12)
+#pdf("output/Fig_1.5.pdf", width=10, height = 5, pointsize = 12)
 par(mar=c(5, 25, 5, 5))
 barplot(goal_tb_sorted_reduced, las=1, horiz=T, xlim=c(0, max(goal_tb_sorted_reduced) * 1.2 ), col = IPbeslightgreen, border = IPbeslightgreen, main = "the goal of combining valuation methods")
-dev.off()
+#dev.off()
