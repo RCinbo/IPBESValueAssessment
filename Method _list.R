@@ -348,19 +348,65 @@ which(s3_single$"1.1" >= 4)
 
 
 ####### Corrected Methods
-new_method_lutb = read.csv("Corrected/Step3_1.2_all_2020-10-20_luiza.csv")
-# method.corrected.data = read.xlsx("Corrected/Step3_1.2_all_2020-10-20_luiza.xlsx", sheet = 1)
-method.corrected.data = readxl::read_xlsx("Corrected/Step3_1.2_all_2020-10-20_luiza.xlsx", sheet = 1)
+new_method_lutb = read.xlsx("Corrected/New_Methods_List_corrected.xlsx")
+
+
+
+new_method_lutb[new_method_lutb$ID == "91/112",]
+new_method_lutb = rbind(new_method_lutb, data.frame(ID=91, Method.name = new_method_lutb[new_method_lutb$ID == "91/112", "Method.name"]))
+new_method_lutb = rbind(new_method_lutb, data.frame(ID=112, Method.name = new_method_lutb[new_method_lutb$ID == "91/112", "Method.name"]))
+
+new_method_lutb$ID == "92/100"
+new_method_lutb = rbind(new_method_lutb, data.frame(ID=92, Method.name = new_method_lutb[new_method_lutb$ID == "92/100", "Method.name"]))
+new_method_lutb = rbind(new_method_lutb, data.frame(ID=100, Method.name = new_method_lutb[new_method_lutb$ID == "92/100", "Method.name"]))
+
+# method.corrected.data = read.xlsx("Corrected/Step3_1.2_all_2020-10-20_luiza.xlsx", sheet = 2)
+method.corrected.data = readxl::read_xlsx("Corrected/Step3_1.2_all_2020-10-20_luiza.xlsx", sheet = 2)
+# method.corrected.data = read.csv("Corrected/Step3_1.2_all_2020-10-20_luiza_format.csv", header = T)
+colnames(method.corrected.data)
 
 sum(table((method.corrected.data$MethodID)))
-
-method.corrected.data[,"MethodID"] = factor(as.character(method.corrected.data[,"MethodID"]))
+#
+# method.corrected.data[,"MethodID"] = factor(as.character(method.corrected.data[,"MethodID"]))
 
 # Let's first consider only well-formed values
 
 method_tb2 = table(method.corrected.data[,"MethodID"])
 (method_tb2)
 sort(method_tb2, decreasing = T)
+
+
+
+split_res_l_method <-list()
+
+for(row_idx in 1:nrow(method.corrected.data)){
+
+  split_tmp = str_trim(str_split(method.corrected.data[row_idx,"MethodID"], pattern = ";")[[1]])
+  split_res_l_method[[row_idx]]<- split_tmp
+}
+
+# merge two method ids
+method_split_v = unlist(split_res_l_method)
+method_split_v[method_split_v == 112] = 91
+method_split_v[method_split_v == 100] = 92
+
+method_split_v_fac = factor(method_split_v)
+method_tb_sorted = sort(table(method_split_v_fac), decreasing = F)
+
+
+
+
+
+# names(method_tb_sorted)[!(names(method_tb_sorted) %in%  new_method_lutb$ID)]
+#
+names(method_tb_sorted) = new_method_lutb$Method.name[match(names(method_tb_sorted), new_method_lutb$ID)]
+
+pdf("output/Main_Method_list_correxted24Nov.pdf", width = 12, height = 12)
+par(mar=c(4,35,4,4))
+barplot(sort(method_tb_sorted, decreasing = F), las=1, horiz=T, xlim = c(0, 180), cex.names = 0.5)
+dev.off()
+
+
 
 barplot(sort(method_tb2, decreasing = T), las=2)
 

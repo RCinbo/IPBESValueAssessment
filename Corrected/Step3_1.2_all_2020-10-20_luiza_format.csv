@@ -1,0 +1,1536 @@
+﻿unique ID;PaperID;RowID;MethodID;Description;NeedChecking;RawData
+1;34347;1;14;;N;14
+2;35729;2;91;;N;91
+3;36337;3;14;;N;14
+4;18502;4;19;;N;19
+5;19198;5;14;;N;14
+6;17381;6;19;;N;19
+7;26887;7;19;;N;19
+8;21402;8;112;;N;"112; 52; 42; 25"
+9;21402;8;52;;N;"112; 52; 42; 25"
+10;21402;8;42;;N;"112; 52; 42; 25"
+11;21402;8;25;;N;"112; 52; 42; 25"
+12;62667;9;91;;N;91
+13;33330;10;14;;N;14
+14;75784;11;91;;N;"91; ""Bayesian logit regression model"" (linked to 5)"
+15;75784;11;122;"""Bayesian logit regression model"" (linked to 5)";Y;"91; ""Bayesian logit regression model"" (linked to 5)"
+16;38316;12;99;;N;99
+17;73144;13;14;discrete choice experiment (linked to 14);Y;discrete choice experiment (linked to 14)
+18;24119;14;112;;N;112
+19;38518;15;91;;N;91
+20;38518;16;25;;N;"25; Overall economic benefits estimation"
+21;38518;16;142;Overall economic benefits estimation;Y;"25; Overall economic benefits estimation"
+22;39883;17;99;;N;"99; 112"
+23;39883;17;112;;N;"99; 112"
+24;72367;18;109;;N;109
+25;24450;19;19;;N;"19; Tobit Model (Tobin 1948); Probit Econometric Model"
+26;24450;19;122;Tobit Model (Tobin 1948);Y;"19; Tobit Model (Tobin 1948); Probit Econometric Model"
+27;24450;19;122;Probit Econometric Model;Y;"19; Tobit Model (Tobin 1948); Probit Econometric Model"
+28;23353;20;43;;N;"43; 25"
+29;23353;20;25;;N;"43; 25"
+30;17634;21;64;;N;"64; Fiesta Model"
+31;17634;21;155;Fiesta Model;Y;"64; Fiesta Model"
+32;59056;22;19;;N;19
+33;26184;23;112;;N;112
+34;41148;24;14;;N;14
+35;34696;25;19;;N;19
+36;19537;26;23;Benefit-cost ratio (linked to 22);Y;Benefit-cost ratio (linked to 22)
+37;21392;27;112;;N;112
+38;25128;28;158;"Protection Motivation Theory - PMT Rogers and Prentice-Dunn,
+ 1997";Y;"Protection Motivation Theory - PMT Rogers and Prentice-Dunn,
+ 1997; 19"
+39;25128;28;19;;N;"Protection Motivation Theory - PMT Rogers and Prentice-Dunn,
+ 1997; 19"
+40;60692;29;14;;N;14
+41;19947;30;91;;N;91
+42;31541;31;14;Choice Modelling (Lancaster 1966, linked to 14);Y;Choice Modelling (Lancaster 1966, linked to 14)
+43;24898;32;100;;N;100
+44;17943;33;19;;N;19
+45;31994;34;14;;N;14
+46;43682;35;91;;N;91
+47;21466;36;14;;N;14
+48;27429;37;19;;N;19
+49;47503;38;112;;N;112
+50;35199;39;14;;N;14
+51;19484;40;91;;N;"91; 112"
+52;19484;40;112;;N;"91; 112"
+53;21582;41;14;;N;14
+54;20239;42;19;;N;19
+55;31176;43;109;;N;109
+56;23073;44;100;;N;100
+57;31942;45;19;;N;19
+58;33268;46;112;;N;112
+59;17191;47;10;ATOMIS - Assessment Tool for Metals in Soils;Y;"ATOMIS - Assessment Tool for Metals in Soils; SWAT - Soil and Water Assessment Tool; ProF - Prognosis of Floristics; GEPARD - Geographically Explicit Prediction of Animal Richness Distributions; ProLand - Prognosis of Land Use; CHOICE - Choice Valuation of Non-Commodities (linked to including 19 and 22)"
+60;17191;47;155;SWAT - Soil and Water Assessment Tool;Y;"ATOMIS - Assessment Tool for Metals in Soils; SWAT - Soil and Water Assessment Tool; ProF - Prognosis of Floristics; GEPARD - Geographically Explicit Prediction of Animal Richness Distributions; ProLand - Prognosis of Land Use; CHOICE - Choice Valuation of Non-Commodities (linked to including 19 and 22)"
+61;17191;47;10;ProF - Prognosis of Floristics;Y;"ATOMIS - Assessment Tool for Metals in Soils; SWAT - Soil and Water Assessment Tool; ProF - Prognosis of Floristics; GEPARD - Geographically Explicit Prediction of Animal Richness Distributions; ProLand - Prognosis of Land Use; CHOICE - Choice Valuation of Non-Commodities (linked to including 19 and 22)"
+62;17191;47;130;GEPARD - Geographically Explicit Prediction of Animal Richness Distributions;Y;"ATOMIS - Assessment Tool for Metals in Soils; SWAT - Soil and Water Assessment Tool; ProF - Prognosis of Floristics; GEPARD - Geographically Explicit Prediction of Animal Richness Distributions; ProLand - Prognosis of Land Use; CHOICE - Choice Valuation of Non-Commodities (linked to including 19 and 22)"
+63;17191;47;147;ProLand - Prognosis of Land Use;Y;"ATOMIS - Assessment Tool for Metals in Soils; SWAT - Soil and Water Assessment Tool; ProF - Prognosis of Floristics; GEPARD - Geographically Explicit Prediction of Animal Richness Distributions; ProLand - Prognosis of Land Use; CHOICE - Choice Valuation of Non-Commodities (linked to including 19 and 22)"
+64;17191;47;14;CHOICE - Choice Valuation of Non-Commodities (linked to including 19 and 22);Y;"ATOMIS - Assessment Tool for Metals in Soils; SWAT - Soil and Water Assessment Tool; ProF - Prognosis of Floristics; GEPARD - Geographically Explicit Prediction of Animal Richness Distributions; ProLand - Prognosis of Land Use; CHOICE - Choice Valuation of Non-Commodities (linked to including 19 and 22)"
+65;3282;48;14;;N;14
+66;23226;49;19;;N;19
+67;31733;50;64;Mapping changes in land use (linked to 64);Y;"Mapping changes in land use (linked to 64); Using an equivalent factor table to derive forest$ grassland$ wetland $and other ecosystem service values from farmland values."
+68;31733;50;67;Using an equivalent factor table to derive forest$ grassland$ wetland $and other ecosystem service values from farmland values.;Y;"Mapping changes in land use (linked to 64); Using an equivalent factor table to derive forest$ grassland$ wetland $and other ecosystem service values from farmland values."
+69;35545;51;112;;N;112
+70;33591;52;64;;N;"64; analysis of long-term data collected by third party"
+71;33591;52;122;analysis of long-term data collected by third party;Y;"64; analysis of long-term data collected by third party"
+72;48520;53;14;;N;14
+73;20573;54;131;textual analysis (Suguio1973);Y;"textual analysis (Suguio1973); morphoscopical analysis; geographical data"
+74;20573;54;10;morphoscopical analysis;Y;"textual analysis (Suguio1973); morphoscopical analysis; geographical data"
+75;20573;54;130;geographical data;Y;"textual analysis (Suguio1973); morphoscopical analysis; geographical data"
+76;32181;55;65;;N;65
+77;36191;56;19;Dichotomous Choice Contingent Valuation Technique - DC-CVM $ Referendum method) (Arowolo et al 2014);Y;Dichotomous Choice Contingent Valuation Technique - DC-CVM $ Referendum method) (Arowolo et al 2014)
+78;19492;57;19;;N;19
+79;44920;58;14;;N;14
+80;62793;59;19;;N;19
+81;47081;60;14;;N;14
+82;47081;61;91;;N;91
+83;74776;62;19;;N;19
+84;25396;63;19;;N;19
+85;37413;64;1;;N;"1; conceptual hierarchical modeling (linked to 67)"
+86;37413;64;"69;67";conceptual hierarchical modeling (linked to 67);Y;"1; conceptual hierarchical modeling (linked to 67)"
+87;69536;65;77;;N;77
+88;69536;66;16;Concept modelling (linked to 16 and 78);Y;Concept modelling (linked to 16 and 78)
+89;69536;67;77;;N;77
+90;35307;68;19;;N;19
+91;54458;69;91;;N;91
+92;65890;70;22;net present value model (Snyder 2019, linked to 21);Y;net present value model (Snyder 2019, linked to 21)
+93;17833;71;19;;N;19
+94;37725;72;91;;N;91
+95;57640;73;91;;N;91
+96;34268;74;1;;N;1
+97;76049;75;19;;N;"19; 94"
+98;76049;75;94;;N;"19; 94"
+99;39127;76;14;;N;14
+100;59754;77;79;"""Companion modeling (ComMod)"" (linked to 79)";Y;"""Companion modeling (ComMod)"" (linked to 79)"
+101;44435;78;19;;N;"19; 94"
+102;44435;78;94;;N;"19; 94"
+103;25093;79;109;;N;109
+104;34810;80;91;;N;91
+105;71139;81;109;Willingness to Participate (linked to 19);Y;Willingness to Participate (linked to 19)
+106;27300;82;94;;N;94
+107;29506;83;14;;N;14
+108;25393;84;77;;N;77
+109;40974;85;131;document reviews (linked to 28);Y;"document reviews (linked to 28); semi-direct interviews (linked to 100); direct observation (linked to 75)"
+110;40974;85;100;semi-direct interviews (linked to 100);Y;"document reviews (linked to 28); semi-direct interviews (linked to 100); direct observation (linked to 75)"
+111;40974;85;146;direct observation (linked to 75);Y;"document reviews (linked to 28); semi-direct interviews (linked to 100); direct observation (linked to 75)"
+112;47655;86;14;;N;14
+113;17640;87;19;;N;19
+114;32003;88;19;;N;19
+115;36066;89;91;;N;91
+116;36746;90;14;;N;14
+117;29743;91;14;;N;"14; 85"
+118;29743;91;85;;N;"14; 85"
+119;27382;92;19;;N;19
+120;27382;93;19;;N;19
+121;51387;94;19;;N;19
+122;61534;95;14;;N;14
+123;36947;96;19;;N;19
+124;33383;97;19;;N;19
+125;57275;98;100;;N;100
+126;63430;99;14;;N;14
+127;63664;100;"100;39";in-depth dialogue interviews (linked to 39);Y;"in-depth dialogue interviews (linked to 39); field observations; document review"
+128;63664;100;145;field observations;Y;"in-depth dialogue interviews (linked to 39); field observations; document review"
+129;63664;100;131;document review;Y;"in-depth dialogue interviews (linked to 39); field observations; document review"
+130;37014;101;19;;N;19
+131;64154;102;77;;N;"77; Spatial modelling of ecosystem service supply and land degradation hotspots (linked to 67)"
+132;64154;102;"130;67";Spatial modelling of ecosystem service supply and land degradation hotspots (linked to 67);Y;"77; Spatial modelling of ecosystem service supply and land degradation hotspots (linked to 67)"
+133;38274;103;19;;N;19
+134;67114;104;112;;N;"112; 100"
+135;67114;104;100;;N;"112; 100"
+136;77470;105;14;;N;14
+137;61557;106;19;;N;19
+138;67496;107;19;;N;19
+139;39542;108;19;;N;19
+140;46142;109;19;;N;19
+141;76064;110;77;;N;77
+142;35556;111;14;;N;"14; 22"
+143;35556;111;22;;N;"14; 22"
+144;20978;112;19;;N;19
+145;41145;113;19;;N;"19; 112"
+146;41145;113;112;;N;"19; 112"
+147;72614;114;"64;67";ES zoning (64?);Y;"ES zoning (64?); ""matter-quantity - value-quantity (Costanza et al. 1997)""; 6 in combination with scenarios; 22"
+148;72614;114;67;"""matter-quantity - value-quantity (Costanza et al. 1997)""";Y;"ES zoning (64?); ""matter-quantity - value-quantity (Costanza et al. 1997)""; 6 in combination with scenarios; 22"
+149;72614;114;6;6 in combination with scenarios;Y;"ES zoning (64?); ""matter-quantity - value-quantity (Costanza et al. 1997)""; 6 in combination with scenarios; 22"
+150;72614;114;22;;N;"ES zoning (64?); ""matter-quantity - value-quantity (Costanza et al. 1997)""; 6 in combination with scenarios; 22"
+151;37667;115;14;;N;14
+152;72614;116;19;;N;19
+153;72673;117;100;;N;100
+154;43418;118;77;;N;77
+155;37792;119;19;;N;19
+156;40450;120;14;;N;14
+157;18730;121;10;;N;10
+158;40717;122;19;;N;19
+159;43418;123;77;;N;77
+160;43418;124;77;;N;77
+161;43418;125;77;;N;77
+162;43418;126;77;;N;77
+163;74437;127;91;;N;91
+164;57360;128;14;discrete choice experiment (linked to 14);Y;discrete choice experiment (linked to 14)
+165;73705;129;119;"Equivilant Adult Model (""EA model (Horst 1975)"")";Y;"Equivilant Adult Model (""EA model (Horst 1975)""); habitat productivity index (HPI) (Minns et al. 2011)"
+166;73705;129;132;habitat productivity index (HPI) (Minns et al. 2011);Y;"Equivilant Adult Model (""EA model (Horst 1975)""); habitat productivity index (HPI) (Minns et al. 2011)"
+167;75779;130;19;;N;19
+168;41412;131;112;;N;112
+169;75779;132;162;nature relatedness - NR scale (Nisbet et al. 2008);Y;nature relatedness - NR scale (Nisbet et al. 2008)
+170;58204;133;19;;N;19
+171;47270;134;141;fishing-game-under-uncertainty experiment (Ostrom et al. 1994);Y;fishing-game-under-uncertainty experiment (Ostrom et al. 1994)
+172;47270;135;141;fishing-game-under-uncertainty experiment (Ostrom et al. 1994);Y;fishing-game-under-uncertainty experiment (Ostrom et al. 1994)
+173;43351;136;19;;N;19
+174;56333;137;82;;N;"82; 109"
+175;56333;137;109;;N;"82; 109"
+176;50730;138;14;Double Bounded Dichotomous Choice Method (linked to 19);Y;"Double Bounded Dichotomous Choice Method (linked to 19); 22"
+177;50730;138;22;;N;"Double Bounded Dichotomous Choice Method (linked to 19); 22"
+178;26357;139;112;;N;"112; 91"
+179;26357;139;91;;N;"112; 91"
+180;39975;140;14;;N;14
+181;19047;141;14;;N;14
+182;42033;142;122;Heckman modelling (Heckman 1979, linked to 67);Y;Heckman modelling (Heckman 1979, linked to 67)
+183;59746;143;112;;N;"112; 43; focus groups; semi-structured interviews"
+184;59746;143;43;;N;"112; 43; focus groups; semi-structured interviews"
+185;59746;143;43;focus groups;Y;"112; 43; focus groups; semi-structured interviews"
+186;59746;143;100;semi-structured interviews;Y;"112; 43; focus groups; semi-structured interviews"
+187;66597;144;14;;N;14
+188;42505;145;109;;N;109
+189;32577;146;91;;N;91
+190;51067;147;14;;N;14
+191;42889;148;14;;N;14
+192;43875;149;14;;N;14
+193;73675;150;19;;N;19
+194;71453;151;19;;N;19
+195;17399;152;19;Contigent valuation method (linked to 19);Y;Contigent valuation method (linked to 19)
+196;46967;153;91;;N;91
+197;50932;154;91;;N;91
+198;21606;155;85;;N;85
+199;28890;156;91;;N;91
+200;72714;157;19;;N;19
+201;37396;158;14;;N;14
+202;22099;159;19;;N;19
+203;59929;160;1;;N;1
+204;36352;161;14;;N;14
+205;60462;162;19;;N;19
+206;46002;163;27;Deliberative monetary valuation - DMV (linked to 27);Y;Deliberative monetary valuation - DMV (linked to 27)
+207;60713;164;77;;N;77
+208;58996;165;23;;N;23
+209;70291;166;14;;N;14
+210;61648;167;14;;N;14
+211;35520;168;144;Revealed preferences (Becker-DeGroot-Marschak (BDM) experimental auction) (linked to 93);Y;Revealed preferences (Becker-DeGroot-Marschak (BDM) experimental auction) (linked to 93)
+212;35520;169;144;Revealed preferences %Becker-DeGroot-Marschak - BDM experimental auction% (linked to 93);Y;Revealed preferences %Becker-DeGroot-Marschak - BDM experimental auction% (linked to 93)
+213;40641;170;14;;N;14
+214;17668;171;14;Choice experiment (linked to 14);Y;Choice experiment (linked to 14)
+215;41547;172;14;;N;14
+216;76569;173;1;;N;1
+217;72884;174;19;;N;19
+218;57832;175;19;;N;19
+219;41547;176;14;Rating and ranking game (Oleson et al. (2014) related to 70;Y;Rating and ranking game (Oleson et al. (2014) related to 70
+220;63347;177;14;;N;14
+221;64613;178;14;;N;14
+222;50294;179;1;;N;"1; Structural Equation Modelling - SEM"
+223;50294;179;122;Structural Equation Modelling - SEM;Y;"1; Structural Equation Modelling - SEM"
+224;66746;180;100; interviews (individual and group);Y;92/100: interviews (individual and group)
+225;66600;181;22;;N;22
+226;27570;182;14;Choice experiment (linked to 14);Y;Choice experiment (linked to 14)
+227;69530;183;14;;N;14
+228;74846;184;19;;N;19
+229;39976;185;91;;N;91
+230;46029;186;19;;N;19
+231;47977;187;14;;N;14
+232;46832;188;14;;N;14
+233;20097;189;125;Species inventory;Y;Species inventory
+234;48359;190;43;;N;43
+235;53554;191;19;;N;19
+236;53554;192;112;;N;112
+237;56080;193;14;choice-based conjoint analysis $ once face-to-face and once online (Gustafsson et al. 2007, linked to 14);Y;choice-based conjoint analysis $ once face-to-face and once online (Gustafsson et al. 2007, linked to 14)
+238;56720;194;91;;N;91
+239;33233;195;19;Contigent valuation method (linked to 19);Y;Contigent valuation method (linked to 19)
+240;33639;196;91;Questionnaires;Y;Questionnaires
+241;17155;197;124;"""Participatory vulnerability assessment"" (linked to 79)";Y;"""Participatory vulnerability assessment"" (linked to 79)"
+242;11326;198;57;;N;"57; LISA - Local Indicators of Spatial Association Index (linked to 64)"
+243;11326;198;130;LISA - Local Indicators of Spatial Association Index (linked to 64);Y;"57; LISA - Local Indicators of Spatial Association Index (linked to 64)"
+244;27556;199;10;Experimental long-line fishing (linked to 10);Y;Experimental long-line fishing (linked to 10)
+245;47832;200;134;Pitfall trap sampling (linked to 10);Y;Pitfall trap sampling (linked to 10)
+246;24485;201;137;Bark stripping damage survey (linked to 112);Y;Bark stripping damage survey (linked to 112)
+247;57758;202;100;Interview (linked to 92);Y;Interview (linked to 92)
+248;42809;203;77;;N;77
+249;67355;204;91;;N;91
+250;58694;205;100;;N;100
+251;61072;206;19;;N;19
+252;67347;207;19;;N;19
+253;68716;208;19;;N;19
+254;75082;209;14;;N;14
+255;59213;210;109;112 or 109?;Y;112 or 109?
+256;66820;211;91;;N;91
+257;74708;212;14;;N;14
+258;68288;213;109;;N;"109; Revealed preference NOT 93 (linked to 94)"
+259;68288;213;144;Revealed preference NOT 93 (linked to 94);Y;"109; Revealed preference NOT 93 (linked to 94)"
+260;56403;214;14;;N;14
+261;34378;215;19;Contigent valuation;Y;Contigent valuation
+262;32685;216;14;;N;14
+263;36540;217;91;Questionnaire;Y;Questionnaire
+264;21717;218;14;14/109;Y;14/109
+265;22017;219;10;exuvial count;Y;exuvial count
+266;58559;220;112;;N;"112; 77"
+267;58559;220;77;;N;"112; 77"
+268;62600;221;69;;N;69
+269;28289;222;65;;N;"65; productivity method; 19"
+270;28289;222;128;productivity method;Y;"65; productivity method; 19"
+271;28289;222;19;;N;"65; productivity method; 19"
+272;59724;223;14;;N;14
+273;29922;224;67;;N;"67; Field sampling of insects and fish (linked to 10); Graph theory mapping (linked to 64)"
+274;29922;224;"134; 10";Field sampling of insects and fish (linked to 10);Y;"67; Field sampling of insects and fish (linked to 10); Graph theory mapping (linked to 64)"
+275;29922;224;64;Graph theory mapping (linked to 64);Y;"67; Field sampling of insects and fish (linked to 10); Graph theory mapping (linked to 64)"
+276;29091;225;138;Stand structure analysis;Y;Stand structure analysis
+277;2790;226;134;Vegetation %tree% sampling (linked to to 10);Y;Vegetation %tree% sampling (linked to to 10)
+278;29091;227;138;Canopy gap monitoring;Y;Canopy gap monitoring
+279;70567;228;19;;N;19
+280;29091;229;138;Tree generation field survey;Y;Tree generation field survey
+281;44737;230;14;Choice chamber experiment;Y;Choice chamber experiment
+282;59132;231;91;;N;91
+283;25524;232;122;statistical Analysis - Pearson´s chi-square$ two-way ANOVA$ binary logistic regression;Y;statistical Analysis - Pearson´s chi-square$ two-way ANOVA$ binary logistic regression
+284;30822;233;137;Quadrat method;Y;Quadrat method
+285;66894;234;14;;N;14
+286;48539;235;52;Efficacy assessment (linked to 52);Y;Efficacy assessment (linked to 52)
+287;69632;236;137;Camera trapping (linked to 10);Y;Camera trapping (linked to 10)
+288;67782;237;112;;N;112
+289;58543;238;14;;N;"14; Relevealed Preferece - Other (linked to 93 and 94)"
+290;58543;238;144;Relevealed Preferece - Other (linked to 93 and 94);Y;"14; Relevealed Preferece - Other (linked to 93 and 94)"
+291;37659;239;91;Questionnaire;Y;"Questionnaire; Travel cost; Contingent valuation"
+292;37659;239;94;Travel cost;Y;"Questionnaire; Travel cost; Contingent valuation"
+293;37659;239;19;Contingent valuation;Y;"Questionnaire; Travel cost; Contingent valuation"
+294;26512;240;14;;N;14
+295;23895;241;142;LIME -Lifecycle Impact assessment Method based on Endpoint modelling (Itsubo et al. 2004 and 2010);Y;LIME -Lifecycle Impact assessment Method based on Endpoint modelling (Itsubo et al. 2004 and 2010)
+296;19053;242;67;Soil organic carbon assessment incl. the Loss on Ignition Protocol (linked to 10);Y;Soil organic carbon assessment incl. the Loss on Ignition Protocol (linked to 10)
+297;39414;243;14;Choice experiment;Y;Choice experiment
+298;20678;244;112;;N;112
+299;20678;245;157;Social-Ecological Systems - SES Model;Y;Social-Ecological Systems - SES Model
+300;41206;246;91;Questionnaire;Y;Questionnaire
+301;56238;247;78;Companion Modeling Approach - ComMod) (linked to 78 $a sub-type of);Y;Companion Modeling Approach - ComMod) (linked to 78 $a sub-type of)
+302;74821;248;14;;N;14
+303;29915;249;14;Integration of Systematic conservation planning an a discrete choice experiment (linked to 14);Y;Integration of Systematic conservation planning an a discrete choice experiment (linked to 14)
+304;43101;250;112;Survey;Y;"Survey; Questionnaire"
+305;43101;250;91;Questionnaire;Y;"Survey; Questionnaire"
+306;32708;251;19;;N;"19; Human Ecology (Seaton AV 2002 linked to 75)"
+307;32708;251;154;Human Ecology (Seaton AV 2002 linked to 75);Y;"19; Human Ecology (Seaton AV 2002 linked to 75)"
+308;47207;252;14;Choice experiment (linked to 14);Y;Choice experiment (linked to 14)
+309;44371;253;22;;N;22
+310;52656;254;130;Spatial Optimization Model (Nielsen et al 2016, linked to 21);Y;Spatial Optimization Model (Nielsen et al 2016, linked to 21)
+311;52656;255;124;Species Survival Probability Model (Nielsen et al 2016, linked to 86);Y;Species Survival Probability Model (Nielsen et al 2016, linked to 86)
+312;52656;256;161;Model of Landowner Participation (Nagubadia et al. 1996 and Langpap 2004);Y;Model of Landowner Participation (Nagubadia et al. 1996 and Langpap 2004)
+313;19522;257;67;;N;67
+314;36215;258;138;Crown Condition Survey (Eichhorn et al 2010);Y;Crown Condition Survey (Eichhorn et al 2010)
+315;6614;259;10;;N;10
+316;24017;260;10;;N;10
+317;51339;261;19;;N;19
+318;68694;262;91;;N;91
+319;37775;263;19;;N;19
+320;46236;264;112;;N;112
+321;71626;265;100;explorative interview (Honer 1994);Y;explorative interview (Honer 1994)
+322;32152;266;43;;N;"43; 79; 91; 92"
+323;32152;266;79;;N;"43; 79; 91; 92"
+324;32152;266;91;;N;"43; 79; 91; 92"
+325;32152;266;92;;N;"43; 79; 91; 92"
+326;46135;267;10;bird surveys and microhabitat covariate surveys (linked to 112);Y;bird surveys and microhabitat covariate surveys (linked to 112)
+327;21161;268;36;;N;36
+328;66579;269;66;;N;66
+329;21446;270;79;;N;79
+330;40470;271;49;;N;49
+331;70842;272;10;;N;10
+332;23081;273;49;;N;49
+333;70122;274;94;;N;94
+334;51743;275;19;;N;19
+335;22978;276;112;;N;112
+336;31502;277;108;Continuous-time real options model (linked to 108);Y;Continuous-time real options model (linked to 108)
+337;54477;278;14;;N;14
+338;74268;279;14;;N;14
+339;55249;280;14;;N;14
+340;43065;281;14;;N;14
+341;20154;282;"146; 67";Identification of important plant areas (linked to 10);Y;Identification of important plant areas (linked to 10)
+342;3804;283;49;;N;49
+343;55482;284;14;;N;14
+344;9382;285;125;Forest inventory;Y;Forest inventory
+345;58312;286;19;;N;19
+346;11314;287;137;Point-count survey for birds;Y;Point-count survey for birds
+347;66358;288;14;;N;14
+348;35932;289;112;;N;112
+349;70108;290;23;;N;23
+350;72577;291;91;;N;91
+351;16357;292;137;Catch-per-unit effort $based on traps$;Y;Catch-per-unit effort $based on traps$
+352;65695;293;14;;N;14
+353;69917;294;94;;N;94
+354;23119;295;69;Gap analysis;Y;Gap analysis
+355;23152;296;137;Fauna collection $from trees$;Y;Fauna collection $from trees$
+356;70334;297;91;;N;91
+357;74101;298;14;;N;"14; Remote sensing (linked to 64)"
+358;74101;298;130;Remote sensing (linked to 64);Y;"14; Remote sensing (linked to 64)"
+359;41100;299;134;Field survey using Mean Trophic Rank - MTR protocol;Y;Field survey using Mean Trophic Rank - MTR protocol
+360;41100;300;134;Field survey using Mean Trophic Rank - MTR protocol;Y;Field survey using Mean Trophic Rank - MTR protocol
+361;74135;301;100;;N;100
+362;47673;302;142;Lifecycle Impact Assessment (LCIA);Y;Lifecycle Impact Assessment (LCIA)
+363;10354;303;125;Forest inventory;Y;Forest inventory
+364;29186;304;14;;N;14
+365;32324;305;100;Interviews;Y;Interviews
+366;64319;306;156;Least Cost Corridor Analysis;Y;Least Cost Corridor Analysis
+367;50630;307;19;Contigent valuation method (linked to 19);Y;Contigent valuation method (linked to 19)
+368;64319;308;156;Least Cost Corridor Analysis;Y;Least Cost Corridor Analysis
+369;31693;309;67;Conservation assessment;Y;Conservation assessment
+370;52513;310;43;Focus group discussion;Y;"Focus group discussion; Interviews"
+371;52513;310;100;Interviews;Y;"Focus group discussion; Interviews"
+372;801;311;25;Replacement-cost Ecosystem Service Valuation method (Bockstael et al., 2000;Y;"Replacement-cost Ecosystem Service Valuation method (Bockstael et al., 2000; Hanley and Barbier, 2009)"
+373;801;311;;Hanley and Barbier, 2009);Y;"Replacement-cost Ecosystem Service Valuation method (Bockstael et al., 2000; Hanley and Barbier, 2009)"
+374;67525;312;140;ethnoecological approach (Huntington 2000 Marques 2001 Rodrigues 2009);Y;ethnoecological approach (Huntington 2000 Marques 2001 Rodrigues 2009)
+375;32604;313;91;;N;"91; Game Theoretical Model (Lise 2007, linked to 78)"
+376;32604;313;141;Game Theoretical Model (Lise 2007, linked to 78);Y;"91; Game Theoretical Model (Lise 2007, linked to 78)"
+377;35298;314;77;;N;77
+378;37405;315;"92; 122; 109";Rational Choice Theory (Lunt 2006 and Tucker 2007);Y;Rational Choice Theory (Lunt 2006 and Tucker 2007)
+379;45855;316;10;;N;"10; 91"
+380;45855;316;91;;N;"10; 91"
+381;63176;317;10;;N;10
+382;75005;318;19;;N;19
+383;35278;319;10;;N;10
+384;76217;320;19;;N;19
+385;27811;321;32;;N;32
+386;44208;322;14;;N;14
+387;21554;323;37;;N;37
+388;23283;324;43;;N;"43; 100"
+389;23283;324;100;;N;"43; 100"
+390;37379;325;134;field survey;Y;field survey
+391;39720;326;137;"field bird surveys ""using area search methods based on spot-mapping techniques (Ralph et al 1993)";Y;"field bird surveys ""using area search methods based on spot-mapping techniques (Ralph et al 1993)"
+392;74953;327;112;;N;112
+393;22812;328;109;Landscape IMAGES (Groot et al. 2007, linked to 109);Y;Landscape IMAGES (Groot et al. 2007, linked to 109)
+394;24310;329;10;;N;10
+395;48791;330;134;sampling of plants and subsequent laboratory examination $among others examination of biological traits of organisms$;Y;sampling of plants and subsequent laboratory examination $among others examination of biological traits of organisms$
+396;48791;331;134;sampling of plants and subsequent laboratory examination $among others examination of biological traits of organisms$;Y;sampling of plants and subsequent laboratory examination $among others examination of biological traits of organisms$
+397;70939;332;91;;N;"91; 112; 14; 19"
+398;70939;332;112;;N;"91; 112; 14; 19"
+399;70939;332;14;;N;"91; 112; 14; 19"
+400;70939;332;19;;N;"91; 112; 14; 19"
+401;30204;333;19;;N;19
+402;46851;334;32;;N;32
+403;61526;335;144;Inferred valuation - IV;Y;"Inferred valuation - IV; Contingent valuation - CV"
+404;61526;335;19;Contingent valuation - CV;Y;"Inferred valuation - IV; Contingent valuation - CV"
+405;31818;336;91;;N;91
+406;54613;337;112;;N;"112; 91; 14"
+407;54613;337;91;;N;"112; 91; 14"
+408;54613;337;14;;N;"112; 91; 14"
+409;11963;338;100;;N;100
+410;10261;339;37;;N;37
+411;76156;340;112;;N;"112; 91; 14"
+412;76156;340;91;;N;"112; 91; 14"
+413;76156;340;14;;N;"112; 91; 14"
+414;69808;341;109;;N;109
+415;2495;342;10;;N;10
+416;38461;343;112;;N;112
+417;39773;344;155;MODIS/NDVI and climate time series (Keersmaecker et al 2015, linked to 10);Y;MODIS/NDVI and climate time series (Keersmaecker et al 2015, linked to 10)
+418;40240;345;10;;N;10
+419;34673;346;112;;N;"112; 91; 14"
+420;34673;346;91;;N;"112; 91; 14"
+421;34673;346;14;;N;"112; 91; 14"
+422;40676;347;14;;N;"14; 112"
+423;40676;347;112;;N;"14; 112"
+424;28600;348;94;;N;94
+425;58888;349;112;;N;"112; 14"
+426;58888;349;14;;N;"112; 14"
+427;31829;350;19;;N;19
+428;61291;351;100;;N;"100; 14"
+429;61291;351;14;;N;"100; 14"
+430;68504;352;100;;N;"100; 91"
+431;68504;352;91;;N;"100; 91"
+432;23709;353;100;interviews (linked to 43);Y;"interviews (linked to 43); in situ recordings"
+433;23709;353;131;in situ recordings;Y;"interviews (linked to 43); in situ recordings"
+434;36741;354;14;;N;14
+435;4714;355;154;human ecology conceptual framework (Whitney 2017);Y;human ecology conceptual framework (Whitney 2017)
+436;24916;356;67;;N;67
+437;26406;357;19;;N;19
+438;23529;358;112;;N;112
+439;39142;359;19;single-bounded dichotomous choice design (Withehead 2002, linked to 19);Y;"single-bounded dichotomous choice design (Withehead 2002, linked to 19); double-bounded dichotomous design (Hanemann et al. 1991, linked to 19)"
+440;39142;359;19;double-bounded dichotomous design (Hanemann et al. 1991, linked to 19);Y;"single-bounded dichotomous choice design (Withehead 2002, linked to 19); double-bounded dichotomous design (Hanemann et al. 1991, linked to 19)"
+441;45090;360;19;;N;19
+442;41449;361;149;Enthoecological approach (linked to 37);Y;"Enthoecological approach (linked to 37); Free listing (linked to 91)"
+443;41449;361;91;Free listing (linked to 91);Y;"Enthoecological approach (linked to 37); Free listing (linked to 91)"
+444;29947;362;57;;N;57
+445;33393;363;94;;N;94
+446;42899;364;64;;N;64
+447;39672;365;37;;N;"37; 79"
+448;39672;365;79;;N;"37; 79"
+449;76572;366;56;Ostrom's Social and Ecological System framework and conflict theory (Ostrom 2007);Y;"Ostrom's Social and Ecological System framework and conflict theory (Ostrom 2007); 91; 112; 100"
+450;76572;366;91;;N;"Ostrom's Social and Ecological System framework and conflict theory (Ostrom 2007); 91; 112; 100"
+451;76572;366;112;;N;"Ostrom's Social and Ecological System framework and conflict theory (Ostrom 2007); 91; 112; 100"
+452;76572;366;100;;N;"Ostrom's Social and Ecological System framework and conflict theory (Ostrom 2007); 91; 112; 100"
+453;6455;367;43;expert workshops;Y;"expert workshops; 7"
+454;6455;367;7;;N;"expert workshops; 7"
+455;36263;368;39;;N;39
+456;30533;369;100;;N;100
+457;39625;370;14;;N;14
+458;70559;371;39;;N;39
+459;39047;372;77;;N;"77; 43"
+460;39047;372;43;;N;"77; 43"
+461;50079;373;77;;N;77
+462;8869;374;77;;N;77
+463;8869;375;77;;N;77
+464;21727;376;21;;N;21
+465;16989;377;56;Community Land Model (linked to 56);Y;"Community Land Model (linked to 56); scenario modelling (linked to 56)"
+466;16989;377;"56; 147";scenario modelling (linked to 56);Y;"Community Land Model (linked to 56); scenario modelling (linked to 56)"
+467;38464;378;137;vegetation survey;Y;vegetation survey
+468;18576;379;134;bank sampling (linked to 10);Y;"bank sampling (linked to 10); vegetation sampling (linked to 10); diversity landscape (linked to 10)"
+469;18576;379;134;vegetation sampling (linked to 10);Y;"bank sampling (linked to 10); vegetation sampling (linked to 10); diversity landscape (linked to 10)"
+470;18576;379;10;diversity landscape (linked to 10);Y;"bank sampling (linked to 10); vegetation sampling (linked to 10); diversity landscape (linked to 10)"
+471;26955;380;10;;N;10
+472;43690;381;64;;N;64
+473;42125;382;112;;N;112
+474;3094;383;10;;N;10
+475;11209;384;137;floristic survey (linked to 10);Y;"floristic survey (linked to 10);  litterfall collection/observation (linked to 10);  soil sampling (linked to 10)"
+476;11209;384;137;litterfall collection/observation (linked to 10);Y;"floristic survey (linked to 10);  litterfall collection/observation (linked to 10);  soil sampling (linked to 10)"
+477;11209;384;134;soil sampling (linked to 10);Y;"floristic survey (linked to 10);  litterfall collection/observation (linked to 10);  soil sampling (linked to 10)"
+478;14942;385;64;;N;"64; spatial and temporal ES correlations (Vallet et al. 2018); spatial tradeoff typology (Gissi et al., 2018)"
+479;14942;385;"130; 67";spatial and temporal ES correlations (Vallet et al. 2018);Y;"64; spatial and temporal ES correlations (Vallet et al. 2018); spatial tradeoff typology (Gissi et al., 2018)"
+480;14942;385;130;spatial tradeoff typology (Gissi et al., 2018);Y;"64; spatial and temporal ES correlations (Vallet et al. 2018); spatial tradeoff typology (Gissi et al., 2018)"
+481;17324;386;22;;N;22
+482;40309;387;130;remote sensing linked to 64;Y;"remote sensing linked to 64; 10"
+483;40309;387;10;;N;"remote sensing linked to 64; 10"
+484;64690;388;125;field ethnobotanical inventory;Y;field ethnobotanical inventory
+485;22867;389;49;;N;49
+486;258;390;112;;N;112
+487;26962;391;37;;N;37
+488;4438;392;43;Expert workshop linked to 43;Y;"Expert workshop linked to 43; 112; FARMSCOPER tool (Micha et al 2018)"
+489;4438;392;112;;N;"Expert workshop linked to 43; 112; FARMSCOPER tool (Micha et al 2018)"
+490;4438;392;69;FARMSCOPER tool (Micha et al 2018);Y;"Expert workshop linked to 43; 112; FARMSCOPER tool (Micha et al 2018)"
+491;33241;393;145;Economic valuation as a function of the total surplus (Kolstad, 2010);Y;Economic valuation as a function of the total surplus (Kolstad, 2010)
+492;6392;394;7;;N;"7; 10; 100; 64"
+493;6392;394;10;;N;"7; 10; 100; 64"
+494;6392;394;100;;N;"7; 10; 100; 64"
+495;6392;394;64;;N;"7; 10; 100; 64"
+496;38048;395;39;;N;39
+497;65365;396;64;;N;64
+498;59063;397;112;;N;112
+499;6653;398;10;;N;"10; remote sensing and satellite imagery linked to 64; 65; 25"
+500;6653;398;130;remote sensing and satellite imagery linked to 64;Y;"10; remote sensing and satellite imagery linked to 64; 65; 25"
+501;6653;398;65;;N;"10; remote sensing and satellite imagery linked to 64; 65; 25"
+502;6653;398;25;;N;"10; remote sensing and satellite imagery linked to 64; 65; 25"
+503;64491;399;91;;N;91
+504;19831;400;112;;N;"112; 100"
+505;19831;400;100;;N;"112; 100"
+506;32376;401;49;;N;"49; high resolution classified land cover data and moderate-resolution Normalized Difference Vegetation Index data from satellite imagery (linked to 64)"
+507;32376;401;147;high resolution classified land cover data and moderate-resolution Normalized Difference Vegetation Index data from satellite imagery (linked to 64);Y;"49; high resolution classified land cover data and moderate-resolution Normalized Difference Vegetation Index data from satellite imagery (linked to 64)"
+508;40068;402;140;ethnoecological approach (linked to 36?);Y;ethnoecological approach (linked to 36?)
+509;47015;403;64;;N;"64; 10"
+510;47015;403;10;;N;"64; 10"
+511;39554;404;135;biophysical modelling;Y;"biophysical modelling; point count survey (Buckland et al. 2005, linked to 10)"
+512;39554;404;137;point count survey (Buckland et al. 2005, linked to 10);Y;"biophysical modelling; point count survey (Buckland et al. 2005, linked to 10)"
+513;2134;405;100;;N;"100; 75"
+514;2134;405;75;;N;"100; 75"
+515;48733;406;57;;N;57
+516;39866;407;64;;N;"64; Marginal Abatement Cost Curve; cost effectiveness analysis (linked to 21)"
+517;39866;407;25;Marginal Abatement Cost Curve;Y;"64; Marginal Abatement Cost Curve; cost effectiveness analysis (linked to 21)"
+518;39866;407;23;cost effectiveness analysis (linked to 21);Y;"64; Marginal Abatement Cost Curve; cost effectiveness analysis (linked to 21)"
+519;48772;408;100;interviews;Y;"interviews; flora survey"
+520;48772;408;137;flora survey;Y;"interviews; flora survey"
+521;41328;409;100;;N;"100;25"
+522;41328;409;25;;N;"100;25"
+523;3206;410;22;;N;22
+524;7233;411;22;partial 22;Y;partial 22
+525;66619;412;10;;N;10
+526;7287;413;49;;N;49
+527;32879;414;112;;N;112
+528;35144;415;122;unweighted conditional logit demand model (linked to 22) $recreational site-choice models$;Y;"unweighted conditional logit demand model (linked to 22) $recreational site-choice models$; weighted exogenous samling maximum likelihood model - WESML demand model(linked to 22) $recreational site-choice models$"
+529;35144;415;122;weighted exogenous samling maximum likelihood model - WESML demand model(linked to 22) $recreational site-choice models$;Y;"unweighted conditional logit demand model (linked to 22) $recreational site-choice models$; weighted exogenous samling maximum likelihood model - WESML demand model(linked to 22) $recreational site-choice models$"
+530;32879;416;21;;N;21
+531;8260;417;49;;N;"49; 112"
+532;8260;417;112;;N;"49; 112"
+533;9722;418;109;;N;109
+534;35757;419;14;discreate choice experiment- DCE (linked to 14);Y;discreate choice experiment- DCE (linked to 14)
+535;18900;420;94;Travel Cost Method (Clawson 1959);Y;Travel Cost Method (Clawson 1959)
+536;22072;421;14;;N;14
+537;18422;422;91;;N;91
+538;17272;423;86;production function valuation method;Y;production function valuation method
+539;38988;424;19;;N;19
+540;18780;425;10;;N;10
+541;47641;426;19;;N;19
+542;6709;427;116;;N;116
+543;16294;428;67;Natural Capital Asset Index (linked to 67);Y;Natural Capital Asset Index (linked to 67)
+544;42263;429;14;;N;14
+545;70595;430;64;;N;64
+546;37316;431;37;;N;37
+547;1343;432;49;;N;49
+548;28008;433;100;;N;100
+549;7431;434;66;;N;66
+550;28798;435;100;open and 100;Y;open and 100
+551;6045;436;67;Ecosystem services framework (Fisher et al. 2009, linked to 10);Y;"Ecosystem services framework (Fisher et al. 2009, linked to 10) ; 25"
+552;6045;436;25;;N;"Ecosystem services framework (Fisher et al. 2009, linked to 10) ; 25"
+553;16555;437;112;;N;112
+554;56135;438;19;19 - WTP;Y;19 - WTP
+555;15090;439;101;;N;101
+556;55670;440;77;;N;77
+557;34150;441;22;;N;22
+558;47687;442;129;Plant diversity assessment (linked to 67);Y;Plant diversity assessment (linked to 67)
+559;64018;443;23;;N;23
+560;42918;444;22;;N;22
+561;26961;445;100;;N;100
+562;9938;446;100;;N;"100; 91; 94"
+563;9938;446;91;;N;"100; 91; 94"
+564;9938;446;94;;N;"100; 91; 94"
+565;20838;447;50;;N;"50; 100"
+566;20838;447;100;;N;"50; 100"
+567;34845;448;94;;N;94
+568;31358;449;23;;N;23
+569;69123;450;49;;N;49
+570;31931;451;19;;N;19
+571;57228;452;109;Willingness to Participate (Mislimshoeva et al. 2013);Y;Willingness to Participate (Mislimshoeva et al. 2013)
+572;68617;453;19;;N;19
+573;27213;454;152;General Algebraic Modelling System;Y;"General Algebraic Modelling System; CLUE models"
+574;27213;454;147;CLUE models;Y;"General Algebraic Modelling System; CLUE models"
+575;31501;455;21;;N;21
+576;70366;456;10;;N;10
+577;65394;457;22;;N;22
+578;65394;458;67;Social Cost of Carbon ( Soares-Filho et al 2006, linked to 94 and 67);Y;Social Cost of Carbon ( Soares-Filho et al 2006, linked to 94 and 67)
+579;2470;459;100;;N;"100; 75"
+580;2470;459;75;;N;"100; 75"
+581;16411;460;43;;N;43
+582;71820;461;25;indirect method based on damage abatement Lichtenberg and Zilberman 1986);Y;"indirect method based on damage abatement Lichtenberg and Zilberman 1986); Cobb-Douglas Production Function"
+583;71820;461;145;Cobb-Douglas Production Function;Y;"indirect method based on damage abatement Lichtenberg and Zilberman 1986); Cobb-Douglas Production Function"
+584;69884;462;21;;N;21
+585;36394;463;80;;N;80
+586;76296;464;77;;N;"77; Species distribution model"
+587;76296;464;129;Species distribution model;Y;"77; Species distribution model"
+588;73076;465;49;Hedonic pricing method (linked to 93);Y;Hedonic pricing method (linked to 93)
+589;77407;466;91;;N;91
+590;77407;467;19;;N;19
+591;39680;468;19;single bounded contingent valuation (linked to 19);Y;single bounded contingent valuation (linked to 19)
+592;23462;469;32;;N;"32; IndVal Methods (Dufrêne and Legendre 1997)"
+593;23462;469;129;IndVal Methods (Dufrêne and Legendre 1997);Y;"32; IndVal Methods (Dufrêne and Legendre 1997)"
+594;74766;470;52;Cross impact Analysis;Y;"Cross impact Analysis; Classification and Regression tree model (CART)"
+595;74766;470;69;Classification and Regression tree model (CART);Y;"Cross impact Analysis; Classification and Regression tree model (CART)"
+596;53796;471;14;Discrete Choice experiment (linked to 14);Y;Discrete Choice experiment (linked to 14)
+597;44059;472;49;;N;"49 ; 6"
+598;44059;472;6;;N;"49 ; 6"
+599;68569;473;112;Survey;Y;Survey
+600;2889;474;134;Vegetation plots (linked to 112);Y;Vegetation plots (linked to 112)
+601;68880;475;65;Market based methods, related to 65;Y;"Market based methods, related to 65; 100"
+602;68880;475;100;;N;"Market based methods, related to 65; 100"
+603;68880;476;19;;N;19
+604;68880;477;19;;N;"19; 94; Method to calculate values of research and environmental education services (Hicks et al 2009)"
+605;68880;477;94;;N;"19; 94; Method to calculate values of research and environmental education services (Hicks et al 2009)"
+606;68880;477;21;Method to calculate values of research and environmental education services (Hicks et al 2009);Y;"19; 94; Method to calculate values of research and environmental education services (Hicks et al 2009)"
+607;7387;478;65;;N;"65; 10"
+608;7387;478;10;;N;"65; 10"
+609;30;479;22;;N;22
+610;68880;480;122;Redundancy analysis;Y;"Redundancy analysis; Hierarchical cluster analysis (linked to 67)"
+611;68880;480;"69; 130";Hierarchical cluster analysis (linked to 67);Y;"Redundancy analysis; Hierarchical cluster analysis (linked to 67)"
+612;37844;481;90;;N;90
+613;18891;482;122;non-parametric data envelope analysis method;Y;"non-parametric data envelope analysis method; non-radial direction distance function"
+614;18891;482;130;non-radial direction distance function;Y;"non-parametric data envelope analysis method; non-radial direction distance function"
+615;18891;483;122;non-parametric data envelope analysis method;Y;"non-parametric data envelope analysis method; non-radial direction distance function"
+616;18891;483;130;non-radial direction distance function;Y;"non-parametric data envelope analysis method; non-radial direction distance function"
+617;18891;484;122;Non-parametric data envelope analysis method;Y;"Non-parametric data envelope analysis method; non-radial direction distance function"
+618;18891;484;130;non-radial direction distance function;Y;"Non-parametric data envelope analysis method; non-radial direction distance function"
+619;54436;485;14;;N;14
+620;54032;486;100;;N;"100;43;25"
+621;54032;486;43;;N;"100;43;25"
+622;54032;486;25;;N;"100;43;25"
+623;13894;487;77;;N;77
+624;20791;488;91;;N;"91; qualitative interviews (linked to 112)"
+625;20791;488;112;qualitative interviews (linked to 112);Y;"91; qualitative interviews (linked to 112)"
+626;51998;489;126;Adaptive Choice-Based Conjoint - ACBC (Aspinall et al. 2010);Y;Adaptive Choice-Based Conjoint - ACBC (Aspinall et al. 2010)
+627;59670;490;67;affect-and offset algorithm;Y;affect-and offset algorithm
+628;31971;491;94;zonal travel cost method;Y;zonal travel cost method
+629;58881;492;"19; 57;  144";Landscape susceptibility (Scott and Thompson 2015);Y;Landscape susceptibility (Scott and Thompson 2015)
+630;35265;493;1;;N;"1; market price analysis (linked to 21)"
+631;35265;493;65;market price analysis (linked to 21);Y;"1; market price analysis (linked to 21)"
+632;61267;494;14;;N;14
+633;52444;495;1;;N;1
+634;24562;496;100;Interviews (linked to 91);Y;"Interviews (linked to 91); Homegarden survey (linked to 112)"
+635;24562;496;112;Homegarden survey (linked to 112);Y;"Interviews (linked to 91); Homegarden survey (linked to 112)"
+636;5654;497;64;;N;64
+637;60582;498;77;;N;"77; 64"
+638;60582;498;64;;N;"77; 64"
+639;63212;499;"10;134; 145";observations and sample collection (maybe linked to 10);Y;observations and sample collection (maybe linked to 10)
+640;37298;500;91;;N;91
+641;60938;501;14;;N;14
+642;22152;502;112;;N;"112; participatory fieldwork (linked to 79 or 77)"
+643;22152;502;79;participatory fieldwork (linked to 79 or 77);Y;"112; participatory fieldwork (linked to 79 or 77)"
+644;60938;503;112;;N;112
+645;35471;504;"67; 128";RZWQM2 (Ahuja et al 2000 and Ma et al. 2009, linked to 67);Y;RZWQM2 (Ahuja et al 2000 and Ma et al. 2009, linked to 67)
+646;74148;505;27;"Deliberative valuation technique (Lo and
+ Spash 2013 Spash, 2008 2007) (linked to 76)";Y;"Deliberative valuation technique (Lo and
+ Spash 2013 Spash, 2008 2007) (linked to 76); 14"
+647;74148;505;14;;N;"Deliberative valuation technique (Lo and
+ Spash 2013 Spash, 2008 2007) (linked to 76); 14"
+648;65266;506;19;Contigent valuation method (linked to 19);Y;Contigent valuation method (linked to 19)
+649;58997;507;14;Choice experiment;Y;Choice experiment
+650;13045;508;49;Hedonic Pricing Analysis;Y;Hedonic Pricing Analysis
+651;20958;509;112;Surveys;Y;Surveys
+652;9318;510;100;;N;100
+653;61034;511;112;;N;"112; 14"
+654;61034;511;14;;N;"112; 14"
+655;27602;512;75;75;N;75, 100
+655;27602;512;100;100;N;75, 100
+656;37851;513;67;;N;67
+657;37851;514;67;;N;67
+658;37851;515;67;;N;67
+659;62627;516;100;;N;"100; 43"
+660;62627;516;43;;N;"100; 43"
+661;21658;517;22;Estimation of marginal values under different scenarios;Y;Estimation of marginal values under different scenarios
+662;23700;518;129;Value of Importance - IVs index;Y;Value of Importance - IVs index
+663;64658;519;49;;N;49
+664;2556;520;25;;N;25
+665;31298;521;90;;N;90
+666;7115;522;86;;N;"86; 25"
+667;7115;522;25;;N;"86; 25"
+668;37789;523;75;;N;"75; 77; 80; 100; 110; 10; 43"
+669;37789;523;77;;N;"75; 77; 80; 100; 110; 10; 43"
+670;37789;523;80;;N;"75; 77; 80; 100; 110; 10; 43"
+671;37789;523;100;;N;"75; 77; 80; 100; 110; 10; 43"
+672;37789;523;110;;N;"75; 77; 80; 100; 110; 10; 43"
+673;37789;523;10;;N;"75; 77; 80; 100; 110; 10; 43"
+674;37789;523;43;;N;"75; 77; 80; 100; 110; 10; 43"
+675;42979;524;10;;N;"10; 100; 37"
+676;42979;524;100;;N;"10; 100; 37"
+677;42979;524;37;;N;"10; 100; 37"
+678;66862;525;19;;N;19
+679;27934;526;19;;N;"19; 22"
+680;27934;526;22;;N;"19; 22"
+681;41375;527;112;Surveys;Y;Surveys
+682;22029;528;22;;N;22
+683;67485;529;92;;N;"92; 37"
+684;67485;529;37;;N;"92; 37"
+685;4941;530;101;;N;101
+686;5144;531;22;;N;22
+687;27030;532;22;;N;22
+688;66498;533;100;structured interviews (linked to 100);Y;structured interviews (linked to 100)
+689;66498;534;100;structured interviews (linked to 100);Y;structured interviews (linked to 100)
+690;39939;535;112;;N;112
+691;47729;536;65;;N;65
+692;5413;537;94;;N;94
+693;71874;538;21;;N;21
+694;8322;539;145;Cobb–Douglas production function econometric model (Lu & Chen, 2013);Y;Cobb–Douglas production function econometric model (Lu & Chen, 2013)
+695;45046;540;145;micro-economic valuation (Onofri et al 2016, linked to 86);Y;micro-economic valuation (Onofri et al 2016, linked to 86)
+696;37429;541;14;;N;14
+697;35913;542;22;;N;22
+698;4445;543;112;;N;112
+699;5787;544;112;;N;112
+700;62947;545;37;;N;37
+701;6594;546;64;image texture measure (Ozdemir and Karnieli 2011);Y;"image texture measure (Ozdemir and Karnieli 2011); Bird identification; Micro-habitat diversity"
+702;6594;546;125;Bird identification;Y;"image texture measure (Ozdemir and Karnieli 2011); Bird identification; Micro-habitat diversity"
+703;6594;546;129;Micro-habitat diversity;Y;"image texture measure (Ozdemir and Karnieli 2011); Bird identification; Micro-habitat diversity"
+704;11039;547;130;GIS analyses;Y;"GIS analyses; field sampling"
+705;11039;547;134;field sampling;Y;"GIS analyses; field sampling"
+706;11039;548;130;GIS analyses;Y;"GIS analyses; field sampling"
+707;11039;548;134;field sampling;Y;"GIS analyses; field sampling"
+708;13510;549;10;;N;10
+709;64344;550;137;CARICOMP method (Bone et al 2001, linked to 10);Y;"CARICOMP method (Bone et al 2001, linked to 10); AGRRA protocol (Bruckner and Bruckner 2003, linked to 10)"
+710;64344;550;10;AGRRA protocol (Bruckner and Bruckner 2003, linked to 10);Y;"CARICOMP method (Bone et al 2001, linked to 10); AGRRA protocol (Bruckner and Bruckner 2003, linked to 10)"
+711;19940;551;19;;N;19
+712;19940;552;22;;N;22
+713;64050;553;14;;N;14
+714;74270;554;108;State-transition models (Westoby et al. 1989 and Bestelmeyer et al. 2017, linked to 108);Y;State-transition models (Westoby et al. 1989 and Bestelmeyer et al. 2017, linked to 108)
+715;880;555;129;Price equation;Y;Price equation
+716;44894;556;124;climate–water conflict vulnerability index - CWCVI (Ellis 2000 Füssel 2007 and Adger 2010);Y;"climate–water conflict vulnerability index - CWCVI (Ellis 2000 Füssel 2007 and Adger 2010); double exposure index -DEI (Leichenko and Brien 2008)"
+717;44894;556;148;double exposure index -DEI (Leichenko and Brien 2008);Y;"climate–water conflict vulnerability index - CWCVI (Ellis 2000 Füssel 2007 and Adger 2010); double exposure index -DEI (Leichenko and Brien 2008)"
+718;38384;557;10;Molecular laboratory methodology;Y;Molecular laboratory methodology
+719;46526;558;67;Scoring of Ecosystem Services (Brill et al 2017, linked to 67);Y;Scoring of Ecosystem Services (Brill et al 2017, linked to 67)
+720;41438;559;56;;N;56
+721;37881;560;43;;N;"43; 91; 92"
+722;37881;560;91;;N;"43; 91; 92"
+723;37881;560;92;;N;"43; 91; 92"
+724;2198;561;80;;N;"80; 112"
+725;2198;561;112;;N;"80; 112"
+726;9882;562;49;;N;"49; 93"
+727;9882;562;93;;N;"49; 93"
+728;13881;563;65;;N;"65; soil spatial variability mapped via proximal sensing technology and biomass production monitored and mapped via precision agriculture technologies (linked to 64)"
+729;13881;563;64;soil spatial variability mapped via proximal sensing technology and biomass production monitored and mapped via precision agriculture technologies (linked to 64);Y;"65; soil spatial variability mapped via proximal sensing technology and biomass production monitored and mapped via precision agriculture technologies (linked to 64)"
+730;76275;564;112;structured surveys (linked to 112);Y;"structured surveys (linked to 112); 91"
+731;76275;564;91;;N;"structured surveys (linked to 112); 91"
+732;33941;565;91;;N;"91; 64"
+733;33941;565;64;;N;"91; 64"
+734;35851;566;100;;N;100
+735;35851;567;100;;N;100
+736;63485;568;14;;N;14
+737;6492;569;49;;N;49
+738;39979;570;6;;N;"6; 64; 50"
+739;39979;570;64;;N;"6; 64; 50"
+740;39979;570;50;;N;"6; 64; 50"
+741;3749;571;125;‘‘crop list’’ approach (Arora and Nayar 1984);Y;‘‘crop list’’ approach (Arora and Nayar 1984)
+742;45863;572;49;;N;"49; 93"
+743;45863;572;93;;N;"49; 93"
+744;46252;573;43;expert workshop (linked to 43);Y;expert workshop (linked to 43)
+745;23505;574;94;;N;"94; hydrological models (linked to 10); 22; 101"
+746;23505;574;155;hydrological models (linked to 10);Y;"94; hydrological models (linked to 10); 22; 101"
+747;23505;574;22;;N;"94; hydrological models (linked to 10); 22; 101"
+748;23505;574;101;;N;"94; hydrological models (linked to 10); 22; 101"
+749;63136;575;10;;N;10
+750;3401;576;10;;N;10
+751;3603;577;10;;N;10
+752;8949;578;10;;N;10
+753;41375;579;112;Surveys;Y;Surveys
+754;46686;580;100;Semi-structured questionnaires;Y;Semi-structured questionnaires
+755;15034;581;25;Avoided Cost Method (linked to 25);Y;Avoided Cost Method (linked to 25)
+756;19927;582;112;;N;112
+757;9727;583;67;systemic approach for ES Valuation (Hérivaux and Grémont 2018, linked to 21);Y;systemic approach for ES Valuation (Hérivaux and Grémont 2018, linked to 21)
+758;11673;584;10;;N;10
+759;31966;585;112;;N;112
+760;9247;586;22;;N;22
+761;30791;587;112;;N;112
+762;39738;588;23;;N;23
+763;36631;589;10;;N;10
+764;42213;590;100;;N;"100; 10"
+765;42213;590;10;;N;"100; 10"
+766;37832;591;67;interdisciplinary framework for valuing multiple ecosystem services (Cole and Moksnes 2016, linked to 67 and 22);Y;interdisciplinary framework for valuing multiple ecosystem services (Cole and Moksnes 2016, linked to 67 and 22)
+767;23185;592;130;GIS - spatial Burkhard et al. 2009, linked to 64);Y;GIS - spatial Burkhard et al. 2009, linked to 64)
+768;15998;593;56;;N;56
+769;37660;594;19;;N;19
+770;22318;595;52;before-after-control-impact analysis - BACI models (Stewartoaten, Murdoch & Parker 1986, linked to 52);Y;before-after-control-impact analysis - BACI models (Stewartoaten, Murdoch & Parker 1986, linked to 52)
+771;20874;596;109;;N;"109; service-providing unit - SPU framework (Kontogianni et al. 2010)"
+772;20874;596;67;service-providing unit - SPU framework (Kontogianni et al. 2010);Y;"109; service-providing unit - SPU framework (Kontogianni et al. 2010)"
+773;67022;597;22;;N;22
+774;28267;598;37;;N;37
+775;10929;599;91;PEN Questionnaires - Poverty Environment Network;Y;PEN Questionnaires - Poverty Environment Network
+776;45593;600;128;integrated modeling of agricultural scenario - IMAS framework (Vernier et al 2016, linked to 56);Y;integrated modeling of agricultural scenario - IMAS framework (Vernier et al 2016, linked to 56)
+777;28465;601;6;Estimation of potential economic values $ value transfer;Y;Estimation of potential economic values $ value transfer
+778;39962;602;122;Econometric models;Y;Econometric models
+779;28279;603;10;;N;10
+780;39073;604;86;;N;86
+781;47685;605;10;;N;10
+782;43314;606;158;quantitative multi-hazard risk assessment;Y;quantitative multi-hazard risk assessment
+783;40348;607;10;;N;10
+784;71696;608;10;;N;10
+785;64234;609;10;;N;10
+786;27312;610;10;;N;"10; 92"
+787;27312;610;92;;N;"10; 92"
+788;27312;611;10;;N;"10; 92"
+789;27312;611;92;;N;"10; 92"
+790;45074;612;10;;N;10
+791;44995;613;112;Household income surveys;Y;"Household income surveys; free-lists. fallow inventories"
+792;44995;613;125;free-lists. fallow inventories;Y;"Household income surveys; free-lists. fallow inventories"
+793;42928;614;112;Survey;Y;"Survey; Choice experiment"
+794;42928;614;14;Choice experiment;Y;"Survey; Choice experiment"
+795;45569;615;19;Contigent Valuation;Y;Contigent Valuation
+796;96;616;"147; 130";Spatial mapping to analyse land-use change (linked to 64);Y;Spatial mapping to analyse land-use change (linked to 64)
+797;96;617;70;food collection diaries;Y;"food collection diaries; 100; 75"
+798;96;617;100;;N;"food collection diaries; 100; 75"
+799;96;617;75;;N;"food collection diaries; 100; 75"
+800;7585;618;147;forest management scenario modelling (using LANDIS-II);Y;forest management scenario modelling (using LANDIS-II)
+801;17237;619;125;Tree inventory (linked to 10);Y;"Tree inventory (linked to 10); 100; Canopy cover estimates (linked to 64)"
+802;17237;619;100;;N;"Tree inventory (linked to 10); 100; Canopy cover estimates (linked to 64)"
+803;17237;619;138;Canopy cover estimates (linked to 64);Y;"Tree inventory (linked to 10); 100; Canopy cover estimates (linked to 64)"
+804;53355;620;"112;91";Surveys, Questionnaires;Y;Surveys, Questionnaires
+805;9857;621;82;;N;82
+806;19465;622;130;"self-designed framework ""spatial planning for forest restoration"" applied to different scenarios (linked 99?)";Y;"self-designed framework ""spatial planning for forest restoration"" applied to different scenarios (linked 99?)"
+807;40888;623;79;;N;79
+808;9386;624;65;;N;"65; community-defined symbolic prices (linked to 18); CO2 capture and storage modelling (linked to 67)"
+809;9386;624;18;community-defined symbolic prices (linked to 18);Y;"65; community-defined symbolic prices (linked to 18); CO2 capture and storage modelling (linked to 67)"
+810;9386;624;67;CO2 capture and storage modelling (linked to 67);Y;"65; community-defined symbolic prices (linked to 18); CO2 capture and storage modelling (linked to 67)"
+811;37895;625;109;;N;109
+812;38419;626;10;;N;10
+813;43327;627;10;;N;10
+814;46385;628;143;compiled secondary data on species richness over time;Y;compiled secondary data on species richness over time
+815;42123;629;93;;N;93
+816;27399;630;122;Statistical analysis;Y;Statistical analysis
+817;47170;631;127;Watershed Assessment Model (Corrales et al. 2014);Y;Watershed Assessment Model (Corrales et al. 2014)
+818;21213;632;100;Key informant interviews (linked to 100);Y;"Key informant interviews (linked to 100); Rapid Rural Appraisal (Martin GJ 1995, linked to 80)"
+819;21213;632;80;Rapid Rural Appraisal (Martin GJ 1995, linked to 80);Y;"Key informant interviews (linked to 100); Rapid Rural Appraisal (Martin GJ 1995, linked to 80)"
+820;43395;633;67;Lonsdorf model;Y;Lonsdorf model
+821;41193;634;64;;N;"64; 10; 37"
+822;41193;634;10;;N;"64; 10; 37"
+823;41193;634;37;;N;"64; 10; 37"
+824;42378;635;86;;N;86
+825;12163;636;52;LC‐IMPACT method (Verones et al. 2016);Y;LC‐IMPACT method (Verones et al. 2016)
+826;42845;637;19;;N;19
+827;48832;638;14;;N;"14; marginal abatement cost approach (linked to 23)"
+828;48832;638;25;marginal abatement cost approach (linked to 23);Y;"14; marginal abatement cost approach (linked to 23)"
+829;6033;639;155;R-SWAT-DS (Udias et al 2016a);Y;R-SWAT-DS (Udias et al 2016a)
+830;45770;640;25;;N;25
+831;45770;641;19;;N;19
+832;1035;642;112;;N;112
+833;45988;643;10;;N;10
+834;38466;644;49;Hedonic pricing (linked to 49);Y;Hedonic pricing (linked to 49)
+835;23840;645;80;;N;"80; 100; 43; Non-participant observation (linked to 75)"
+836;23840;645;100;;N;"80; 100; 43; Non-participant observation (linked to 75)"
+837;23840;645;43;;N;"80; 100; 43; Non-participant observation (linked to 75)"
+838;23840;645;145;Non-participant observation (linked to 75);Y;"80; 100; 43; Non-participant observation (linked to 75)"
+839;31855;646;91;;N;91
+840;6652;647;69;Best-worst method (Huang et al 1995);Y;"Best-worst method (Huang et al 1995); AquaCrop model (Steduto et al 2009); Genetic Algorithm (Holland 1975 and Wu et al 2007)"
+841;6652;647;128;AquaCrop model (Steduto et al 2009);Y;"Best-worst method (Huang et al 1995); AquaCrop model (Steduto et al 2009); Genetic Algorithm (Holland 1975 and Wu et al 2007)"
+842;6652;647;152;Genetic Algorithm (Holland 1975 and Wu et al 2007);Y;"Best-worst method (Huang et al 1995); AquaCrop model (Steduto et al 2009); Genetic Algorithm (Holland 1975 and Wu et al 2007)"
+843;17125;648;112;;N;112
+844;34156;649;49;conceptual hedonic model (Rosen 1974 $ Kennedy, 2003);Y;"conceptual hedonic model (Rosen 1974 $ Kennedy, 2003);"
+845;34156;649;;;Y;"conceptual hedonic model (Rosen 1974 $ Kennedy, 2003);"
+846;25370;650;23;;N;"23; Stakeholder engagement process (linked to 79)"
+847;25370;650;79;Stakeholder engagement process (linked to 79);Y;"23; Stakeholder engagement process (linked to 79)"
+848;10474;651;23;;N;23
+849;22317;652;152;Linear programming model (linked to 23);Y;Linear programming model (linked to 23)
+850;35210;653;147;land-use decision simulation modelling;Y;"land-use decision simulation modelling; yield modelling"
+851;35210;653;128;yield modelling;Y;"land-use decision simulation modelling; yield modelling"
+852;4806;654;19;;N;"19;94"
+853;4806;654;94;;N;"19;94"
+854;32205;655;112;;N;112
+855;28897;656;112;;N;112
+856;39619;657;43;;N;43
+857;22667;658;49;Hedonic price analysis;Y;Hedonic price analysis
+858;22757;659;21;Economic analysis $opportunity costs of land conversion / tonnes of carbon sequestered$;Y;Economic analysis $opportunity costs of land conversion / tonnes of carbon sequestered$
+859;12597;660;112;Perceived Stress Scale - PSS (linked to 112);Y;"Perceived Stress Scale - PSS (linked to 112); EuroQol measure- EQ-5D; International Physical Activity Questionnaire short form - IPAQ-SF; frequency of nature visit assessment; Inclusion of Nature in Self Scale; English Citizenship Survey to measure social cohesion"
+860;12597;660;54;EuroQol measure- EQ-5D;Y;"Perceived Stress Scale - PSS (linked to 112); EuroQol measure- EQ-5D; International Physical Activity Questionnaire short form - IPAQ-SF; frequency of nature visit assessment; Inclusion of Nature in Self Scale; English Citizenship Survey to measure social cohesion"
+861;12597;660;91;International Physical Activity Questionnaire short form - IPAQ-SF;Y;"Perceived Stress Scale - PSS (linked to 112); EuroQol measure- EQ-5D; International Physical Activity Questionnaire short form - IPAQ-SF; frequency of nature visit assessment; Inclusion of Nature in Self Scale; English Citizenship Survey to measure social cohesion"
+862;12597;660;144;frequency of nature visit assessment;Y;"Perceived Stress Scale - PSS (linked to 112); EuroQol measure- EQ-5D; International Physical Activity Questionnaire short form - IPAQ-SF; frequency of nature visit assessment; Inclusion of Nature in Self Scale; English Citizenship Survey to measure social cohesion"
+863;12597;660;43;Inclusion of Nature in Self Scale;Y;"Perceived Stress Scale - PSS (linked to 112); EuroQol measure- EQ-5D; International Physical Activity Questionnaire short form - IPAQ-SF; frequency of nature visit assessment; Inclusion of Nature in Self Scale; English Citizenship Survey to measure social cohesion"
+864;12597;660;100;English Citizenship Survey to measure social cohesion;Y;"Perceived Stress Scale - PSS (linked to 112); EuroQol measure- EQ-5D; International Physical Activity Questionnaire short form - IPAQ-SF; frequency of nature visit assessment; Inclusion of Nature in Self Scale; English Citizenship Survey to measure social cohesion"
+865;35963;661;100;;N;"100; Key informant interviews; 43"
+866;35963;661;100;Key informant interviews;Y;"100; Key informant interviews; 43"
+867;35963;661;43;;N;"100; Key informant interviews; 43"
+868;14743;662;10;;N;10
+869;14743;663;137;vegetation survey (linked to 10);Y;"vegetation survey (linked to 10); end member mixing analysis - EMMA"
+870;14743;663;10;end member mixing analysis - EMMA;Y;"vegetation survey (linked to 10); end member mixing analysis - EMMA"
+871;14743;664;19;;N;"19; survey"
+872;14743;664;112;survey;Y;"19; survey"
+873;36169;665;100;in-depth interviews;Y;in-depth interviews
+874;32600;666;134;Pitfall trapping (linked to 10);Y;Pitfall trapping (linked to 10)
+875;67398;667;14;;N;14
+876;33313;668;21;;N;21
+877;63713;669;10;;N;10
+878;40827;670;152;Heuristic optimization algorithms (Marxan software);Y;Heuristic optimization algorithms (Marxan software)
+879;70190;671;49;Hedonic model analysis;Y;Hedonic model analysis
+880;34419;672;14;;N;14
+881;3734;673;10;;N;10
+882;37557;674;112;;N;112
+883;16675;675;67;"Their own ""Carbon Sequestration Total Factor Productivity Growth Framework"" - CSTFP";Y;"Their own ""Carbon Sequestration Total Factor Productivity Growth Framework"" - CSTFP"
+884;17798;676;128;ecohydrological modelling using AgriCLVDAS;Y;ecohydrological modelling using AgriCLVDAS
+885;38748;677;10;;N;10
+886;8999;678;10;;N;10
+887;26651;679;23;;N;23
+888;25474;680;25;;N;"25; Kernel method (Rodgers and Carr, 1998); Biotas 2.05 programme - Ecological Software Solutions USA; 64"
+889;25474;680;152;Kernel method (Rodgers and Carr, 1998);Y;"25; Kernel method (Rodgers and Carr, 1998); Biotas 2.05 programme - Ecological Software Solutions USA; 64"
+890;25474;680;130;Biotas 2.05 programme - Ecological Software Solutions USA;Y;"25; Kernel method (Rodgers and Carr, 1998); Biotas 2.05 programme - Ecological Software Solutions USA; 64"
+891;25474;680;64;;N;"25; Kernel method (Rodgers and Carr, 1998); Biotas 2.05 programme - Ecological Software Solutions USA; 64"
+892;18828;681;75;;N;"75; qualitative content analysis"
+893;18828;681;152;qualitative content analysis;Y;"75; qualitative content analysis"
+894;43312;682;10;;N;10
+895;67406;683;49;;N;49
+896;38121;684;23;;N;23
+897;12456;685;134;Sampling method (Nested design);Y;Sampling method (Nested design)
+898;68412;686;21;ROI framework (Wilson, et al. 2007);Y;ROI framework (Wilson, et al. 2007)
+899;21748;687;64;Spatial dataset %Mapping% (linked to 64);Y;Spatial dataset %Mapping% (linked to 64)
+900;69543;688;100;;N;100
+901;41072;689;23;;N;23
+902;41947;690;10;;N;10
+903;40576;691;128;integrated agriculture water management optimization model (linked to 56);Y;integrated agriculture water management optimization model (linked to 56)
+904;63191;692;43;;N;"43; 100"
+905;63191;692;100;;N;"43; 100"
+906;27437;693;10;;N;10
+907;30441;694;64;Mapping (linked to 64);Y;Mapping (linked to 64)
+908;31662;695;10;;N;10
+909;35221;696;134;Sample plot;Y;Sample plot
+910;46197;697;64;Mapping (linked to 64);Y;Mapping (linked to 64)
+911;48238;698;129;Field plot design;Y;Field plot design
+912;37294;699;93;;N;93
+913;32090;700;10;;N;10
+914;22334;701;94;;N;94
+915;46432;702;10;;N;10
+916;69190;703;19;single-bounded dichotomous contingent valuation (linked to 19);Y;single-bounded dichotomous contingent valuation (linked to 19)
+917;67991;704;10;;N;10
+918;3914;705;14;;N;14
+919;23919;706;23;;N;23
+920;32945;707;19;;N;"19; 94"
+921;32945;707;94;;N;"19; 94"
+922;48809;708;14;;N;14
+923;71934;709;150;Investment framework for environmental resources - INFFER analysis (pannell et al., 2011);Y;Investment framework for environmental resources - INFFER analysis (pannell et al., 2011)
+924;13675;710;19;;N;19
+925;38133;711;52;;N;52
+926;70668;712;19;;N;19
+927;9724;713;"132; 67";habitat-ecosystem service potential matrix;Y;habitat-ecosystem service potential matrix
+928;9724;714;"67;64";Mapping of ecosystem service potential (linked to 67/64);Y;Mapping of ecosystem service potential (linked to 67/64)
+929;9724;715;56;"integrated matrics of benthic habitat area and habitat
+ quality in an evaluation of the differences in ESP provided by two different Reserves";Y;"integrated matrics of benthic habitat area and habitat
+ quality in an evaluation of the differences in ESP provided by two different Reserves"
+930;29354;716;141;static Stackelberg leader-follower game (Madani and Hipel 2011);Y;"static Stackelberg leader-follower game (Madani and Hipel 2011); non-cooperative game-theoretical model (Carraro et al. 2007)"
+931;29354;716;141;non-cooperative game-theoretical model (Carraro et al. 2007);Y;"static Stackelberg leader-follower game (Madani and Hipel 2011); non-cooperative game-theoretical model (Carraro et al. 2007)"
+932;51048;717;122;regression analysis;Y;"regression analysis; financial analysis (linked to 21)"
+933;51048;717;21;financial analysis (linked to 21);Y;"regression analysis; financial analysis (linked to 21)"
+934;69592;718;19;one-and-one-half-bound dichotomous contingent valuation (OOHB DC CV) (Cooper et al. 2002, linked to 19);Y;one-and-one-half-bound dichotomous contingent valuation (OOHB DC CV) (Cooper et al. 2002, linked to 19)
+935;2226;719;100;Imterviews;Y;"Imterviews; Participant observation (linked to 75)"
+936;2226;719;75;Participant observation (linked to 75);Y;"Imterviews; Participant observation (linked to 75)"
+937;1163;720;125;biodiversity inventory (linked to 10);Y;biodiversity inventory (linked to 10)
+938;1307;721;137;acoustic sampling to assess bat species numbers and activity (linked to 10);Y;acoustic sampling to assess bat species numbers and activity (linked to 10)
+939;35369;722;19;;N;19
+940;69709;723;112;;N;112
+941;67356;724;39;;N;"39; 91"
+942;67356;724;91;;N;"39; 91"
+943;19076;725;130;GIS Approach (linked to 64);Y;GIS Approach (linked to 64)
+944;41326;726;"112;91";112/91;Y;"112/91; Market Value Method (including Carbon Tax Method and Afforestation Cost Method, Shadow Engeneering Method, and Results Reference Method, linked to 65); 19; 10 (Others)"
+945;41326;726;"67;65";Market Value Method (including Carbon Tax Method and Afforestation Cost Method, Shadow Engeneering Method, and Results Reference Method, linked to 65);Y;"112/91; Market Value Method (including Carbon Tax Method and Afforestation Cost Method, Shadow Engeneering Method, and Results Reference Method, linked to 65); 19; 10 (Others)"
+946;41326;726;19;;N;"112/91; Market Value Method (including Carbon Tax Method and Afforestation Cost Method, Shadow Engeneering Method, and Results Reference Method, linked to 65); 19; 10 (Others)"
+947;41326;726;10;10 (Others);Y;"112/91; Market Value Method (including Carbon Tax Method and Afforestation Cost Method, Shadow Engeneering Method, and Results Reference Method, linked to 65); 19; 10 (Others)"
+948;4324;727;100;;N;100
+949;43818;728;93;;N;93
+950;10638;729;94;TCM valuation;Y;TCM valuation
+951;32398;730;94;;N;94
+952;7276;731;129;rank-abundance distribution modelling;Y;rank-abundance distribution modelling
+953;794;732;112;;N;112
+954;32956;733;93;;N;93
+955;40547;734;112;;N;112
+956;68962;735;94;;N;94
+957;70575;736;100;;N;"100; 91"
+958;70575;736;91;;N;"100; 91"
+959;37228;737;112;;N;112
+960;48047;738;22;;N;22
+961;30843;739;"112;65";Quantitative market survey (linked to 112);Y;"Quantitative market survey (linked to 112); Standard botanical collection methods (linked to 37)"
+962;30843;739;125;Standard botanical collection methods (linked to 37);Y;"Quantitative market survey (linked to 112); Standard botanical collection methods (linked to 37)"
+963;64419;740;19;open ended contingent valuation (linked to 19);Y;open ended contingent valuation (linked to 19)
+964;53808;741;14;;N;14
+965;21686;742;19;;N;19
+966;16111;743;10;;N;10
+967;16565;744;159;Phylogenetic Analysis;Y;Phylogenetic Analysis
+968;42072;745;"69; 14";best-worst scaling D-efficient choice experiment (linked to 14);Y;best-worst scaling D-efficient choice experiment (linked to 14)
+969;14008;746;155;HadAM3H model from the Hadley Centre of the UK Meteorological Office (Andréasson et al 2004);Y;"HadAM3H model from the Hadley Centre of the UK Meteorological Office (Andréasson et al 2004); ECHAM4/ OPYC3 model from the Max-Planck Institute for Meteorology in Hamburg (Andréasson et al 2004, linked to 67)."
+970;14008;746;155;ECHAM4/ OPYC3 model from the Max-Planck Institute for Meteorology in Hamburg (Andréasson et al 2004, linked to 67).;Y;"HadAM3H model from the Hadley Centre of the UK Meteorological Office (Andréasson et al 2004); ECHAM4/ OPYC3 model from the Max-Planck Institute for Meteorology in Hamburg (Andréasson et al 2004, linked to 67)."
+971;32915;747;64;;N;64
+972;42146;748;77;;N;"77; species distribution modelling"
+973;42146;748;129;species distribution modelling;Y;"77; species distribution modelling"
+974;9830;749;10;;N;10
+975;26241;750;135;total maximum daily load calculation for river water quality modelling;Y;total maximum daily load calculation for river water quality modelling
+976;10717;751;10;Assessment of grazing exclusion effects;Y;Assessment of grazing exclusion effects
+977;30405;752;79;Participant Journals (Peckham et al. 2013);Y;"Participant Journals (Peckham et al. 2013); photo elicitation (linked to 82); follow-up interviews (linked to 100)"
+978;30405;752;82;photo elicitation (linked to 82);Y;"Participant Journals (Peckham et al. 2013); photo elicitation (linked to 82); follow-up interviews (linked to 100)"
+979;30405;752;100;follow-up interviews (linked to 100);Y;"Participant Journals (Peckham et al. 2013); photo elicitation (linked to 82); follow-up interviews (linked to 100)"
+980;42029;753;57;InVEST models (linked to 57);Y;InVEST models (linked to 57)
+981;1576;754;100;;N;100
+982;12980;755;122;Two Step Potato Yiel Model - regression models;Y;Two Step Potato Yiel Model - regression models
+983;64029;756;64;;N;64
+984;46198;757;43;;N;"43; in-depth semi-structured interviews (linked to 100); direct observations (linked to 75); 91"
+985;46198;757;100;in-depth semi-structured interviews (linked to 100);Y;"43; in-depth semi-structured interviews (linked to 100); direct observations (linked to 75); 91"
+986;46198;757;146;direct observations (linked to 75);Y;"43; in-depth semi-structured interviews (linked to 100); direct observations (linked to 75); 91"
+987;46198;757;91;;N;"43; in-depth semi-structured interviews (linked to 100); direct observations (linked to 75); 91"
+988;5483;758;100;In depth interviews (linked to 100);Y;"In depth interviews (linked to 100); Focus group discussions - FDGs (linked to 43)"
+989;5483;758;43;Focus group discussions - FDGs (linked to 43);Y;"In depth interviews (linked to 100); Focus group discussions - FDGs (linked to 43)"
+990;8945;759;75;;N;"75; document gathering (linked to 18); Interviews (linked to 92)"
+991;8945;759;131;document gathering (linked to 18);Y;"75; document gathering (linked to 18); Interviews (linked to 92)"
+992;8945;759;100;Interviews (linked to 92);Y;"75; document gathering (linked to 18); Interviews (linked to 92)"
+993;41671;760;122;Linear mixed effects modelling;Y;"Linear mixed effects modelling; multi-temporal land-cover maps (linked to 64)"
+994;41671;760;64;multi-temporal land-cover maps (linked to 64);Y;"Linear mixed effects modelling; multi-temporal land-cover maps (linked to 64)"
+995;41434;761;57;;N;"57; Soil and Water Assessment Tool - SWAT"
+996;41434;761;155;Soil and Water Assessment Tool - SWAT;Y;"57; Soil and Water Assessment Tool - SWAT"
+997;41138;762;122;generalised linear model;Y;generalised linear model
+998;12651;763;43;Focus group;Y;Focus group
+999;39015;764;10;;N;10
+1000;27599;765;10;;N;10
+1001;10662;766;134;complementary sampling methods (linked to 10);Y;complementary sampling methods (linked to 10)
+1002;13839;767;10;Freshwater conservation assessment;Y;Freshwater conservation assessment
+1003;63448;768;19;;N;19
+1004;26151;769;137;Bird surveying;Y;Bird surveying
+1005;27663;770;10;;N;10
+1006;31154;771;10;;N;10
+1007;35692;772;10;;N;10
+1008;43830;773;93;;N;93
+1009;41527;774;122;Econometric modelling;Y;Econometric modelling
+1010;67570;775;23;;N;23
+1011;2248;776;122;Statistical methods;Y;Statistical methods
+1012;4590;777;69;Multi-criteria analysis (linked to 10);Y;Multi-criteria analysis (linked to 10)
+1013;67763;778;23;;N;23
+1014;28894;779;10;;N;10
+1015;43798;780;80;Participatory Research Appraisal tools (linked to 79/80);Y;Participatory Research Appraisal tools (linked to 79/80)
+1016;70797;781;110;;N;110
+1017;63276;782;112;;N;112
+1018;63276;783;6;;N;"6; opportunity costs"
+1019;63276;783;21;opportunity costs;Y;"6; opportunity costs"
+1020;70282;784;21;cost-of-illness model (United States Department of Agriculture’s - USDA Economic Research Service - ERS, linked to 21);Y;cost-of-illness model (United States Department of Agriculture’s - USDA Economic Research Service - ERS, linked to 21)
+1021;68900;785;91;;N;91
+1022;22319;786;69;Multi-species hierarchical modelling (linked to 67);Y;Multi-species hierarchical modelling (linked to 67)
+1023;38991;787;128;intermediate disturbance-complexity model;Y;intermediate disturbance-complexity model
+1024;10644;788;129;Alpha and beta diversity analysis (linked to 10);Y;"Alpha and beta diversity analysis (linked to 10); Principle Component Analysis (linked to 67); Multiple Regressions on Distance Matrices (linked to 67)."
+1025;10644;788;122;Principle Component Analysis (linked to 67);Y;"Alpha and beta diversity analysis (linked to 10); Principle Component Analysis (linked to 67); Multiple Regressions on Distance Matrices (linked to 67)."
+1026;10644;788;122;Multiple Regressions on Distance Matrices (linked to 67).;Y;"Alpha and beta diversity analysis (linked to 10); Principle Component Analysis (linked to 67); Multiple Regressions on Distance Matrices (linked to 67)."
+1027;14278;789;49;;N;49
+1028;39656;790;10;;N;10
+1029;2472;791;10;;N;10
+1030;67767;792;112;;N;112
+1031;69611;793;112;structured household survey containing closed and open questions (linked to 112);Y;structured household survey containing closed and open questions (linked to 112)
+1032;36115;794;129;Species diversity analysis;Y;"Species diversity analysis; Stepwise multiple regression analysis (linked to 67); Non-metric multidimensional scaling (linked to 67)."
+1033;36115;794;122;Stepwise multiple regression analysis (linked to 67);Y;"Species diversity analysis; Stepwise multiple regression analysis (linked to 67); Non-metric multidimensional scaling (linked to 67)."
+1034;36115;794;119;Non-metric multidimensional scaling (linked to 67).;Y;"Species diversity analysis; Stepwise multiple regression analysis (linked to 67); Non-metric multidimensional scaling (linked to 67)."
+1035;40305;795;132;assessment of habitat suitability of reforested surface coal mines;Y;assessment of habitat suitability of reforested surface coal mines
+1036;25401;796;112;;N;112
+1037;63330;797;86;;N;"86; model of essential habitat (Barbier and Strand 1998 % altered standard open-access bio-economic model% linked to 21)"
+1038;63330;797;56;model of essential habitat (Barbier and Strand 1998 % altered standard open-access bio-economic model% linked to 21);Y;"86; model of essential habitat (Barbier and Strand 1998 % altered standard open-access bio-economic model% linked to 21)"
+1039;34045;798;10;Chemical analysis (linked to 10);Y;"Chemical analysis (linked to 10); Phylogenetic analysis (linked to 10); Antibiotic resistance assays (linked to 10); Biofilm formation assays (linked to 10)."
+1040;34045;798;159;Phylogenetic analysis (linked to 10);Y;"Chemical analysis (linked to 10); Phylogenetic analysis (linked to 10); Antibiotic resistance assays (linked to 10); Biofilm formation assays (linked to 10)."
+1041;34045;798;10;Antibiotic resistance assays (linked to 10);Y;"Chemical analysis (linked to 10); Phylogenetic analysis (linked to 10); Antibiotic resistance assays (linked to 10); Biofilm formation assays (linked to 10)."
+1042;34045;798;10;Biofilm formation assays (linked to 10).;Y;"Chemical analysis (linked to 10); Phylogenetic analysis (linked to 10); Antibiotic resistance assays (linked to 10); Biofilm formation assays (linked to 10)."
+1043;45382;799;100;in-depth semi-structured interviews (linked to 100);Y;in-depth semi-structured interviews (linked to 100)
+1044;69279;800;100;;N;100
+1045;43188;801;152;Numerical Model;Y;Numerical Model
+1046;63396;802;129;Analysis of indicator species (linked to 10);Y;"Analysis of indicator species (linked to 10); forest structure analysis (linked to 10)"
+1047;63396;802;138;forest structure analysis (linked to 10);Y;"Analysis of indicator species (linked to 10); forest structure analysis (linked to 10)"
+1048;70823;803;23;Restoration effectiveness analysis;Y;Restoration effectiveness analysis
+1049;13782;804;91;;N;"91; key informants (linked to 43); 75"
+1050;13782;804;100;key informants (linked to 43);Y;"91; key informants (linked to 43); 75"
+1051;13782;804;75;;N;"91; key informants (linked to 43); 75"
+1052;71690;805;10;Assessment of forest recovery $in relation to previous land-use;Y;Assessment of forest recovery $in relation to previous land-use
+1053;39908;806;23;;N;"23; 99"
+1054;39908;806;99;;N;"23; 99"
+1055;48730;807;152;Generalized multilevel path models (Shipley 2009, linked to 67).;Y;Generalized multilevel path models (Shipley 2009, linked to 67).
+1056;22904;808;64;Census and mapping of indigenous communities (linked to 64);Y;"Census and mapping of indigenous communities (linked to 64); Floristic, herbarium and fungal inventories (linked to 37); Standarized interviews; 100; Structured life-story interviews; Unstructured interviews abut ethno-ecological topics (linked to 36); 75; Food resource accounting (Zent 1996); Focal person following observations; Garden crop inventories and sample plot censuses (linked to 37); Geographic position system (GPS)"
+1057;22904;808;125;Floristic, herbarium and fungal inventories (linked to 37);Y;"Census and mapping of indigenous communities (linked to 64); Floristic, herbarium and fungal inventories (linked to 37); Standarized interviews; 100; Structured life-story interviews; Unstructured interviews abut ethno-ecological topics (linked to 36); 75; Food resource accounting (Zent 1996); Focal person following observations; Garden crop inventories and sample plot censuses (linked to 37); Geographic position system (GPS)"
+1058;22904;808;100;Standarized interviews;Y;"Census and mapping of indigenous communities (linked to 64); Floristic, herbarium and fungal inventories (linked to 37); Standarized interviews; 100; Structured life-story interviews; Unstructured interviews abut ethno-ecological topics (linked to 36); 75; Food resource accounting (Zent 1996); Focal person following observations; Garden crop inventories and sample plot censuses (linked to 37); Geographic position system (GPS)"
+1059;22904;808;100;;N;"Census and mapping of indigenous communities (linked to 64); Floristic, herbarium and fungal inventories (linked to 37); Standarized interviews; 100; Structured life-story interviews; Unstructured interviews abut ethno-ecological topics (linked to 36); 75; Food resource accounting (Zent 1996); Focal person following observations; Garden crop inventories and sample plot censuses (linked to 37); Geographic position system (GPS)"
+1060;22904;808;"70;100";Structured life-story interviews;Y;"Census and mapping of indigenous communities (linked to 64); Floristic, herbarium and fungal inventories (linked to 37); Standarized interviews; 100; Structured life-story interviews; Unstructured interviews abut ethno-ecological topics (linked to 36); 75; Food resource accounting (Zent 1996); Focal person following observations; Garden crop inventories and sample plot censuses (linked to 37); Geographic position system (GPS)"
+1061;22904;808;"100;125";Unstructured interviews abut ethno-ecological topics (linked to 36);Y;"Census and mapping of indigenous communities (linked to 64); Floristic, herbarium and fungal inventories (linked to 37); Standarized interviews; 100; Structured life-story interviews; Unstructured interviews abut ethno-ecological topics (linked to 36); 75; Food resource accounting (Zent 1996); Focal person following observations; Garden crop inventories and sample plot censuses (linked to 37); Geographic position system (GPS)"
+1062;22904;808;75;;N;"Census and mapping of indigenous communities (linked to 64); Floristic, herbarium and fungal inventories (linked to 37); Standarized interviews; 100; Structured life-story interviews; Unstructured interviews abut ethno-ecological topics (linked to 36); 75; Food resource accounting (Zent 1996); Focal person following observations; Garden crop inventories and sample plot censuses (linked to 37); Geographic position system (GPS)"
+1063;22904;808;127;Food resource accounting (Zent 1996);Y;"Census and mapping of indigenous communities (linked to 64); Floristic, herbarium and fungal inventories (linked to 37); Standarized interviews; 100; Structured life-story interviews; Unstructured interviews abut ethno-ecological topics (linked to 36); 75; Food resource accounting (Zent 1996); Focal person following observations; Garden crop inventories and sample plot censuses (linked to 37); Geographic position system (GPS)"
+1064;22904;808;146;Focal person following observations;Y;"Census and mapping of indigenous communities (linked to 64); Floristic, herbarium and fungal inventories (linked to 37); Standarized interviews; 100; Structured life-story interviews; Unstructured interviews abut ethno-ecological topics (linked to 36); 75; Food resource accounting (Zent 1996); Focal person following observations; Garden crop inventories and sample plot censuses (linked to 37); Geographic position system (GPS)"
+1065;22904;808;125;Garden crop inventories and sample plot censuses (linked to 37);Y;"Census and mapping of indigenous communities (linked to 64); Floristic, herbarium and fungal inventories (linked to 37); Standarized interviews; 100; Structured life-story interviews; Unstructured interviews abut ethno-ecological topics (linked to 36); 75; Food resource accounting (Zent 1996); Focal person following observations; Garden crop inventories and sample plot censuses (linked to 37); Geographic position system (GPS)"
+1066;22904;808;130;Geographic position system (GPS);Y;"Census and mapping of indigenous communities (linked to 64); Floristic, herbarium and fungal inventories (linked to 37); Standarized interviews; 100; Structured life-story interviews; Unstructured interviews abut ethno-ecological topics (linked to 36); 75; Food resource accounting (Zent 1996); Focal person following observations; Garden crop inventories and sample plot censuses (linked to 37); Geographic position system (GPS)"
+1067;12801;809;67;;N;"67; 64"
+1068;12801;809;64;;N;"67; 64"
+1069;36694;810;125;novel methodology for creating a checklist on crop prioritization (Kell et al., 2008);Y;novel methodology for creating a checklist on crop prioritization (Kell et al., 2008)
+1070;3826;811;10;;N;10
+1071;29682;812;64;;N;"64; Biodiversity analysis (linked to 10)"
+1072;29682;812;129;Biodiversity analysis (linked to 10);Y;"64; Biodiversity analysis (linked to 10)"
+1073;35832;813;49;hedonic pricing (linked to 49);Y;hedonic pricing (linked to 49)
+1074;6887;814;23;evaluation of most effective mitigation strategy (linked to 23?);Y;evaluation of most effective mitigation strategy (linked to 23?)
+1075;42028;815;122;Permutational multivariate analysis-of-variance - PERMANOVA (linked to 67);Y;"Permutational multivariate analysis-of-variance - PERMANOVA (linked to 67); Metric multidimensional scaling - mMDS (linked to 67); SIMPER routine (Clarke and Gorley 2015, linked to 67 ); The Biota and Environment matching routine - BIOENV (Clarke 2993, linked to 67)"
+1076;42028;815;119;Metric multidimensional scaling - mMDS (linked to 67);Y;"Permutational multivariate analysis-of-variance - PERMANOVA (linked to 67); Metric multidimensional scaling - mMDS (linked to 67); SIMPER routine (Clarke and Gorley 2015, linked to 67 ); The Biota and Environment matching routine - BIOENV (Clarke 2993, linked to 67)"
+1077;42028;815;137;SIMPER routine (Clarke and Gorley 2015, linked to 67 );Y;"Permutational multivariate analysis-of-variance - PERMANOVA (linked to 67); Metric multidimensional scaling - mMDS (linked to 67); SIMPER routine (Clarke and Gorley 2015, linked to 67 ); The Biota and Environment matching routine - BIOENV (Clarke 2993, linked to 67)"
+1078;42028;815;67;The Biota and Environment matching routine - BIOENV (Clarke 2993, linked to 67);Y;"Permutational multivariate analysis-of-variance - PERMANOVA (linked to 67); Metric multidimensional scaling - mMDS (linked to 67); SIMPER routine (Clarke and Gorley 2015, linked to 67 ); The Biota and Environment matching routine - BIOENV (Clarke 2993, linked to 67)"
+1079;38900;816;19;;N;19
+1080;3368;817;91;;N;91
+1081;30326;818;112;;N;112
+1082;21813;819;100;;N;"100;112"
+1083;21813;819;112;;N;"100;112"
+1084;33891;820;112;;N;112
+1085;37134;821;91;;N;"91; 100; Multiple correspondence analysis (Aktürk et al 2007)"
+1086;37134;821;100;;N;"91; 100; Multiple correspondence analysis (Aktürk et al 2007)"
+1087;37134;821;122;Multiple correspondence analysis (Aktürk et al 2007);Y;"91; 100; Multiple correspondence analysis (Aktürk et al 2007)"
+1088;19795;822;112;Survey;Y;Survey
+1089;70680;823;91;;N;91
+1090;9723;824;123;"""Nature Value Explorer"" modelling tool (Broekx et al. 2013)";Y;"""Nature Value Explorer"" modelling tool (Broekx et al. 2013)"
+1091;17893;825;64;;N;64
+1092;10682;826;10;;N;10
+1093;14276;827;91;;N;91
+1094;14276;828;91;;N;91
+1095;22816;829;100;;N;100
+1096;9711;830;52;Driver-Pressure-State-Impact-Response Framework;Y;"Driver-Pressure-State-Impact-Response Framework; 69"
+1097;9711;830;69;;N;"Driver-Pressure-State-Impact-Response Framework; 69"
+1098;69943;831;69;;N;69
+1099;44217;832;127;Multi-regional computable general equilibrium - MRCGE model;Y;Multi-regional computable general equilibrium - MRCGE model
+1100;12464;833;56;;N;56
+1101;71552;834;56;Systems Approach Framework - SAF (Hopkins et al. 2011);Y;"Systems Approach Framework - SAF (Hopkins et al. 2011); integrated system simulation model GUADEX (linked to 56)"
+1102;71552;834;56;integrated system simulation model GUADEX (linked to 56);Y;"Systems Approach Framework - SAF (Hopkins et al. 2011); integrated system simulation model GUADEX (linked to 56)"
+1103;20480;835;10;;N;10
+1104;21805;836;75;;N;"75; interviews"
+1105;21805;836;100;interviews;Y;"75; interviews"
+1106;21805;837;75;;N;"75; interviews"
+1107;21805;837;100;interviews;Y;"75; interviews"
+1108;21805;838;75;;N;"75; interviews"
+1109;21805;838;100;interviews;Y;"75; interviews"
+1110;21805;839;75;;N;"75; interviews"
+1111;21805;839;100;interviews;Y;"75; interviews"
+1112;29783;840;67;;N;67
+1113;40220;841;21;prioritising catchment management projects framework (Klein et al. 2010, linked to 21);Y;prioritising catchment management projects framework (Klein et al. 2010, linked to 21)
+1114;15238;842;14;;N;14
+1115;331;843;100;in-depth interviews (linked to 100);Y;"in-depth interviews (linked to 100); 75; fieldwork (linked to 64)"
+1116;331;843;75;;N;"in-depth interviews (linked to 100); 75; fieldwork (linked to 64)"
+1117;331;843;75;fieldwork (linked to 64);Y;"in-depth interviews (linked to 100); 75; fieldwork (linked to 64)"
+1118;32454;844;86;stochastic frontier production analysis;Y;stochastic frontier production analysis
+1119;48322;845;130;Remote Sensing;Y;Remote Sensing
+1120;48322;846;137;Ecological Fiedl Studies (linked to 10);Y;Ecological Fiedl Studies (linked to 10)
+1121;41028;847;64;community mapping (linked to 64);Y;"community mapping (linked to 64); 100; free listing; guided tour documentation"
+1122;41028;847;100;;N;"community mapping (linked to 64); 100; free listing; guided tour documentation"
+1123;41028;847;;free listing;Y;"community mapping (linked to 64); 100; free listing; guided tour documentation"
+1124;41028;847;"37; 43; 18 ";guided tour documentation;Y;"community mapping (linked to 64); 100; free listing; guided tour documentation"
+1125;2418;848;23;;N;23
+1126;20143;849;69;;N;69
+1127;69264;850;100;unstructured interview;Y;unstructured interview
+1128;17052;851;22;;N;22
+1129;12329;852;57;;N;57
+1130;10573;853;23;;N;"23; Moran’s I $spatial clustering statistics$; Getis-Ord Gi$spatial clustering statistics$; AMOEBA$spatial clustering statistics$"
+1131;10573;853;130;Moran’s I $spatial clustering statistics$;Y;"23; Moran’s I $spatial clustering statistics$; Getis-Ord Gi$spatial clustering statistics$; AMOEBA$spatial clustering statistics$"
+1132;10573;853;130;Getis-Ord Gi$spatial clustering statistics$;Y;"23; Moran’s I $spatial clustering statistics$; Getis-Ord Gi$spatial clustering statistics$; AMOEBA$spatial clustering statistics$"
+1133;10573;853;130;AMOEBA$spatial clustering statistics$;Y;"23; Moran’s I $spatial clustering statistics$; Getis-Ord Gi$spatial clustering statistics$; AMOEBA$spatial clustering statistics$"
+1134;67428;854;23;Costs-return analysis (linked to 22);Y;Costs-return analysis (linked to 22)
+1135;26398;855;130;spatial analysis;Y;"spatial analysis; RUSLE model (Renard et al.,1997)"
+1136;26398;855;155;RUSLE model (Renard et al.,1997);Y;"spatial analysis; RUSLE model (Renard et al.,1997)"
+1137;36914;856;127;agent-based model (Alexander et al. 2013);Y;agent-based model (Alexander et al. 2013)
+1138;67428;857;122;Multiple regression analysis;Y;Multiple regression analysis
+1139;38282;858;65;;N;65
+1140;17293;859;136;Biological control services index - BSI (Gardiner et al. 2009, linked to 10);Y;"Biological control services index - BSI (Gardiner et al. 2009, linked to 10); Economic performance (linked to 22)"
+1141;17293;859;145;Economic performance (linked to 22);Y;"Biological control services index - BSI (Gardiner et al. 2009, linked to 10); Economic performance (linked to 22)"
+1142;36131;860;145;Economic analysis (linked to 22);Y;Economic analysis (linked to 22)
+1143;8814;861;122;Bootstrap Data Envelopment Analysis - Bootstrap-DEA model;Y;Bootstrap Data Envelopment Analysis - Bootstrap-DEA model
+1144;8814;862;130;Exploratory spatial data analysis - ESDA;Y;"Exploratory spatial data analysis - ESDA; Geographically weighted regression model- GRW (Fotheringham et al. 1996)"
+1145;8814;862;130;Geographically weighted regression model- GRW (Fotheringham et al. 1996);Y;"Exploratory spatial data analysis - ESDA; Geographically weighted regression model- GRW (Fotheringham et al. 1996)"
+1146;14021;863;152;simulation study;Y;simulation study
+1147;16915;864;112;Surveys;Y;Surveys
+1148;41534;865;69;analytic hierarchy process;Y;analytic hierarchy process
+1149;41534;866;69;fuzzy Delphi method (Cheng and Lin 2002);Y;fuzzy Delphi method (Cheng and Lin 2002)
+1150;39646;867;79;Participatory Social Return on Investment;Y;Participatory Social Return on Investment
+1151;33318;868;139;ethnobotanical surveys (linked to 112 and 37);Y;"ethnobotanical surveys (linked to 112 and 37); garden mapping (linked to 64); physical and chemical analysis of soil properties (linked to 10); 100; 75"
+1152;33318;868;64;garden mapping (linked to 64);Y;"ethnobotanical surveys (linked to 112 and 37); garden mapping (linked to 64); physical and chemical analysis of soil properties (linked to 10); 100; 75"
+1153;33318;868;10;physical and chemical analysis of soil properties (linked to 10);Y;"ethnobotanical surveys (linked to 112 and 37); garden mapping (linked to 64); physical and chemical analysis of soil properties (linked to 10); 100; 75"
+1154;33318;868;100;;N;"ethnobotanical surveys (linked to 112 and 37); garden mapping (linked to 64); physical and chemical analysis of soil properties (linked to 10); 100; 75"
+1155;33318;868;75;;N;"ethnobotanical surveys (linked to 112 and 37); garden mapping (linked to 64); physical and chemical analysis of soil properties (linked to 10); 100; 75"
+1156;36555;869;145;Dynamic Cost Minimizing Model (Gren et al. 2015, linked to 25);Y;Dynamic Cost Minimizing Model (Gren et al. 2015, linked to 25)
+1157;27360;870;122;Econometric modelling;Y;Econometric modelling
+1158;23464;871;137;bee faunistic surveys (Munyuli 2010 and 2011a, linked to 10);Y;bee faunistic surveys (Munyuli 2010 and 2011a, linked to 10)
+1159;62;872;10;;N;10
+1160;5719;873;130;Live Cycle Assessment (Mann and Spath 1997 and Spath et al. 1999);Y;Live Cycle Assessment (Mann and Spath 1997 and Spath et al. 1999)
+1161;2646;874;112;;N;112
+1162;6684;875;14;;N;14
+1163;70419;876;64;;N;64
+1164;67682;877;22;;N;22
+1165;36774;878;23;;N;23
+1166;63251;879;94;;N;94
+1167;6193;880;22;;N;22
+1168;66427;881;22;Cos-benefit analysis;Y;Cos-benefit analysis
+1169;21545;882;56;integrated basin analysis;Y;integrated basin analysis
+1170;26337;883;112;five-point likert survey instrument;Y;five-point likert survey instrument
+1171;26853;884;49;;N;49
+1172;27510;885;100;informal interview;Y;"informal interview; semi-direct open interview; 75"
+1173;27510;885;100;semi-direct open interview;Y;"informal interview; semi-direct open interview; 75"
+1174;27510;885;75;;N;"informal interview; semi-direct open interview; 75"
+1175;27510;886;100;informal interview;Y;"informal interview; semi-direct open interview; 75"
+1176;27510;886;100;semi-direct open interview;Y;"informal interview; semi-direct open interview; 75"
+1177;27510;886;75;;N;"informal interview; semi-direct open interview; 75"
+1178;37695;887;75;;N;"75; 100; in-depth interview; informant-guided field excursions/“walks-in-the-woods” (Alexiades 1996)"
+1179;37695;887;100;;N;"75; 100; in-depth interview; informant-guided field excursions/“walks-in-the-woods” (Alexiades 1996)"
+1180;37695;887;100;in-depth interview;Y;"75; 100; in-depth interview; informant-guided field excursions/“walks-in-the-woods” (Alexiades 1996)"
+1181;37695;887;79;informant-guided field excursions/“walks-in-the-woods” (Alexiades 1996);Y;"75; 100; in-depth interview; informant-guided field excursions/“walks-in-the-woods” (Alexiades 1996)"
+1182;43528;888;56;;N;56
+1183;5405;889;132;Habitat suitability assessment (linked to 10);Y;Habitat suitability assessment (linked to 10)
+1184;47182;890;49;;N;"49; replacement cost method"
+1185;47182;890;25;replacement cost method;Y;"49; replacement cost method"
+1186;70650;891;23;;N;23
+1187;25620;892;67;;N;67
+1188;44431;893;94;;N;94
+1189;25919;894;67;Carbon storage assessment (linked to 10);Y;Carbon storage assessment (linked to 10)
+1190;63864;895;94;;N;"94; Hurdle model; 91"
+1191;63864;895;122;Hurdle model;Y;"94; Hurdle model; 91"
+1192;63864;895;91;;N;"94; Hurdle model; 91"
+1193;38737;896;128;Agricultural Production Systems Simulator (APSIM) model;Y;Agricultural Production Systems Simulator (APSIM) model
+1194;13006;897;10;;N;10
+1195;13006;898;91;;N;91
+1196;27184;899;23;;N;23
+1197;888;900;158;Risk Index (Arellanes et al., 2013);Y;Risk Index (Arellanes et al., 2013)
+1198;65427;901;"130; 49";spatial hedonic analysis (linked to 49);Y;spatial hedonic analysis (linked to 49)
+1199;17701;902;82;photo elicitation (linked to 82);Y;photo elicitation (linked to 82)
+1200;30039;903;14;;N;14
+1201;38543;904;10;DNA analysis (linked to 10);Y;DNA analysis (linked to 10)
+1202;25897;905;10;;N;10
+1203;2654;906;10;;N;"10; Cluster analysis; 56"
+1204;2654;906;130;Cluster analysis;Y;"10; Cluster analysis; 56"
+1205;2654;906;56;;N;"10; Cluster analysis; 56"
+1206;44458;907;10;;N;10
+1207;7914;908;125;biophysical inventory (linked to 10);Y;"biophysical inventory (linked to 10); change monitoring (linked to 10)"
+1208;7914;908;137;change monitoring (linked to 10);Y;"biophysical inventory (linked to 10); change monitoring (linked to 10)"
+1209;18413;909;137;point counts;Y;"point counts; 10"
+1210;18413;909;10;;N;"point counts; 10"
+1211;10832;910;22;;N;22
+1212;63636;911;22;;N;22
+1213;45464;912;112;;N;112
+1214;69890;913;91;questionnaire survey (linked to 112);Y;questionnaire survey (linked to 112)
+1215;30775;914;100;;N;"100;37"
+1216;30775;914;37;;N;"100;37"
+1217;51524;915;100;Interviews;Y;"Interviews; 112"
+1218;51524;915;112;;N;"Interviews; 112"
+1219;27402;916;10;;N;10
+1220;36274;917;10;;N;10
+1221;39778;918;14;;N;"14; 19; 65; 25; 101"
+1222;39778;918;19;;N;"14; 19; 65; 25; 101"
+1223;39778;918;65;;N;"14; 19; 65; 25; 101"
+1224;39778;918;25;;N;"14; 19; 65; 25; 101"
+1225;39778;918;101;;N;"14; 19; 65; 25; 101"
+1226;40420;919;10;Sediment rating curve (Glysson 1987);Y;Sediment rating curve (Glysson 1987)
+1227;18818;920;122;Beta regression (Cribari-Neto and Zeileis, 2010);Y;"Beta regression (Cribari-Neto and Zeileis, 2010); published literature data extraction"
+1228;18818;920;143;published literature data extraction;Y;"Beta regression (Cribari-Neto and Zeileis, 2010); published literature data extraction"
+1229;70979;921;"112; 91";structured questionnnaires (linked to 112);Y;structured questionnnaires (linked to 112)
+1230;22277;922;134;field survey (linked to 10);Y;"field survey (linked to 10); literature analysis; rarity/complementarity-based algorithm (Vane-Wright et al. 1991)"
+1231;22277;922;143;literature analysis;Y;"field survey (linked to 10); literature analysis; rarity/complementarity-based algorithm (Vane-Wright et al. 1991)"
+1232;22277;922;129;rarity/complementarity-based algorithm (Vane-Wright et al. 1991);Y;"field survey (linked to 10); literature analysis; rarity/complementarity-based algorithm (Vane-Wright et al. 1991)"
+1233;6493;923;21;factor-cause-effect nexus framework;Y;factor-cause-effect nexus framework
+1234;15150;924;67;roadmap for valuing soil ecosystem services;Y;roadmap for valuing soil ecosystem services
+1235;15150;925;128;AgriPoliS model of agricultural structures;Y;AgriPoliS model of agricultural structures
+1236;15150;926;86;nonmarket valuation techniques;Y;nonmarket valuation techniques
+1237;76612;927;14;;N;14
+1238;4200;928;10;;N;10
+1239;66672;929;49;hedonic property value (linked to 49) (Lancaster, 1966);Y;hedonic property value (linked to 49) (Lancaster, 1966)
+1240;11275;930;10;;N;10
+1241;16747;931;10;;N;10
+1242;16835;932;10;;N;10
+1243;74503;933;19;;N;19
+1244;71925;934;14;;N;14
+1245;735;935;65;market value method(linked to 65);Y;market value method(linked to 65)
+1246;26232;936;119;nonmetric multidimensional scaling (NMDS McCune and Grace 2002);Y;"nonmetric multidimensional scaling (NMDS McCune and Grace 2002); 10"
+1247;26232;936;10;;N;"nonmetric multidimensional scaling (NMDS McCune and Grace 2002); 10"
+1248;31412;937;10;;N;10
+1249;30954;938;134;biophysical sampling (linked to 10);Y;biophysical sampling (linked to 10)
+1250;70051;939;100;Interviews (linked to 91);Y;"Interviews (linked to 91); 112"
+1251;70051;939;112;;N;"Interviews (linked to 91); 112"
+1252;783;940;112;;N;112
+1253;68671;941;91;;N;91
+1254;46143;942;19;;N;19
+1255;66102;943;91;;N;"91;100"
+1256;66102;943;100;;N;"91;100"
+1257;3198;944;69;;N;69
+1258;68829;945;22;;N;22
+1259;37609;946;137;insect survey (linked to 10);Y;insect survey (linked to 10)
+1260;38985;947;134;species sampling (linked to 10);Y;species sampling (linked to 10)
+1261;63483;948;19;;N;19
+1262;11891;949;69;;N;69
+1263;14178;950;22;;N;22
+1264;20723;951;147;Collection and basic analysis of locos $don't know what to call it$;Y;Collection and basic analysis of locos $don't know what to call it$
+1265;65957;952;100;;N;"100; 43"
+1266;65957;952;43;;N;"100; 43"
+1267;20723;953;64;;N;64
+1268;18495;954;10;;N;"10; 43: Focus Group"
+1269;18495;954;43; Focus Group;N;"10; 43: Focus Group"
+1270;20723;955;64;;N;64
+1271;6248;956;21;non-parametric opportunity cost approach;Y;non-parametric opportunity cost approach
+1272;22098;957;10;;N;10
+1273;22712;958;10;;N;10
+1274;37699;959;10;;N;10
+1275;41830;960;148;Connectivity Modeling System (Paris et al. 2013);Y;Connectivity Modeling System (Paris et al. 2013)
+1276;29168;961;10;;N;10
+1277;19330;962;148;coupling degree model (CDM);Y;coupling degree model (CDM)
+1278;68357;963;28;;N;28
+1279;41891;964;10;;N;10
+1280;46539;965;69;;N;69
+1281;14888;966;22;;N;22
+1282;47123;967;129;species distribution modelling (linked to 10);Y;species distribution modelling (linked to 10)
+1283;40204;968;79;;N;79
+1284;42291;969;10;;N;10
+1285;42291;970;10;;N;10
+1286;5667;971;112;;N;112
+1287;64175;972;10;;N;10
+1288;3712;973;22;;N;22
+1289;64480;974;10;;N;10
+1290;30705;975;69;fuzzy AHP (linked to 69);Y;"fuzzy AHP (linked to 69); VIKOR (linked to 69)"
+1291;30705;975;69;VIKOR (linked to 69);Y;"fuzzy AHP (linked to 69); VIKOR (linked to 69)"
+1292;16434;976;77;;N;77
+1293;47755;977;137;Camera trap survey (linked to 10);Y;Camera trap survey (linked to 10)
+1294;48253;978;134;biophysical sampling (linked to 10);Y;biophysical sampling (linked to 10)
+1295;68959;979;137;ecological fiel survey (linked to 10);Y;ecological fiel survey (linked to 10)
+1296;66677;980;"69; 130";GIS-based multiple criteria decision analysis (Greene et al 2010, linked to 77);Y;GIS-based multiple criteria decision analysis (Greene et al 2010, linked to 77)
+1297;2141;981;22;Impact Pathway Approach (linked to 52?);Y;Impact Pathway Approach (linked to 52?)
+1298;19571;982;22;;N;22
+1299;23147;983;147;Scenario analysis - Heureka forest decision support system;Y;"Scenario analysis - Heureka forest decision support system; SMART method (linked to 69)"
+1300;23147;983;69;SMART method (linked to 69);Y;"Scenario analysis - Heureka forest decision support system; SMART method (linked to 69)"
+1301;28256;984;"69; 130";GIS-based multicriteria analysis (linked to 69);Y;GIS-based multicriteria analysis (linked to 69)
+1302;68086;985;69;Analytic Hierarchy Process (linked to 69);Y;Analytic Hierarchy Process (linked to 69)
+1303;71858;986;10;controlled experiment (linked to 10);Y;controlled experiment (linked to 10)
+1304;29;987;"67;128";Model for West-Africa Agro-Ecosystem Integrated Assessment - MOWASIA (Belem and Saquali 2017, linked to 56);Y;Model for West-Africa Agro-Ecosystem Integrated Assessment - MOWASIA (Belem and Saquali 2017, linked to 56)
+1305;30035;988;22;;N;22
+1306;48259;989;22;;N;22
+1307;8888;990;22;;N;22
+1308;20775;991;69;;N;"69; Life cycle assessment"
+1309;20775;991;142;Life cycle assessment;Y;"69; Life cycle assessment"
+1310;41932;992;64;;N;64
+1311;62959;993;69;;N;69
+1312;39074;994;22;;N;22
+1313;1585;995;69;;N;69
+1314;71686;996;130;spatial modelling;Y;spatial modelling
+1315;47409;997;22;;N;22
+1316;11322;998;22;probabilistic stream connectivity model (linked to 67);Y;probabilistic stream connectivity model (linked to 67)
+1317;66493;999;69;integrated scenario-based multi-criteria decision support system (linked to 69 and 99);Y;integrated scenario-based multi-criteria decision support system (linked to 69 and 99)
+1318;76826;1000;79;;N;79
+1319;25781;1001;122;Generalize Additive Model (GAM);Y;Generalize Additive Model (GAM)
+1320;6031;1002;23;;N;23
+1321;16500;1003;57;InVEST models (linked to 57);Y;InVEST models (linked to 57)
+1322;41202;1004;69;;N;69
+1323;42067;1005;22;;N;22
+1324;31141;1006;69;RHD-DSS (Xia et al. 2014, linked to 56);Y;RHD-DSS (Xia et al. 2014, linked to 56)
+1325;38378;1007;22;;N;22
+1326;17214;1008;64;;N;"64; 7"
+1327;17214;1008;7;;N;"64; 7"
+1328;38972;1009;56;model of site index curves using GADA (Cieszewski & Bailey 2000, linked to 56?);Y;"model of site index curves using GADA (Cieszewski & Bailey 2000, linked to 56?); 10"
+1329;38972;1009;10;;N;"model of site index curves using GADA (Cieszewski & Bailey 2000, linked to 56?); 10"
+1330;44749;1010;130;spatial regression models (Gerkman 2012);Y;spatial regression models (Gerkman 2012)
+1331;63416;1011;23;;N;23
+1332;45667;1012;23;;N;23
+1333;63683;1013;"91;112";Semi-closed questionnaire surveys (linked to 112);Y;"Semi-closed questionnaire surveys (linked to 112); field observation (linked to 75)"
+1334;63683;1013;75;field observation (linked to 75);Y;"Semi-closed questionnaire surveys (linked to 112); field observation (linked to 75)"
+1335;18707;1014;122;general method of moments (GMM);Y;general method of moments (GMM)
+1336;40642;1015;25;replacement costs (linked to 21);Y;replacement costs (linked to 21)
+1337;40642;1016;65;;N;65
+1338;47035;1017;6;Basic Value Transfer;Y;"Basic Value Transfer; 19; 25; 65"
+1339;47035;1017;19;;N;"Basic Value Transfer; 19; 25; 65"
+1340;47035;1017;25;;N;"Basic Value Transfer; 19; 25; 65"
+1341;47035;1017;65;;N;"Basic Value Transfer; 19; 25; 65"
+1342;40642;1018;6;;N;6
+1343;40642;1019;19;;N;19
+1344;64638;1020;"112; 91";structured questionnaires (linked to 112);Y;structured questionnaires (linked to 112)
+1345;47035;1021;"6; 54; 21";Government indigenous welfare expenditure (linked to 6);Y;Government indigenous welfare expenditure (linked to 6)
+1346;70486;1022;19;Contigent valuation method with percent slip (linked to 19);Y;Contigent valuation method with percent slip (linked to 19)
+1347;48940;1023;57;;N;57
+1348;67176;1024;100;;N;"100; 75; analysis of records"
+1349;67176;1024;75;;N;"100; 75; analysis of records"
+1350;67176;1024;131;analysis of records;Y;"100; 75; analysis of records"
+1351;25094;1025;56; IAMO-LUC (Sun and Müller 2012, linked to 56);Y;Integrated Agent-based MOdel of Land-Use Change: IAMO-LUC (Sun and Müller 2012, linked to 56)
+1352;13644;1026;69;Analytic Hierarchy Process (linked to 69);Y;"Analytic Hierarchy Process (linked to 69); 14"
+1353;13644;1026;14;;N;"Analytic Hierarchy Process (linked to 69); 14"
+1354;6674;1027;124;Vulnerability and adaptation assessments (Kelly and Adger 2000 and McCarthy et al. 2001 and Yohe and Tol 2002 and Lim et al. 2005 and Schröter et al. 2005 and Ebi et al. 2006 and Füssel and Klein 2006 and Eriksen and Kelly 2007 and Eakin and Bojórquez-Tapia 2008 and de Bruin et al. 2009 and Debels et al. 2009 and Champalle et al. 2015 and Juhola and Kruse 2015 and Roy and Blaschke 2015 and Tzilivakis et al. 2015 and AhumadaCervantes et al. 2017);Y;Vulnerability and adaptation assessments (Kelly and Adger 2000 and McCarthy et al. 2001 and Yohe and Tol 2002 and Lim et al. 2005 and Schröter et al. 2005 and Ebi et al. 2006 and Füssel and Klein 2006 and Eriksen and Kelly 2007 and Eakin and Bojórquez-Tapia 2008 and de Bruin et al. 2009 and Debels et al. 2009 and Champalle et al. 2015 and Juhola and Kruse 2015 and Roy and Blaschke 2015 and Tzilivakis et al. 2015 and AhumadaCervantes et al. 2017)
+1355;7365;1028;79;participatory conceptual framework (Lopes and Videira 2013, linked to 27);Y;participatory conceptual framework (Lopes and Videira 2013, linked to 27)
+1356;21230;1029;69;Mauri Model Decision Making Framework;Y;Mauri Model Decision Making Framework
+1357;67461;1030;43;;N;"43; 100; 22"
+1358;67461;1030;100;;N;"43; 100; 22"
+1359;67461;1030;22;;N;"43; 100; 22"
+1360;21230;1031;22;Cost-benefit analysis;Y;Cost-benefit analysis
+1361;42844;1032;22;;N;22
+1362;46271;1033;"130; 129";species-specific $ spatially explicit modelling framework (linked to 56);Y;species-specific $ spatially explicit modelling framework (linked to 56)
+1363;66422;1034;10;biophysical experiments (linked to 10);Y;biophysical experiments (linked to 10)
+1364;44343;1035;10;;N;10
+1365;20245;1036;56;Integrated economic-hydrologic approach (Grossmann & Dietrich 2012, linked to 56);Y;"Integrated economic-hydrologic approach (Grossmann & Dietrich 2012, linked to 56); 22; 67"
+1366;20245;1036;22;;N;"Integrated economic-hydrologic approach (Grossmann & Dietrich 2012, linked to 56); 22; 67"
+1367;20245;1036;67;;N;"Integrated economic-hydrologic approach (Grossmann & Dietrich 2012, linked to 56); 22; 67"
+1368;46689;1037;10;;N;10
+1369;48561;1038;10;;N;10
+1370;19975;1039;"69; 130";spatial decision support system (linked to 64 and 69);Y;spatial decision support system (linked to 64 and 69)
+1371;43876;1040;19;;N;"19; matrix of analytical dimensions (Ángel et al. 2007); workshops; site visits"
+1372;43876;1040;107;matrix of analytical dimensions (Ángel et al. 2007);Y;"19; matrix of analytical dimensions (Ángel et al. 2007); workshops; site visits"
+1373;43876;1040;43;workshops;Y;"19; matrix of analytical dimensions (Ángel et al. 2007); workshops; site visits"
+1374;43876;1040;75;site visits;Y;"19; matrix of analytical dimensions (Ángel et al. 2007); workshops; site visits"
+1375;4247;1041;91;;N;91
+1376;39424;1042;56;;N;56
+1377;43876;1043;75;site visits (linked to 39);Y;"site visits (linked to 39); species observation (linked to 39); 14; workshops (linked to 39); 43"
+1378;43876;1043;"145; 137";species observation (linked to 39);Y;"site visits (linked to 39); species observation (linked to 39); 14; workshops (linked to 39); 43"
+1379;43876;1043;14;;N;"site visits (linked to 39); species observation (linked to 39); 14; workshops (linked to 39); 43"
+1380;43876;1043;43;workshops (linked to 39);Y;"site visits (linked to 39); species observation (linked to 39); 14; workshops (linked to 39); 43"
+1381;43876;1043;43;;N;"site visits (linked to 39); species observation (linked to 39); 14; workshops (linked to 39); 43"
+1382;43876;1044;19;;N;"19; matrix of analytical dimensions; social mapping; semi-structured interviews, photolanguage; aerial photos"
+1383;43876;1044;107;matrix of analytical dimensions;Y;"19; matrix of analytical dimensions; social mapping; semi-structured interviews, photolanguage; aerial photos"
+1384;43876;1044;64;social mapping;Y;"19; matrix of analytical dimensions; social mapping; semi-structured interviews, photolanguage; aerial photos"
+1385;43876;1044;100;semi-structured interviews, photolanguage;Y;"19; matrix of analytical dimensions; social mapping; semi-structured interviews, photolanguage; aerial photos"
+1386;43876;1044;83;aerial photos;Y;"19; matrix of analytical dimensions; social mapping; semi-structured interviews, photolanguage; aerial photos"
+1387;1545;1045;90;;N;"90; 100"
+1388;1545;1045;100;;N;"90; 100"
+1389;33007;1046;22;;N;22
+1390;16792;1047;112;;N;112
+1391;44931;1048;57;;N;57
+1392;46090;1049;22;;N;22
+1393;33883;1050;67;MIMES (linked to 67);Y;MIMES (linked to 67)
+1394;33883;1051;67;MIMES (linked to 67);Y;MIMES (linked to 67)
+1395;33883;1052;67;MIMES (linked to 67);Y;MIMES (linked to 67)
+1396;48522;1053;56;;N;56
+1397;35200;1054;14;discrete choice survey (linked to 14);Y;"discrete choice survey (linked to 14); cluster analysis"
+1398;35200;1054;130;cluster analysis;Y;"discrete choice survey (linked to 14); cluster analysis"
+1399;27798;1055;69;Project Prioritisation Protocol - PPP;Y;"Project Prioritisation Protocol - PPP; Investment Framework for Environmental Resources - INFFER"
+1400;27798;1055;150;Investment Framework for Environmental Resources - INFFER;Y;"Project Prioritisation Protocol - PPP; Investment Framework for Environmental Resources - INFFER"
+1401;3013;1056;57;;N;57
+1402;40419;1057;69;;N;69
+1403;33733;1058;69;SWOT-AHP (Shrestha et al. 2004);Y;SWOT-AHP (Shrestha et al. 2004)
+1404;32583;1059;128;Agricultural Land Information System (Kerselaers et al. 2015, linked to 69);Y;Agricultural Land Information System (Kerselaers et al. 2015, linked to 69)
+1405;64502;1060;69;;N;69
+1406;808;1061;100;Unstructured interviews (linked to 100);Y;"Unstructured interviews (linked to 100);
+ Expert workshops (linked to 1)"
+1407;808;1061;43;Expert workshops (linked to 1);Y;"Unstructured interviews (linked to 100);
+ Expert workshops (linked to 1)"
+1408;8351;1062;69;;N;69
+1409;5665;1063;57;InVEST Recreation Model (Sharp et al. 2016, linked to 57);Y;InVEST Recreation Model (Sharp et al. 2016, linked to 57)
+1410;9197;1064;64;Mappimg (linked to 64);Y;"Mappimg (linked to 64); Field experiment"
+1411;9197;1064;10;Field experiment;Y;"Mappimg (linked to 64); Field experiment"
+1412;11845;1065;134;Van Dorn Sampler;Y;"Van Dorn Sampler; YSI multi-parameter probe; Secchi disk"
+1413;11845;1065;10;YSI multi-parameter probe;Y;"Van Dorn Sampler; YSI multi-parameter probe; Secchi disk"
+1414;11845;1065;10;Secchi disk;Y;"Van Dorn Sampler; YSI multi-parameter probe; Secchi disk"
+1415;20990;1066;108;continuous-time stochastic dynamic framework (linked to 22);Y;continuous-time stochastic dynamic framework (linked to 22)
+1416;63883;1067;22;IMPEND model Framework (linked to 22);Y;IMPEND model Framework (linked to 22)
+1417;44060;1068;22;;N;22
+1418;17039;1069;69;weighted overlay method (linked to 69);Y;weighted overlay method (linked to 69)
+1419;48665;1070;69;;N;69
+1420;66142;1071;22;;N;22
+1421;70674;1072;69;Weighted sum method (Engelbrecht 2007, linked to 69);Y;Weighted sum method (Engelbrecht 2007, linked to 69)
+1422;38947;1073;69;;N;69
+1423;14995;1074;56;Cascade model (De Groot et al. 2010 linked to 56);Y;Cascade model (De Groot et al. 2010 linked to 56)
+1424;17042;1075;22;;N;22
+1425;4497;1076;22;;N;22
+1426;42550;1077;69;Analytical hierarchy process - AHP (linked to 69);Y;Analytical hierarchy process - AHP (linked to 69)
+1427;42550;1078;112;;N;112
+1428;38445;1079;79;system viability framework (Mistry et al. 2010, linked to 79);Y;"system viability framework (Mistry et al. 2010, linked to 79);participatory photography (Bignante 2010, linked to 79); participatory video (White 2003 $ Lunch and Lunch 2006 $ Milne et al. 2012, linked to 81), 69"
+1429;38445;1079;79;participatory photography (Bignante 2010, linked to 79);Y;"system viability framework (Mistry et al. 2010, linked to 79);participatory photography (Bignante 2010, linked to 79); participatory video (White 2003 $ Lunch and Lunch 2006 $ Milne et al. 2012, linked to 81), 69"
+1430;38445;1079;"81;69";participatory video (White 2003 $ Lunch and Lunch 2006 $ Milne et al. 2012, linked to 81), 69;Y;"system viability framework (Mistry et al. 2010, linked to 79);participatory photography (Bignante 2010, linked to 79); participatory video (White 2003 $ Lunch and Lunch 2006 $ Milne et al. 2012, linked to 81), 69"
+1431;35202;1080;22;;N;22
+1432;25867;1081;56;;N;"56; Decision Trees (Quinlan, 1986)"
+1433;25867;1081;69;Decision Trees (Quinlan, 1986);Y;"56; Decision Trees (Quinlan, 1986)"
+1434;66234;1082;79;participatory multicriteria approach (linked to 69 and 79);Y;participatory multicriteria approach (linked to 69 and 79)
+1435;17262;1083;22;;N;22
+1436;34795;1084;25;replacement chain approach (Brigham and Houston 2010, linked to 22);Y;"replacement chain approach (Brigham and Houston 2010, linked to 22); EAA approach (Brigham and Houston 2010, linked to 22)"
+1437;34795;1084;21;EAA approach (Brigham and Houston 2010, linked to 22);Y;"replacement chain approach (Brigham and Houston 2010, linked to 22); EAA approach (Brigham and Houston 2010, linked to 22)"
+1438;67676;1085;22;Optimum remediation funds allocation method - ORFA (Karachaliou 2010, linked to 22);Y;Optimum remediation funds allocation method - ORFA (Karachaliou 2010, linked to 22)
+1439;69734;1086;79;Landscapes Toolkit (Bohnet et al 2011, linked to 79);Y;Landscapes Toolkit (Bohnet et al 2011, linked to 79)
+1440;45740;1087;10;;N;10
+1441;1411;1088;64;Site mapping;Y;"Site mapping; Interview; Contingent valuation"
+1442;1411;1088;100;Interview;Y;"Site mapping; Interview; Contingent valuation"
+1443;1411;1088;19;Contingent valuation;Y;"Site mapping; Interview; Contingent valuation"
+1444;43879;1089;91;Questionnaires;Y;"Questionnaires; Interviews"
+1445;43879;1089;100;Interviews;Y;"Questionnaires; Interviews"
+1446;64903;1090;100;;N;"100; 80; 10"
+1447;64903;1090;80;;N;"100; 80; 10"
+1448;64903;1090;10;;N;"100; 80; 10"
+1449;44855;1091;22;;N;"22; comparative-static agri-environmental economic model based (Daigneault et al. 2016, linked to 67)"
+1450;44855;1091;128;comparative-static agri-environmental economic model based (Daigneault et al. 2016, linked to 67);Y;"22; comparative-static agri-environmental economic model based (Daigneault et al. 2016, linked to 67)"
+1451;41736;1092;43;;N;"43;91"
+1452;41736;1092;91;;N;"43;91"
+1453;64683;1093;10;;N;"10; 23; 56; 64; 83"
+1454;64683;1093;23;;N;"10; 23; 56; 64; 83"
+1455;64683;1093;56;;N;"10; 23; 56; 64; 83"
+1456;64683;1093;64;;N;"10; 23; 56; 64; 83"
+1457;64683;1093;83;;N;"10; 23; 56; 64; 83"
+1458;43461;1094;69;multicriteria analysis framework (linked to 56 and 64);Y;multicriteria analysis framework (linked to 56 and 64)
+1459;44554;1095;105;;N;"105; 77; 3; hotsports/coldspots analysis (linked to 64)"
+1460;44554;1095;77;;N;"105; 77; 3; hotsports/coldspots analysis (linked to 64)"
+1461;44554;1095;3;;N;"105; 77; 3; hotsports/coldspots analysis (linked to 64)"
+1462;44554;1095;"64;137";hotsports/coldspots analysis (linked to 64);Y;"105; 77; 3; hotsports/coldspots analysis (linked to 64)"
+1463;2811;1096;157;Social-Ecological data (linked to 104);Y;Social-Ecological data (linked to 104)
+1464;8008;1097;57;Integrated Valuation of Ecosystem Services and Tradeoffs (InVEST);Y;Integrated Valuation of Ecosystem Services and Tradeoffs (InVEST)
+1465;18974;1098;64;Map;Y;Map
+1466;8606;1099;57;;N;57
+1467;28832;1100;22;;N;22
+1468;27557;1101;22;Cost-benefit analysis (raster based);Y;"Cost-benefit analysis (raster based); Habitat modelling technique"
+1469;27557;1101;132;Habitat modelling technique;Y;"Cost-benefit analysis (raster based); Habitat modelling technique"
+1470;33632;1102;64;Map;Y;Map
+1471;19333;1103;56;"MULti-sectoral INtegrated and Operational decision support system 
+ (Giupponi 2007, linked to 69)";Y;"MULti-sectoral INtegrated and Operational decision support system 
+ (Giupponi 2007, linked to 69); Vulnerability and resilience assessment (linked to 52)"
+1472;19333;1103;124;Vulnerability and resilience assessment (linked to 52);Y;"MULti-sectoral INtegrated and Operational decision support system 
+ (Giupponi 2007, linked to 69); Vulnerability and resilience assessment (linked to 52)"
+1473;20317;1104;36;;N;36
+1474;46138;1105;3;ARIES - ARtificial Intelligence for Ecosystem Services;Y;"ARIES - ARtificial Intelligence for Ecosystem Services; InVEST models; LUCI - Land Utilisation and Capability Indicator"
+1475;46138;1105;57;InVEST models;Y;"ARIES - ARtificial Intelligence for Ecosystem Services; InVEST models; LUCI - Land Utilisation and Capability Indicator"
+1476;46138;1105;147;LUCI - Land Utilisation and Capability Indicator;Y;"ARIES - ARtificial Intelligence for Ecosystem Services; InVEST models; LUCI - Land Utilisation and Capability Indicator"
+1477;66137;1106;22;;N;22
+1478;6713;1107;64;;N;64
+1479;16189;1108;142;definition of characterization factor for life cycle assessment (linked to 52);Y;definition of characterization factor for life cycle assessment (linked to 52)
+1480;48535;1109;10;Biophysical and trophodynamic accounting model (linked to 10);Y;Biophysical and trophodynamic accounting model (linked to 10)
+1481;6327;1110;112;Survey;Y;"Survey; Focus group"
+1482;6327;1110;43;Focus group;Y;"Survey; Focus group"
+1483;67916;1111;69;;N;69
+1484;7434;1112;23;;N;23
+1485;13919;1113;69;;N;69
+1486;21156;1114;23;;N;23
+1487;9580;1115;22;;N;22
+1488;6499;1116;22;;N;22
+1489;47983;1117;105;;N;105
+1490;7586;1118;69;Multi criteria scoring approach - MACBETH (Bana et al 2012);Y;"Multi criteria scoring approach - MACBETH (Bana et al 2012); Multi criteria scoring approach - ES and biodiversity hotspots (Kremer et al 2016)"
+1491;7586;1118;"129; 69;67";Multi criteria scoring approach - ES and biodiversity hotspots (Kremer et al 2016);Y;"Multi criteria scoring approach - MACBETH (Bana et al 2012); Multi criteria scoring approach - ES and biodiversity hotspots (Kremer et al 2016)"
+1492;34199;1119;127;Computable General Equilibrium Models - CHINAGRO (Fischer et al 2007);Y;"Computable General Equilibrium Models - CHINAGRO (Fischer et al 2007); Hydrological modelling - H08 (Hanasaki N. et al. 2008)"
+1493;34199;1119;155;Hydrological modelling - H08 (Hanasaki N. et al. 2008);Y;"Computable General Equilibrium Models - CHINAGRO (Fischer et al 2007); Hydrological modelling - H08 (Hanasaki N. et al. 2008)"
+1494;5307;1120;69;;N;69
+1495;10000;1121;69;;N;69
+1496;13157;1122;25;;N;25
+1497;21036;1123;69;;N;69
+1498;46418;1124;69;;N;69
+1499;18789;1125;69;SCORE (Rosén et al 2015, linked to 69);Y;SCORE (Rosén et al 2015, linked to 69)
+1500;16413;1126;56;Integrated Model including InVEST model;Y;Integrated Model including InVEST model
+1501;25577;1127;69;Multicriteria decision analysis (linked to 69);Y;Multicriteria decision analysis (linked to 69)
+1502;47452;1128;130;Spatial Multicriteria Evaluation - SMCE;Y;Spatial Multicriteria Evaluation - SMCE
+1503;9210;1129;14;;N;14
+1504;66969;1130;22;;N;22
+1505;31314;1131;56;Integrated Modelling, linked to 56;Y;Integrated Modelling, linked to 56
+1506;67308;1132;19;attribute-based contingent valuation approach (linked to 19);Y;"attribute-based contingent valuation approach (linked to 19); 22"
+1507;67308;1132;22;;N;"attribute-based contingent valuation approach (linked to 19); 22"
+1508;14224;1133;22;;N;22
+1509;28178;1134;69;;N;69
+1510;23965;1135;137;Catchment MSE approach (Pantus et al. 2011, linked to 56);Y;Catchment MSE approach (Pantus et al. 2011, linked to 56)
+1511;32648;1136;56;Integrated Model;Y;Integrated Model
+1512;34793;1137;69;Multicriteria decision analysis (MCA);Y;Multicriteria decision analysis (MCA)
+1513;66152;1138;56;Integrated model;Y;Integrated model
+1514;67460;1139;56;Integrated Model;Y;Integrated Model
+1515;17766;1140;69;;N;69
+1516;37296;1141;67;;N;67
+1517;38483;1142;69;;N;69
+1518;47098;1143;67;;N;67
+1519;65488;1144;69;;N;69
+1520;64326;1145;100;interviews (linked to 100);Y;interviews (linked to 100)
+1521;48149;1146;69;;N;69
