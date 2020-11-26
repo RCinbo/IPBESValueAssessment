@@ -176,3 +176,11 @@ for (i in 1:nrow(s3_single)){
   }
 }
 
+
+L <- read.xlsx('LegendListForDummyColumns.xlsx')
+questions<-unique(L$Question)
+for(q in questions){
+  a <- which(L$Question == q)
+
+
+}
