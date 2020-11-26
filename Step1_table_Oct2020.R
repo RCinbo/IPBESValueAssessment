@@ -86,7 +86,7 @@ nrow(data_merged_fi) #86066
 
 head(data_merged_fi)
 
-write.xlsx(data_merged_fi, "data_country_merged.xlsx")
+# write.xlsx(data_merged_fi, "data_country_merged.xlsx")
 # data_merged$PY.f = factor(data_merged$PY)
 # data_merged[1:10, ]
 
