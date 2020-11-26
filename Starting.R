@@ -176,11 +176,45 @@ for (i in 1:nrow(s3_single)){
   }
 }
 
-
+require(openxlsx)
 L <- read.xlsx('LegendListForDummyColumns.xlsx')
+PrintOthers <- TRUE #set this to true if you want to print all 'other' answers to an excel file
+if(PrintOthers){M <- list()
+wb <- loadWorkbook("OtherAnswers.xlsx")
+sheets <- getSheetNames("OtherAnswers.xlsx")
+}
 questions<-unique(L$Question)
-for(q in questions){
-  a <- which(L$Question == q)
+for(q in 1:length(questions)){
+  a <- which(L$Question == questions[q])
+  legend <- L[a,]
+  data <- s3_single[,as.character(questions[q])]#the column we want to explore into several dummy columns
+  #special characters sometimes fail to be read correctly so we correct
+  data <- gsub("â€™", "’", data)
+  data <- gsub("&", "and", data)
+  data <- gsub("â€˜", "‘", data)
+  data <- gsub("â€“", "–", data)
 
-
+  for(j in which(legend$txt !='Other')){
+      A <-  str_detect(data, pattern = fixed(as.character(legend[j,'txt'])))
+      data <- str_replace(data, pattern = fixed(as.character(legend[j,'txt'])),"")
+      s3_single <- cbind(s3_single, A)
+      colnames(s3_single)[ncol(s3_single)] <- as.character(legend[j,'code'])
+  }
+  b <- which(legend$txt =='Other')
+  if(!is_empty(b)){
+    Otheridx <- (str_length(gsub("[;, ]","",data))>1)
+    s3_single <- cbind(s3_single, Otheridx)
+    colnames(s3_single)[ncol(s3_single)] <- as.character(legend[nrow(legend),'code'])
+    if(PrintOthers){
+      M[[q]] <- matrix(nrow=(sum(Otheridx)), ncol = (1+nrow(legend)))
+      colnames(M[[q]]) <- c('PaperID',as.character(legend$txt))
+      rownames(M[[q]]) <- s3_single[Otheridx,as.character(questions[q])]
+      M[[q]][,1] <- s3_single[Otheridx,'paperID']
+      if(!(questions[q] %in% sheets)){addWorksheet(wb, as.character(questions[q]))}
+      writeData(wb, sheet = as.character(questions[q]), M[[q]], colNames = T,rowNames = TRUE)
+    }
+  }
+}
+if(PrintOthers){
+  saveWorkbook(wb,"OtherAnswers.xlsx",overwrite = T)
 }
