@@ -1588,6 +1588,12 @@ s3_single_with_other_values_df = s3_single[values_other_choice_cnt > 0, c("paper
 
 write.xlsx(s3_single_with_other_values_df, paste0("output/s3_single_with_other_values_n", cnt_otherchoice_values, ".xlsx"))
 
+
+all_df_3.4= cbind(paperID= s3_single$paperID, ANSWER_RAW= as.character(s3_single$"3.4") )
+write.xlsx(all_df_3.4, file = "output/3.4_allanswers.xlsx") # does it make sense to check all?
+
+
+
 #
 # escapeForStringR = function(x) {
 #   gsub("([.|()\\^{}+$*?/-]|\\[|\\])", "\\\\\\1", x)

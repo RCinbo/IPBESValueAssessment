@@ -52,8 +52,8 @@ row_idx = 85 # use of semicolon
 row_idx = 11 # use of semicolon
 
 ########## 1.2. the list of main methods..
-s3_1.2_mainlist_corrected_web = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-M3x4O_Oj9qQEoe8hasuATMoLbqeXfdBUkOtaJYwLJhmdHX0zAeQX4zNd07bmYf6t2GyF8rUvVK0L/pub?gid=730503165&single=true&output=csv"
-s3_1.2_mainlist_corrected = read.csv(url(s3_1.2_mainlist_corrected_web), header = T)
+# s3_1.2_mainlist_corrected_web = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-M3x4O_Oj9qQEoe8hasuATMoLbqeXfdBUkOtaJYwLJhmdHX0zAeQX4zNd07bmYf6t2GyF8rUvVK0L/pub?gid=730503165&single=true&output=csv"
+# s3_1.2_mainlist_corrected = read.csv(url(s3_1.2_mainlist_corrected_web), header = T)
 colnames(s3_1.2_mainlist_corrected)[c(2, 3, 5)] = c("paperID", "appl_ID", "cr_1.2" )
 
 table(s3_1.2_mainlist_corrected$cr_1.2)
@@ -349,9 +349,6 @@ which(s3_single$"1.1" >= 4)
 
 ####### Corrected Methods
 new_method_lutb = read.xlsx("Corrected/New_Methods_List_corrected.xlsx")
-
-
-
 new_method_lutb[new_method_lutb$ID == "91/112",]
 new_method_lutb = rbind(new_method_lutb, data.frame(ID=91, Method.name = new_method_lutb[new_method_lutb$ID == "91/112", "Method.name"]))
 new_method_lutb = rbind(new_method_lutb, data.frame(ID=112, Method.name = new_method_lutb[new_method_lutb$ID == "91/112", "Method.name"]))
@@ -366,6 +363,49 @@ method.corrected.data = readxl::read_xlsx("Corrected/Step3_1.2_all_2020-10-20_lu
 colnames(method.corrected.data)
 
 sum(table((method.corrected.data$MethodID)))
+
+
+table(s3_single$paperID %in% method.corrected.data$PaperID )
+'%nin%' <- Negate('%in%')
+table(s3_single$paperID %in% method.corrected.data$PaperID)
+
+idx_method <- (s3_single$paperID %nin% method.corrected.data$PaperID)
+missing_paper = s3_single$paperID[idx_method]
+missing_method = s3_single$'1.2'[idx_method]
+
+# store the processed information in the container
+cols_missing = c("PaperID" , "MethodID", "RawData")
+
+df_tmp = data.frame(matrix(data = NA, nrow =  length(missing_paper), ncol = length(cols_missing) )) # ID, desc.,note, raw data string if needed
+colnames(df_tmp ) = cols_missing
+
+df_tmp[] = cbind(missing_paper, NA, as.character(missing_method) )
+
+# write.xlsx(df_tmp, file = "Corrected/MissingMethod.xlsx")
+
+
+
+s3_single$'1.2'[str_detect(s3_single$'1.2', "5")]
+s3_single$paperID[str_detect(s3_single$'1.2', "5")]
+s3_single$'1.2'[str_detect(s3_single$'1.2', "Bayesian")]
+
+
+
+s3_single$'1.4'[str_detect(s3_single$'1.4', "5")]
+s3_single$paperID[str_detect(s3_single$'1.4', "5")]
+s3_single$'1.4'[str_detect(s3_single$'1.4', "Bayesian")]
+s3_single$paperID[str_detect(s3_single$'1.4', "Bayesian")]
+
+
+#
+# table(s3_full$what.s.the.paper.ID[str_detect(s3_full$X1.2...Carefully.list.ALL.main.valuation.methods, "5")] %in% s3_single$paperID[str_detect(s3_single$'1.2', "5")])
+#
+#
+# s3_full$X1.2...Carefully.list.ALL.main.valuation.methods[s3_full$what.s.the.paper.ID[str_detect(s3_full$X1.2...Carefully.list.ALL.main.valuation.methods, "5")] %nin% s3_single$paperID[str_detect(s3_single$'1.2', "5")]]
+#
+# s3_full$X1.2...Carefully.list.ALL.main.valuation.methods[str_detect(s3_full$X1.2...Carefully.list.ALL.main.valuation.methods, "Bayesian")]
+
+
 #
 # method.corrected.data[,"MethodID"] = factor(as.character(method.corrected.data[,"MethodID"]))
 
