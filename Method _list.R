@@ -366,8 +366,54 @@ colnames(method.corrected.data)
 
 sum(table((method.corrected.data$MethodID)))
 
+# match two data frames using RowID (!= uniqueID )
 
-s3_single$'1.2'[match(method.corrected.data$PaperID, s3_single$paperID),] = method.corrected.data$MethodID
+
+rowid_match = match(method.corrected.data$RowID, res_all_df$RowID)
+table(is.na(rowid_match))
+
+
+### @TODO find unique key to join two dataframes
+table(method.corrected.data[, "PaperID"] ==res_all_df$PaperID[rowid_match]) # fine
+table(method.corrected.data[, "MethodID"] == as.character(res_all_df$MethodID[rowid_match])) # unable to use (changed content)
+
+
+
+########
+res_all_df_old = read.xlsx("output/Step3_1.2_all_2020-10-20.xlsx")
+rowid_match_old = match(method.corrected.data$RowID, res_all_df_old$RowID)
+table(is.na(rowid_match_old))
+
+table(method.corrected.data[, "RowID"] == res_all_df_old$RowID[rowid_match_old]) # stopifnot
+table(method.corrected.data[, "PaperID"] == res_all_df_old$PaperID[rowid_match_old]) # fine
+table(method.corrected.data[, "MethodID"] == as.character(res_all_df_old$MethodID[rowid_match_old])) # unable to use (changed content)
+
+### create new key
+newkey = paste0(res_all_df$PaperID, "_", res_all_df$MethodID)
+oldkey =paste0(res_all_df_old$PaperID, "_", res_all_df_old$MethodID)
+
+table(oldkey %in% newkey )
+table(newkey %in% oldkey )
+
+old2new_idx = (match(oldkey, newkey))
+
+# 2-step data updating
+corrected2old_idx = match(method.corrected.data$RowID, res_all_df_old$RowID)
+
+table(res_all_df_old$PaperID[corrected2old_idx] ==method.corrected.data$PaperID)
+
+table(res_all_df_old$MethodID[corrected2old_idx] == method.corrected.data$MethodID)
+# 1 UPDATE old by corrected
+res_all_df_old$MethodID[corrected2old_idx] = method.corrected.data$MethodID
+# 2 UPDATE new by old
+res_all_df$MethodID = as.character(res_all_df$MethodID)
+res_all_df$MethodID[old2new_idx] = res_all_df_old$MethodID
+
+### identify new data rows
+newkey_added = newkey[!(newkey %in% oldkey)] #
+newkey_added_idx = which(!(newkey %in% oldkey))
+res_all_df_added_n15 = res_all_df[newkey_added_idx, ]
+write.xlsx(res_all_df_added_n15, file = "Corrected/added_rows.xlsx")
 
 
 table(s3_single$paperID %in% method.corrected.data$PaperID )
