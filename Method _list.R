@@ -52,8 +52,8 @@ row_idx = 85 # use of semicolon
 row_idx = 11 # use of semicolon
 
 ########## 1.2. the list of main methods..
-# s3_1.2_mainlist_corrected_web = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-M3x4O_Oj9qQEoe8hasuATMoLbqeXfdBUkOtaJYwLJhmdHX0zAeQX4zNd07bmYf6t2GyF8rUvVK0L/pub?gid=730503165&single=true&output=csv"
-# s3_1.2_mainlist_corrected = read.csv(url(s3_1.2_mainlist_corrected_web), header = T)
+ s3_1.2_mainlist_corrected_web = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-M3x4O_Oj9qQEoe8hasuATMoLbqeXfdBUkOtaJYwLJhmdHX0zAeQX4zNd07bmYf6t2GyF8rUvVK0L/pub?gid=730503165&single=true&output=csv"
+ s3_1.2_mainlist_corrected = read.csv(url(s3_1.2_mainlist_corrected_web), header = T)
 colnames(s3_1.2_mainlist_corrected)[c(2, 3, 5)] = c("paperID", "appl_ID", "cr_1.2" )
 
 table(s3_1.2_mainlist_corrected$cr_1.2)
@@ -323,7 +323,7 @@ colnames(s3_1.1_corrected) = c("paperID","cr_1.1","Note")
 str(s3_1.1_corrected$cr_1.1)
 
 # Warning: replace the original values by the live values on the web
-s3_single[match(s3_1.1_corrected$paperID, s3_single$paperID),]$"1.1" =s3_1.1_corrected$cr_1.1
+s3_single[match(s3_1.1_corrected$paperID, s3_single$paperID),]$"1.1" = s3_1.1_corrected$cr_1.1
 
 table(s3_single$"1.1")
 
@@ -333,9 +333,11 @@ cut_1.1 = cut(s3_single$"1.1", breaks = c(0, 1.5, 2.5, 3.5, max(s3_single$"1.1")
 levels(cut_1.1) = c(1,2,3,"more than 4")
 cut_1.1
 
-#pdf("output/Fig_1.1.pdf", width=5, height = 5, pointsize = 12)
-pie(table(cut_1.1), main = "Number of main methods per application")
-#dev.off()
+pdf("output/Fig_1.1_30Nov.pdf", width=5, height = 5, pointsize = 12)
+pie(table(cut_1.1), main = "Number of main methods per application", init.angle = 90, col = gray.colors(4, start = 0.9, end = 0.3), labels = NA)
+dev.off()
+
+
 
 pie(table(s3_single$"1.1"))
 barplot(table(s3_single$"1.1"))
@@ -363,6 +365,9 @@ method.corrected.data = readxl::read_xlsx("Corrected/Step3_1.2_all_2020-10-20_lu
 colnames(method.corrected.data)
 
 sum(table((method.corrected.data$MethodID)))
+
+
+s3_single$'1.2'[match(method.corrected.data$PaperID, s3_single$paperID),] = method.corrected.data$MethodID
 
 
 table(s3_single$paperID %in% method.corrected.data$PaperID )
@@ -506,9 +511,9 @@ cut_1.3
 
 cut_1.3[is.na(cut_1.3)] = 0
 
-#pdf("output/Fig_1.3.pdf", width=5, height = 5, pointsize = 12)
-pie(table(cut_1.3), main = "Number of additional methods per application")
-#dev.off()
+pdf("output/Fig_1.3_30Nov.pdf", width=5, height = 5, pointsize = 12)
+pie(table(cut_1.3), main = "Number of additional methods per application", init.angle = 90, col = gray.colors(5, start = 0.9, end = 0.3), labels = NA)
+dev.off()
 
 ########### 1.4. List of additional methods..
 s3_1.2_mainlist_corrected = read.csv(url(s3_1.2_mainlist_corrected_web), header = T)
@@ -748,9 +753,15 @@ goal_tb_sorted = sort(table(goal_split_v_fac), decreasing = F)
 
 # put the minor goals together (<5)
 goal_tb_sorted_reduced =  c(sum(goal_tb_sorted[goal_tb_sorted<5]), goal_tb_sorted[goal_tb_sorted>=5])
-names(goal_tb_sorted_reduced)[1] = "Other"
+names(goal_tb_sorted_reduced)[1] = "Other/unclear"
 
-#pdf("output/Fig_1.5.pdf", width=10, height = 5, pointsize = 12)
+goal_tb_sorted_reduced[1] <- goal_tb_sorted_reduced[1] + goal_tb_sorted_reduced[2]
+
+goal_tb_sorted_reduced <- goal_tb_sorted_reduced[-c(2,4)]
+
+# names(goal_tb_sorted_reduced[1]) = "Other/unclear"
+
+pdf("output/Fig_1.5_30Nov.pdf", width=10, height = 5, pointsize = 12)
 par(mar=c(5, 25, 5, 5))
-barplot(goal_tb_sorted_reduced, las=1, horiz=T, xlim=c(0, max(goal_tb_sorted_reduced) * 1.2 ), col = IPbeslightgreen, border = IPbeslightgreen, main = "the goal of combining valuation methods")
-#dev.off()
+barplot(goal_tb_sorted_reduced, las=1, horiz=T, xlim=c(0, max(goal_tb_sorted_reduced) * 1.2 ), col = gray(0.7), main = "the goal of combining valuation methods")
+dev.off()
