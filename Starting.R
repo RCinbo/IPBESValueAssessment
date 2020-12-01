@@ -166,6 +166,7 @@ par(mar = c(5, 30, 4,4))
 barplot(table(s3_single[,24]), horiz=T, las=2, cex.names = 0.3)
 par(mar = c(4, 4, 4,4)) # reset par
 
+save(s3_single, file = 's3_single_BeforeExplode.RData')
 #Add the method families to the s3_single dataframe. Currently, we use the method families that were identified by keywords, we'll improve that later based on the questionnaires.
 #Make sure you first run Step1_table_Oct2020.R to get the step 1 table with the keyword search method families
 s3_single %>%mutate(MF1.key = NA, MF2.key = NA, MF3.key = NA, MF4.key = NA, MFA.key = NA, MFB.key = NA) ->s3_single
@@ -176,7 +177,24 @@ for (i in 1:nrow(s3_single)){
   }
 }
 
+#########-----make corrections for what was filled in in the 'other' text fields
 require(openxlsx)
+
+L <- data.frame(
+  Q = c('2.1','2.2'),
+  filename = c('s3_single_with_other_choices_n189_Raphael_NoComment.xlsx',
+               's3_single_with_other_habitat_n127-corrSJ.xlsx')
+)
+
+#this excel file corrects over several questions
+L <- read.xlsx('s3_single_with_other_material_n25_corrSJ.xlsx',
+               's3_single_with_other_nature_n20-corrSJ.xlsx',
+               's3_single_with_other_non_material_n22_corrSJ.xlsx',
+               's3_single_with_other_QoL_n29_corrSJ.xlsx',
+               's3_single_with_other_regul_n46-corrSJ.xlsx')
+
+#######------Now make 0-1 dummy columns for each of the miltuple choice questions
+load('s3_single_BeforeExplode.RData')
 L <- read.xlsx('LegendListForDummyColumns.xlsx')
 PrintOthers <- TRUE #set this to true if you want to print all 'other' answers to an excel file
 if(PrintOthers){M <- list()
@@ -184,6 +202,8 @@ wb <- loadWorkbook("OtherAnswers.xlsx")
 sheets <- getSheetNames("OtherAnswers.xlsx")
 }
 questions<-unique(L$Question)
+L$txt <- gsub("// ","", L$txt)
+L$txt <- gsub("&", "and", L$txt)
 for(q in 1:length(questions)){
   a <- which(L$Question == questions[q])
   legend <- L[a,]
@@ -193,22 +213,23 @@ for(q in 1:length(questions)){
   data <- gsub("&", "and", data)
   data <- gsub("â€˜", "‘", data)
   data <- gsub("â€“", "–", data)
+  data <- gsub("// ","", data)
 
   for(j in which(legend$txt !='Other')){
-      A <-  str_detect(data, pattern = fixed(as.character(legend[j,'txt'])))
+      A <-  1*(str_detect(data, pattern = fixed(as.character(legend[j,'txt']))))
       data <- str_replace(data, pattern = fixed(as.character(legend[j,'txt'])),"")
       s3_single <- cbind(s3_single, A)
       colnames(s3_single)[ncol(s3_single)] <- as.character(legend[j,'code'])
   }
-  b <- which(legend$txt =='Other')
+  b <- which(legend$txt == 'Other')
   if(!is_empty(b)){
     Otheridx <- (str_length(gsub("[;, ]","",data))>1)
-    s3_single <- cbind(s3_single, Otheridx)
-    colnames(s3_single)[ncol(s3_single)] <- as.character(legend[nrow(legend),'code'])
+    s3_single <- cbind(s3_single,1*(Otheridx))
+    colnames(s3_single)[ncol(s3_single)] <- as.character(legend[b,'code'])
     if(PrintOthers){
       M[[q]] <- matrix(nrow=(sum(Otheridx)), ncol = (1+nrow(legend)))
       colnames(M[[q]]) <- c('PaperID',as.character(legend$txt))
-      rownames(M[[q]]) <- s3_single[Otheridx,as.character(questions[q])]
+      rownames(M[[q]]) <- data[Otheridx]
       M[[q]][,1] <- s3_single[Otheridx,'paperID']
       if(!(questions[q] %in% sheets)){addWorksheet(wb, as.character(questions[q]))}
       writeData(wb, sheet = as.character(questions[q]), M[[q]], colNames = T,rowNames = TRUE)
@@ -218,3 +239,7 @@ for(q in 1:length(questions)){
 if(PrintOthers){
   saveWorkbook(wb,"OtherAnswers.xlsx",overwrite = T)
 }
+#check which columns are empty --> only2.9_5 is empty but that's because it was literally never chosen
+if(1==0){a <- which(colSums(s3_single[,L$code])==0)
+L[a,]}
+
