@@ -177,24 +177,35 @@ for (i in 1:nrow(s3_single)){
   }
 }
 
+load('s3_single_BeforeExplode.RData')
 #########-----make corrections for what was filled in in the 'other' text fields
 require(openxlsx)
-
 L <- data.frame(
   Q = c('2.1','2.2'),
   filename = c('s3_single_with_other_choices_n189_Raphael_NoComment.xlsx',
                's3_single_with_other_habitat_n127-corrSJ.xlsx')
 )
+for(q in 1:nrow(L)){
+  a <- which(colnames(s3_single)==L[q,'Q'])
+  data <- read.xlsx(sprintf("Corrected/%s",as.character(L[q,'filename'])),colNames=FALSE)
+  header <- data[1,-c(1,2)]#the first and second column have paperid and text which we don't need
+  data <- data[-1,]
+  s3_single[,a] <- as.character(s3_single[,a] )
+  for(j in 1:nrow(data)){
+    b<-which(s3_single[,a]==data[j,2] & s3_single$paperID == data[j,1])
+    if(is_empty(b)){sprintf('paper %s cannot be found',data[j,1])}else if(length(b)>1){sprintf('paper %s was found more than once with the text %s in question %s',data[j,1],data[j,2], L[q,'Q'])}else{
+      c <- which(data[j,-c(1,2)]==1)
+      if(is_empty(c)){sprintf('empty line withpaper %s, with the text %s in question %s',data[j,1],data[j,2], L[q,'Q'])
+        }else{
+      s3_single[b,as.character(L[q,'Q'])] <- str_c(unlist(unname(header[c])), sep=',', collapse="")
+      }
+    }
+  }
+  s3_single[,a] <- as.factor(s3_single[,a] )
+}
 
-#this excel file corrects over several questions
-L <- read.xlsx('s3_single_with_other_material_n25_corrSJ.xlsx',
-               's3_single_with_other_nature_n20-corrSJ.xlsx',
-               's3_single_with_other_non_material_n22_corrSJ.xlsx',
-               's3_single_with_other_QoL_n29_corrSJ.xlsx',
-               's3_single_with_other_regul_n46-corrSJ.xlsx')
 
 #######------Now make 0-1 dummy columns for each of the miltuple choice questions
-load('s3_single_BeforeExplode.RData')
 L <- read.xlsx('LegendListForDummyColumns.xlsx')
 PrintOthers <- TRUE #set this to true if you want to print all 'other' answers to an excel file
 if(PrintOthers){M <- list()
@@ -242,4 +253,30 @@ if(PrintOthers){
 #check which columns are empty --> only2.9_5 is empty but that's because it was literally never chosen
 if(1==0){a <- which(colSums(s3_single[,L$code])==0)
 L[a,]}
+
+
+K <- data.frame(Q = c('2.10', '2.11','2.12', '2.13', '2.14'),
+                filename=c('s3_single_with_other_nature_n20-corrSJ.xlsx',
+                           's3_single_with_other_regul_n46-corrSJ.xlsx',
+                           's3_single_with_other_material_n25_corrSJ.xlsx',
+                           's3_single_with_other_non_material_n22_corrSJ.xlsx',
+                           's3_single_with_other_QoL_n29_corrSJ.xlsx'))
+colNB <- which(str_detect(colnames(s3_single),paste(str_c("Q", as.character(L$Q)),collapse = '|')) & !str_detect(colnames(s3_single),'Other|none|2.2'))
+if(length(colNB)!=32){print('Something is wrong with the column numbers for questions 2.10 - 2.14')}
+for(q in nrow(K)){
+  a <- which(colnames(s3_single)==K[q,'Q'])
+  data <- read.xlsx(sprintf("Corrected/%s",as.character(K[q,'filename'])),colNames=FALSE)
+  header <- data[1,-c(1,2)]#the first and second column have paperid and text which we don't need
+  data <- data[-1,]#remove the header
+  #s3_single[,a] <- as.character(s3_single[,a])
+  for(j in 1:nrow(data)){
+    b<-which(s3_single[,a]==data[j,2] & s3_single$paperID == data[j,1])
+    if(is_empty(b)){sprintf('paper %s cannot be found',data[j,1])}else if(length(b)>1){sprintf('paper %s was found more than once with the text %s in question %s',data[j,1],data[j,2], K[q,'Q'])}else{
+      if(sum(as.numeric(data[j,-c(1,2)]), na.rm=T)!=0){
+      s3_single[b,colNB] <- pmax(unlist(s3_single[b,colNB]), as.numeric(data[j,-c(1,2)]), na.rm=T)}
+    }
+  }
+}
+
+  #correct 'none' and 'other': NONE can only be selected if none of the categories is selected and nothing was filled in with the 'other' option. OTHER can only be selected if something was filled in in the 'other' option but none of the categories were selected.
 
