@@ -166,7 +166,6 @@ par(mar = c(5, 30, 4,4))
 barplot(table(s3_single[,24]), horiz=T, las=2, cex.names = 0.3)
 par(mar = c(4, 4, 4,4)) # reset par
 
-save(s3_single, file = 's3_single_BeforeExplode.RData')
 #Add the method families to the s3_single dataframe. Currently, we use the method families that were identified by keywords, we'll improve that later based on the questionnaires.
 #Make sure you first run Step1_table_Oct2020.R to get the step 1 table with the keyword search method families
 s3_single %>%mutate(MF1.key = NA, MF2.key = NA, MF3.key = NA, MF4.key = NA, MFA.key = NA, MFB.key = NA) ->s3_single
@@ -176,6 +175,7 @@ for (i in 1:nrow(s3_single)){
     s3_single[i,c('MF1.key','MF2.key','MF3.key','MF4.key','MFA.key','MFB.key')] <-data.final[idx,c('TS20','TS21','TS22','TS23','TS18','TS19')]
   }
 }
+save(s3_single, file = 's3_single_BeforeExplode.RData')
 
 load('s3_single_BeforeExplode.RData')
 #########-----make corrections for what was filled in in the 'other' text fields
@@ -261,7 +261,9 @@ K <- data.frame(Q = c('2.10', '2.11','2.12', '2.13', '2.14'),
                            's3_single_with_other_material_n25_corrSJ.xlsx',
                            's3_single_with_other_non_material_n22_corrSJ.xlsx',
                            's3_single_with_other_QoL_n29_corrSJ.xlsx'))
-colNB <- which(str_detect(colnames(s3_single),paste(str_c("Q", as.character(L$Q)),collapse = '|')) & !str_detect(colnames(s3_single),'Other|none|2.2'))
+colNB <- which(str_detect(colnames(s3_single),paste(str_c("Q", as.character(K$Q)),collapse = '|')) & !str_detect(colnames(s3_single),'Other|none|2.2'))
+colNBOther <- which(str_detect(colnames(s3_single),paste(str_c("Q", as.character(K$Q)),collapse = '|')) & str_detect(colnames(s3_single),'Other'))
+s3_single[,colNBOther] <-0 #As we correct all of these, we assume they're all classified in one of the value types. These dummy columns will only be 1 of the 'Other' text answer could not be classified. (see laste 'else' in the for loop below)
 if(length(colNB)!=32){print('Something is wrong with the column numbers for questions 2.10 - 2.14')}
 for(q in nrow(K)){
   a <- which(colnames(s3_single)==K[q,'Q'])
@@ -273,10 +275,25 @@ for(q in nrow(K)){
     b<-which(s3_single[,a]==data[j,2] & s3_single$paperID == data[j,1])
     if(is_empty(b)){sprintf('paper %s cannot be found',data[j,1])}else if(length(b)>1){sprintf('paper %s was found more than once with the text %s in question %s',data[j,1],data[j,2], K[q,'Q'])}else{
       if(sum(as.numeric(data[j,-c(1,2)]), na.rm=T)!=0){
-      s3_single[b,colNB] <- pmax(unlist(s3_single[b,colNB]), as.numeric(data[j,-c(1,2)]), na.rm=T)}
+      s3_single[b,colNB] <- pmax(unlist(s3_single[b,colNB]), as.numeric(data[j,-c(1,2)]), na.rm=T)}else{
+        s3_single[b,which(colnames(s3_single) == paste("Q", as.character(K[q,'Q']), "_Other", sep = ""))] <- 1
+      }
     }
   }
 }
 
-  #correct 'none' and 'other': NONE can only be selected if none of the categories is selected and nothing was filled in with the 'other' option. OTHER can only be selected if something was filled in in the 'other' option but none of the categories were selected.
+  #correct 'none' and 'other':
+#NONE can only be selected if none of the categories is selected and nothing was filled in with the 'other' option.
+#OTHER can only be selected if something was filled in in the 'other' option but none of the categories were selected.
+for(q in 1:nrow(K)){
+  colNB2 <- which(str_detect(colnames(s3_single),paste(str_c("Q", as.character(K[q,'Q'])),collapse = '|')) & !str_detect(colnames(s3_single),'none|2.2'))
+  noneNB <- which(colnames(s3_single)== paste("Q", as.character(K[q,'Q']), "_none", sep = ""))
+  SUM <- rowSums(s3_single[,colNB2])
+  #Correct the other column
+  s3_single[,noneNB] <- 1*(SUM==0)
+}
+
+
+save(s3_single, file = 's3_single_WithDummies.RData')
+
 
