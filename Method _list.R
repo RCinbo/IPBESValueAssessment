@@ -1,5 +1,5 @@
 library(openxlsx)
-source("Starting.R")
+# source("Starting.R")
 
 
 ############Define a color scheme#####################
@@ -52,8 +52,8 @@ row_idx = 85 # use of semicolon
 row_idx = 11 # use of semicolon
 
 ########## 1.2. the list of main methods..
- s3_1.2_mainlist_corrected_web = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-M3x4O_Oj9qQEoe8hasuATMoLbqeXfdBUkOtaJYwLJhmdHX0zAeQX4zNd07bmYf6t2GyF8rUvVK0L/pub?gid=730503165&single=true&output=csv"
- s3_1.2_mainlist_corrected = read.csv(url(s3_1.2_mainlist_corrected_web), header = T)
+s3_1.2_mainlist_corrected_web = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-M3x4O_Oj9qQEoe8hasuATMoLbqeXfdBUkOtaJYwLJhmdHX0zAeQX4zNd07bmYf6t2GyF8rUvVK0L/pub?gid=730503165&single=true&output=csv"
+s3_1.2_mainlist_corrected = read.csv(url(s3_1.2_mainlist_corrected_web), header = T)
 colnames(s3_1.2_mainlist_corrected)[c(2, 3, 5)] = c("paperID", "appl_ID", "cr_1.2" )
 
 table(s3_1.2_mainlist_corrected$cr_1.2)
@@ -370,49 +370,133 @@ sum(table((method.corrected.data$MethodID)))
 
 rowid_match = match(method.corrected.data$RowID, res_all_df$RowID)
 table(is.na(rowid_match))
+table(table(rowid_match)) # duplicated
 
-
-### @TODO find unique key to join two dataframes
-table(method.corrected.data[, "PaperID"] ==res_all_df$PaperID[rowid_match]) # fine
-table(method.corrected.data[, "MethodID"] == as.character(res_all_df$MethodID[rowid_match])) # unable to use (changed content)
-
-
-
-########
-res_all_df_old = read.xlsx("output/Step3_1.2_all_2020-10-20.xlsx")
-rowid_match_old = match(method.corrected.data$RowID, res_all_df_old$RowID)
-table(is.na(rowid_match_old))
-
-table(method.corrected.data[, "RowID"] == res_all_df_old$RowID[rowid_match_old]) # stopifnot
-table(method.corrected.data[, "PaperID"] == res_all_df_old$PaperID[rowid_match_old]) # fine
-table(method.corrected.data[, "MethodID"] == as.character(res_all_df_old$MethodID[rowid_match_old])) # unable to use (changed content)
-
-### create new key
-newkey = paste0(res_all_df$PaperID, "_", res_all_df$MethodID)
-oldkey =paste0(res_all_df_old$PaperID, "_", res_all_df_old$MethodID)
-
-table(oldkey %in% newkey )
-table(newkey %in% oldkey )
-
-old2new_idx = (match(oldkey, newkey))
-
-# 2-step data updating
-corrected2old_idx = match(method.corrected.data$RowID, res_all_df_old$RowID)
-
-table(res_all_df_old$PaperID[corrected2old_idx] ==method.corrected.data$PaperID)
-
-table(res_all_df_old$MethodID[corrected2old_idx] == method.corrected.data$MethodID)
-# 1 UPDATE old by corrected
-res_all_df_old$MethodID[corrected2old_idx] = method.corrected.data$MethodID
-# 2 UPDATE new by old
-res_all_df$MethodID = as.character(res_all_df$MethodID)
-res_all_df$MethodID[old2new_idx] = res_all_df_old$MethodID
 
 ### identify new data rows
-newkey_added = newkey[!(newkey %in% oldkey)] #
-newkey_added_idx = which(!(newkey %in% oldkey))
+newkey_added = res_all_df$PaperID[!(res_all_df$PaperID %in% res_all_df_old$PaperID)] #
+newkey_added_idx = which(!(res_all_df$PaperID %in% res_all_df_old$PaperID))
 res_all_df_added_n15 = res_all_df[newkey_added_idx, ]
 write.xlsx(res_all_df_added_n15, file = "Corrected/added_rows.xlsx")
+
+# visually find the altered rows in the new/corrected data frames
+
+res_all_df$uniqueID_newdata = 1:nrow(res_all_df)
+res_all_df$MethodID = as.character(res_all_df$MethodID)
+res_all_onlyold_df = res_all_df[which(res_all_df$PaperID %in% method.corrected.data$PaperID),]
+nrow(res_all_onlyold_df)
+
+plot(res_all_onlyold_df$PaperID[1:1522] == as.numeric(method.corrected.data$PaperID), type="l", col="grey")
+
+# # from where two dataset differ?
+# min_diff_idx  = min(which(res_all_onlyold_df$PaperID[1:1522] != as.numeric(method.corrected.data$PaperID)))
+# abline(v=min_diff_idx, col="red", lty=2)
+#
+# # from 656th row
+# head(res_all_onlyold_df[655:1521,])
+# head(method.corrected.data[655:1521,])
+#
+# # 656th in the old must be ignored
+#
+# plot(res_all_onlyold_df$PaperID[656:1521] == as.numeric(method.corrected.data$PaperID)[657:1522], type="l")
+#
+# min_diff_idx2 = min(which(res_all_onlyold_df$PaperID[656:1521] != as.numeric(method.corrected.data$PaperID[657:1522])))
+# # 845th
+#
+# (res_all_onlyold_df[840:850,])
+# (method.corrected.data[840:850,])
+#
+# plot(res_all_onlyold_df$PaperID[845:1520] == as.numeric(method.corrected.data$PaperID)[847:1522], type="l")
+
+# final (2 extra rows in the corrected data
+plot(res_all_onlyold_df$PaperID[c(1:1520)] == as.numeric(method.corrected.data$PaperID)[c(1:654, 656:844, 846:1522)], type="l")
+
+
+# Extra data poitns at the end of the dataset..
+# 14743 %in% method.corrected.data$PaperID
+# which(14743 == method.corrected.data$PaperID)
+# which(14743 == res_all_onlyold_df$PaperID)
+#
+# res_all_onlyold_df[14743 == res_all_onlyold_df$PaperID,]
+# method.corrected.data[14743 == method.corrected.data$PaperID,]
+#
+#
+# 34347 %in% method.corrected.data$PaperID
+# 2198 %in% method.corrected.data$PaperID
+# 14743 %in% method.corrected.data$PaperID
+
+
+
+# 2-step matching
+## we ignore last 7 data records
+res_all_onlyold_df = res_all_onlyold_df[1:1520,]
+res_all_onlyold_df$uniqueID_corrected = NA
+res_all_onlyold_df$uniqueID_corrected[1:1520] =method.corrected.data$`unique ID`[c(1:654, 656:844, 846:1522)]
+
+corrected2old_idx = match(res_all_onlyold_df$uniqueID_corrected, method.corrected.data$`unique ID`)
+table(res_all_onlyold_df$PaperID == method.corrected.data[corrected2old_idx,]$PaperID)
+
+old2new_idx = match( res_all_df$uniqueID_newdata, res_all_onlyold_df$uniqueID_newdata)
+
+corrected2new_idx = corrected2old_idx[old2new_idx]
+
+
+# UPDATE the new data by corrected
+res_all_df$MethodID = method.corrected.data$MethodID[corrected2new_idx]
+
+
+table(res_all_df$MethodID)
+table(is.na(res_all_df$MethodID))
+
+res_all_df[which(is.na(res_all_df$MethodID)),]
+
+# add exra two rows
+newrows = cbind(method.corrected.data[c(655, 845), -1], uniqueID_newdata= nrow(res_all_df) + 1:2)
+
+# final dataset
+res_all_df_final = rbind(res_all_df, newrows)
+stopifnot(nrow(res_all_df_final)==1544) # must be 1522 + 2
+table(table(res_all_df_final$uniqueID_newdata))
+tail(res_all_df_final) # # to visually confirm
+
+# aggregate once again by ;
+res_methodid_final_agg = tapply(res_all_df_final$MethodID, INDEX = res_all_df_final$RowID, FUN = function(x) paste0(unique(x[!is.na(x)]), collapse = ";"))
+res_methodid_ord = order(as.numeric(names(res_methodid_final_agg)))
+
+res_methodid_final_agg_sorted = res_methodid_final_agg[res_methodid_ord]
+res_methodid_final_df = (data.frame(names(res_methodid_final_agg_sorted), res_methodid_final_agg_sorted))
+
+
+res_all_df_final[, "PaperID"]
+
+names(res_methodid_final_df) = c("RowID", "MethodID")
+head(res_methodid_final_df)
+tail(res_methodid_final_df)
+
+
+# row id to paper id look up table
+row2paper = res_all_df_final[, c("RowID", "PaperID")]
+table(table(row2paper$RowID))
+
+uniquerowid_idx = tapply(seq_along(row2paper$RowID), row2paper$RowID, FUN = function(x) identity(x)[1])[unique(row2paper$RowID)]
+row2paper = row2paper[uniquerowid_idx, ]
+table(table(row2paper$RowID)) # must be 1
+table(table(row2paper$PaperID)) # can be up to 5..
+
+paperid_tmp = row2paper[match(res_methodid_final_df$RowID, table = row2paper$RowID), "PaperID"]
+
+res_methodid_final_withPaperID_df = cbind(res_methodid_final_df, PaperID = paperid_tmp)
+res_methodid_final_withPaperID_df = res_methodid_final_withPaperID_df[, c(1,3,2)]
+head(res_methodid_final_withPaperID_df)
+
+write.xlsx(res_methodid_final_withPaperID_df, file = "Corrected/1.2_MethodList_ByRowID_LuizaCorrected_n1163.xlsx")
+
+
+
+
+
+
+
 
 
 table(s3_single$paperID %in% method.corrected.data$PaperID )
@@ -571,7 +655,7 @@ s3_1.2_mainlist_corrected$appl_ID = as.character(s3_1.2_mainlist_corrected$appl_
 res_all_1.4 = vector("list", length = nrow(s3_single)) #
 
 
- # row_idx = 989
+# row_idx = 989
 
 for (row_idx in 1:nrow(s3_single)) {
 
