@@ -330,13 +330,12 @@ table(s3_single$"1.1")
 
 # using cut
 cut_1.1 = cut(s3_single$"1.1", breaks = c(0, 1.5, 2.5, 3.5, max(s3_single$"1.1")))
-levels(cut_1.1) = c(1,2,3,"more than 4")
+levels(cut_1.1) = c(1,2,3,"> 4")
 cut_1.1
 
-pdf("output/Fig_1.1_30Nov.pdf", width=5, height = 5, pointsize = 12)
-pie(table(cut_1.1), main = "Number of main methods per application", init.angle = 90, col = gray.colors(4, start = 0.9, end = 0.3), labels = NA)
+pdf("output/Fig_1.1_NrMainMethods_Pie_3Dec.pdf", width=15, height = 15, pointsize = 20)
+pie(table(cut_1.1), main = "Number of main methods per application", init.angle = 90, col = gray.colors(4, start = 0.9, end = 0.3))
 dev.off()
-
 
 
 pie(table(s3_single$"1.1"))
@@ -552,13 +551,13 @@ s3_single[s3_single$"1.3" >= 4, "paperID"]
 
 # using cut
 cut_1.3 = cut(s3_single$"1.3", breaks = c(0, 0.9, 1.5, 2.5, 3.5, max(s3_single$"1.1")))
-levels(cut_1.3) = c(0, 1,2,3,"more than 4")
+levels(cut_1.3) = c(0, 1,2,3,"> 4")
 cut_1.3
 
 cut_1.3[is.na(cut_1.3)] = 0
 
-pdf("output/Fig_1.3_30Nov.pdf", width=5, height = 5, pointsize = 12)
-pie(table(cut_1.3), main = "Number of additional methods per application", init.angle = 90, col = gray.colors(5, start = 0.9, end = 0.3), labels = NA)
+pdf("output/1.3_NrAdditionalMethods_Pie_3Dec.pdf", width=15, height = 15, pointsize = 20)
+pie(table(cut_1.3), main = "Number of additional methods per application", init.angle = 90, col = gray.colors(5, start = 0.9, end = 0.3))
 dev.off()
 
 ########### 1.4. List of additional methods..
@@ -807,7 +806,7 @@ goal_tb_sorted_reduced <- goal_tb_sorted_reduced[-c(2,4)]
 
 # names(goal_tb_sorted_reduced[1]) = "Other/unclear"
 
-pdf("output/Fig_1.5_30Nov.pdf", width=10, height = 5, pointsize = 12)
+pdf("output/1.5_GoalCombiningMethods_bar_3Dec.pdf", width=15, height = 5, pointsize = 20)
 par(mar=c(5, 25, 5, 5))
-barplot(goal_tb_sorted_reduced, las=1, horiz=T, xlim=c(0, max(goal_tb_sorted_reduced) * 1.2 ), col = gray(0.7), main = "the goal of combining valuation methods")
+barplot(goal_tb_sorted_reduced, las=1, horiz=T, xlim=c(0, max(goal_tb_sorted_reduced) * 1.2 ), col = gray(0.7), main = "the goal of combining valuation methods", xlab= "Number of applications")
 dev.off()
