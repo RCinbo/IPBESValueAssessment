@@ -168,14 +168,39 @@ par(mar = c(4, 4, 4,4)) # reset par
 
 #Add the method families to the s3_single dataframe. Currently, we use the method families that were identified by keywords, we'll improve that later based on the questionnaires.
 #Make sure you first run Step1_table_Oct2020.R to get the step 1 table with the keyword search method families
-s3_single %>%mutate(MF1.key = NA, MF2.key = NA, MF3.key = NA, MF4.key = NA, MFA.key = NA, MFB.key = NA) ->s3_single
+s3_single %>% mutate(MF1.key = NA, MF2.key = NA, MF3.key = NA, MF4.key = NA, MFA.key = NA, MFB.key = NA) -> s3_single
 for (i in 1:nrow(s3_single)){
   idx<-which(data.final$TSU.ID_MERGED==s3_single[i,'paperID'])
   if (length(idx)==0){print(sprintf('error, %d',s3_single[i,'paperID']))}else{
     s3_single[i,c('MF1.key','MF2.key','MF3.key','MF4.key','MFA.key','MFB.key')] <-data.final[idx,c('TS20','TS21','TS22','TS23','TS18','TS19')]
   }
 }
+
+########Add the loadings to the pre-SOD method families and IPBES categories
+lMF <- read.xlsx('methods x MF x IPBESclasses SOD.xlsx')
+
+s3_single$dummy<-c(as.character(rep(lMF$methods.ID_LUIZA,12)),str_c(lMF[1:11,'methods.ID_LUIZA'],lMF[12:22,'methods.ID_LUIZA'],sep=";"))#only added this because I want to test it without having the actual column
+s3_single[1,'dummy']<-NA
+split<-str_split(s3_single$dummy,pattern=";")
+if(sum(is.na(split))>0){
+  a <- which(is.na(split))
+  for(i in a){
+    sprintf('There are no methods defined for PaperID %s',s3_single[i,'paperID'])
+  }
+}
+b<- which(!is.na(split))
+s3_single %>% mutate(MF1.SOD = NA, MF2.SOD = NA, MF3.SOD = NA, MF4.SOD = NA, IPBES.econ_SOD = NA, IPBES.soccul_SOD = NA,IPBES.bioph_SOD = NA,IPBES.health_SOD = NA,IPBES.ILK_SOD = NA) -> s3_single
+mfcol <- c(5,6,7,8)#the columns where the methodfamily loadings are
+ipbescol<- c(9,10,11,12,13)#the columns in lMF where the IPBES category loadings are
+for(i in b){
+  methods <- split[[i]]
+  d <- which(lMF$methods.ID_LUIZA %in% as.numeric(methods))
+  s3_single[i,c('MF1.SOD', 'MF2.SOD', 'MF3.SOD', 'MF4.SOD')] <- colMeans(lMF[d,mfcol])
+  s3_single[i,c('IPBES.econ_SOD', 'IPBES.soccul_SOD', 'IPBES.bioph_SOD', 'IPBES.health_SOD','IPBES.ILK_SOD')] <- colMeans(lMF[d,ipbescol])
+}
+
 save(s3_single, file = 's3_single_BeforeExplode.RData')
+
 
 load('s3_single_BeforeExplode.RData')
 #########-----make corrections for what was filled in in the 'other' text fields
@@ -263,7 +288,7 @@ K <- data.frame(Q = c('2.10', '2.11','2.12', '2.13', '2.14'),
                            's3_single_with_other_QoL_n29_corrSJ.xlsx'))
 colNB <- which(str_detect(colnames(s3_single),paste(str_c("Q", as.character(K$Q)),collapse = '|')) & !str_detect(colnames(s3_single),'Other|none|2.2'))
 colNBOther <- which(str_detect(colnames(s3_single),paste(str_c("Q", as.character(K$Q)),collapse = '|')) & str_detect(colnames(s3_single),'Other'))
-s3_single[,colNBOther] <-0 #As we correct all of these, we assume they're all classified in one of the value types. These dummy columns will only be 1 of the 'Other' text answer could not be classified. (see laste 'else' in the for loop below)
+s3_single[,colNBOther] <-0 #As we correct all of these, we assume they're all classified in one of the value types. These dummy columns will only be 1 of the 'Other' text answer could not be classified. (see last 'else' in the for loop below)
 if(length(colNB)!=32){print('Something is wrong with the column numbers for questions 2.10 - 2.14')}
 for(q in nrow(K)){
   a <- which(colnames(s3_single)==K[q,'Q'])
@@ -293,7 +318,15 @@ for(q in 1:nrow(K)){
   s3_single[,noneNB] <- 1*(SUM==0)
 }
 
+#In Q8.4, 8.5, 8.6 and 8.8, there are a lot of 'irrelevant' answers in the 'other' question. We change these to 'none' in stead of 'other answers'.
+for(i in c('8.4','8.5','8.6','8.8')){
+  a<- which(str_detect(s3_single[,as.character(i)],'irrelevant') & s3_single[,sprintf('Q%s_Other',i)]==1)
+  cols<-which(str_detect(colnames(s3_single),i))
+  s3_single[a,cols[-1]] <- 0
+  s3_single[a,sprintf('Q%s_none',i)]<-1
+}
 
-save(s3_single, file = 's3_single_WithDummies.RData')
+
+save(s3_single,L, file = 's3_single_WithDummies.RData')
 
 

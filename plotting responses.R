@@ -8,6 +8,9 @@ library(writexl)
 library(grid)
 library(gridExtra)
 require (gtable)
+#s3_single_WithDummies.Rdata is built in the starting.R script --> first run this and get a copy of the 's3_single' and 'L' dataframe on your local computer.
+load('s3_single_WithDummies.Rdata')
+MFcol <- c('MF1.key','MF2.key','MF3.key','MF4.key')#the columns in s3_single to use for method families
 ############Define a color scheme#####################
 IPbesdarkgreen <- rgb(92/255, 102/255, 93/255) #5c665d
 IPbeslightgreen <- rgb(181/255, 212/255, 141/255) #b5d48d
@@ -20,7 +23,7 @@ g_legend<-function(a.gplot){
   legend <- tmp$grobs[[leg]]
   return(legend)}
 ###########Labeller for the method families##########
-MFLabels <- c('MF1','MF2','MF3','MF4', 'AllArticles') # change the names here if needed.
+MFLabels <- c('Biophysical valuation','Statement-based valuation','Behaviour-based valuation','Integrated valuation', 'AllArticles') # change the names here if needed.
 names(MFLabels) <- c('MF1','MF2','MF3','MF4', 'All articles')
 
 blank_theme <- theme_minimal()+
@@ -32,6 +35,7 @@ blank_theme <- theme_minimal()+
     axis.ticks = element_blank(),
     plot.title=element_text(size=14, face="bold")
   )
+minimal_theme_bars <- theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
 
 ##########-------- All 'How certain are you about your answers?'--------##########
 A<-data.frame(colnm = c('1.7', '2.20', '3.6','4.6','5.7','6.6','7.4','8.15','8.17'),
@@ -48,7 +52,8 @@ for(i in 1:ncol(L)){
   plotCertainty <- likert.bar.plot(l, low.color ='red', high.color='forestgreen', plot.percent.low=TRUE,plot.percent.neutral=TRUE,plot.percent.high=TRUE,legend.position= "bottom",legend='') + theme_classic()+ylab('Percentage of the respondents') +
     theme(legend.position='bottom') + scale_x_discrete(limits=summary(l,center=3)[a,'Item'],labels = sapply(summary(l,center=3)[a,'Item'], FUN=function(x)  str_wrap(A[A$colnm==x,'subject'], width = 22)))
 
-ggsave(plotCertainty, filename = 'output/CertaintyLikertPlot.pdf', width= 8, height = 5)
+  ggsave(plotCertainty, filename = 'output/CertaintyLikertPlot.pdf', width= 8, height = 5)
+  ggsave(plotCertainty, filename = 'output/CertaintyLikertPlot.jpg', width= 8, height = 5)
 
 
 
@@ -87,6 +92,8 @@ names(labs) <- c('Desired uptake - A potential, expected, or wished for use of o
 #--------making the plot-----#
 p <- ggplot(sbst_long) + geom_bar(alpha=1, size=1, color = IPbeslightgreen, fill = IPbeslightgreen, aes(x=question, y=1*value, group = `2.17` ), stat = "identity")+ facet_grid(cols = vars(`2.17`), scales = "free", labeller = labeller(`2.17` = labs)) + coord_flip() + theme_bw() + scale_x_discrete(breaks = legend$code, labels = str_wrap(as.character(legend$txt),20)) + ylab('Number of papers') + xlab('Valuation results purpose')
 ggsave(p, filename='output/T3-Q217-218.pdf', width= 10, height = 7)
+ggsave(p, filename='output/T3-Q217-218.jpf', width= 10, height = 7)
+
 #extract paper ID numbers for testing use case and actual use case and give the purposes that were given for this application
 write_xlsx(
     sbst[sbst$`2.17`!='Desired uptake - A potential, expected, or wished for use of outputs, sometimes only cursory', -3],
@@ -275,7 +282,8 @@ ggsave(Pane2,filename='output/T3-Q41-45.pdf',width=10, height=3.5)
 
 Theme4 <- grid.arrange(mylegend, Pane1, Pane2, Pane3, Pane4,
                        nrow=4, heights=c(1,10,1,10),widths=c(10,0.5,10),layout_matrix = rbind(c(1,NA,NA),c(2,NA,3),c(NA,NA,NA),c(4,NA,5)))
-ggsave(Theme4,filename='output/Theme4.pdf',width=18, height=8)
+ggsave(Theme4,filename='output/Theme4.pdf',width=22, height=15)
+ggsave(Theme4,filename='output/Theme4.jpg',width=22, height=15)
 
 
 
@@ -642,91 +650,142 @@ barplot(socio_all_tb, las=1, horiz=T, cex.names = 0.8, col = IPbeslightgreen, bo
 ########-----Data Overview 6 (theme 7)- Valuation for ecological sustainability-----########
 #Topic 7: Ecological Sustainability
 #make this true if you want to print out the 'other' answers to an excel file
-PrintOthers<-TRUE
 
-legend71 <- data.frame(code=c('Q7.1_1', 'Q7.1_2', 'Q7.1_3', 'Q7.1_4', 'Q7.1_5', 'Q7.1_6', 'Q7.1_NA', 'Q7.1_Other'),
-                       txt=c('Ecosystem health, healthy functioning of ecological processes',
-                       'Resilience of ecosystems, response to perturbation, recuperation',
-                       'Naturalness of ecosystem','Biodiversity (not related to human use)',
-                       'Threatened species, extinction risk','Degradation, impacts of drivers on the ecosystem','application does not assess ecological condition','Other'))
-legend72 <- data.frame(code=c('Q7.2_1', 'Q7.2_2', 'Q7.2_3', 'Q7.2_4', 'Q7.2_5', 'Q7.2_6', 'Q7.2_NA', 'Q7.2_Other'),
-                       txt=c('Ecosystem services (potential) supply, stocks','Ecosystem service flow, delivery, use','Nature’s contributions to people','Viable populations of ‘useful’ species (Habitat suitability)','Biodiversity (related to a human use, functional biodiversity)','Quantity or quality of natural resources (related to a human use)','application does not assess ecosystem capacity','Other'))
-legend73 <- data.frame(code=c('Q7.3_1', 'Q7.3_2', 'Q7.3_3', 'Q7.3_4', 'Q7.3_NA', 'Q7.3_Other'),
-                       txt=c('Ecological thresholds, boundaries, tipping points','Maximum sustainable yield or harvest','Carrying capacity for human use/pressure','Restoration, Conservation effectiveness','application does not assess sustainable use or management','Other'))
+l<-data.frame(Q = c('7.1','7.2','7.3',
+                    '5.2','5.3','5.4','5.5','5.6',
+                    '8.9','8.10','8.12','8.13',
+                    '8.3','8.4','8.5','8.6','8.7','8.8'
+                    ),
+              title = c('Was ECOLOGICAL CONDITION assessed & how?','Was ECOSYSTEM CAPACITY assessed and how?','Was SUSTAINABLE USE/MANAGEMENT  of ecosystems assessed and how?',
+                        'The application identifies/assesses respect towards nature by...', 'The application assesses responsibility or care for the land by...','The application assesses kinship/communality with other people by...', 'The application assesses kinship/communality with non-human entities by...','The application assesses values of self-determination and ancestral law, by...',
+                        'Recognition: knowledge types','Recognition: broad values','Recognition: value types','Recognition: value dimensions',
+                        'Transparency level','Stakeholder representation','Stakeholder identification','Stakeholder inclusion actions','Power','Participation'),
+              short = c('EcologicalCondition','EcosystemCapacity','SustainableUseManagement',
+                        'NatureRespect','ResponsibilityLand','KinshipPeople','KinshipNonHuman','SelfDeterminationAncestralLaw',
+                        'RecogKnowledgeTypes', 'RecogBroadValues','RecogValueTypes','RecogValueDimensions'),
+              ordered = c(TRUE,TRUE,TRUE,
+                          TRUE,TRUE,TRUE,TRUE,TRUE,
+                          TRUE,TRUE,TRUE,TRUE,
+                          FALSE, FALSE,TRUE, ))
+legendlist<-list(L[str_detect(L$Question,'7.1'),], L[str_detect(L$Question,'7.2'),], L[str_detect(L$Question,'7.3'),],
+                 L[str_detect(L$Question,'5.2'),], L[str_detect(L$Question,'5.3'),], L[str_detect(L$Question,'5.4'),], L[str_detect(L$Question,'5.5'),], L[str_detect(L$Question,'5.6'),],
+                 L[str_detect(L$Question,'8.9'),], L[str_detect(L$Question,'8.10'),], L[str_detect(L$Question,'8.12'),], L[str_detect(L$Question,'8.13'),])
 
-l<-data.frame(Q = c('7.1','7.2','7.3'),
-              title = c('Was ECOLOGICAL CONDITION assessed & how?','Was ECOSYSTEM CAPACITY assessed and how?','Was SUSTAINABLE USE/MANAGEMENT  of ecosystems assessed and how?'))
-legendlist<-list(legend71,legend72,legend73)
 Panes <- list()
 gt <- list()
 pfam<- list()
-if(PrintOthers){M <- list()}
 for(i in 1:nrow(l)){
   legend <- legendlist[[i]]
-  sbst <- s3_single[,c('paperID','MF1.key','MF2.key','MF3.key','MF4.key',as.character(l[i,'Q']))]
-  for(j in 1:(nrow(legend)-1)){
-    sbst[,as.character(l[i,'Q'])] <- gsub("â€™", "’", sbst[,as.character(l[i,'Q'])] )
-    sbst[,as.character(l[i,'Q'])] <- gsub("&", "and", sbst[,as.character(l[i,'Q'])] )
-    sbst[,as.character(l[i,'Q'])] <- gsub("â€˜", "‘", sbst[,as.character(l[i,'Q'])] )
-    A <-  str_detect(sbst[,as.character(l[i,'Q'])], pattern = fixed(as.character(legend[j,'txt'])))
-    sbst[,as.character(l[i,'Q'])] <- str_replace(sbst[,as.character(l[i,'Q'])], pattern = fixed(as.character(legend[j,'txt'])),"")
-    sbst <- cbind(sbst, A)
-    colnames(sbst)[ncol(sbst)] <- as.character(legend[j,'code'])
-  }
-  Otheridx <- (str_length(gsub("[;, ]","",sbst[,as.character(l[i,'Q'])]))>1)
-  sbst <- cbind(sbst, Otheridx)
-  colnames(sbst)[ncol(sbst)] <- as.character(legend[nrow(legend),'code'])
-  if(PrintOthers){
-    M[[i]] <- matrix(nrow=(sum(Otheridx)), ncol = (1+nrow(legend)))
-    colnames(M[[i]]) <- c('PaperID',as.character(legend$txt))
-    rownames(M[[i]]) <- sbst[Otheridx,as.character(l[i,'Q'])]
-    M[[i]][,1] <- sbst[Otheridx,'paperID']
-  }
+  sbst <- s3_single[,c('paperID',MFcol,as.character(legend$code))]
+
   #from wide to long format
   sbst %>%
-    gather(question, value, -paperID,-MF1.key,-MF2.key,-MF3.key,-MF4.key,-as.character(l[i,'Q'])) -> sbst_long
+    gather(question, value, -paperID,-as.character(MFcol),) -> sbst_long
 
   pie <- ggplot() +
-    geom_bar(aes(x = factor(1), fill = str_detect(s3_single[,as.character(l[i,'Q'])],regex('application does not assess'))),width = 1) +
-    blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank())+ scale_fill_manual(name = '',breaks = c(TRUE, FALSE),labels = c('Not assessed','It is assessed'), values  = c('red', IPbeslightgreen)) +
+    geom_bar(aes(x = factor(1), fill = (pmax(sbst[,str_detect(colnames(sbst),'_none|_irrelevant')]) == 1)),width = 1, color='black') +
+    blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank())+ scale_fill_manual(name = '',breaks = c(TRUE, FALSE),labels = c('Not assessed','It is assessed'), values  = c('white', 'grey')) +
     xlab('') + ylab('') + coord_polar("y", start = 0,direction = 1) + theme(legend.position='bottom' )
   #make ordered bar charts
   cnt<-aggregate(1*(sbst_long$value),by = list(sbst_long$question), FUN=function(x)sum(x))
   sbst_long$question<-factor(sbst_long$question, levels= cnt[order(cnt$x, decreasing = FALSE),'Group.1'])
 
-  bar <- ggplot(sbst_long[!(str_detect(sbst_long$question,regex('_NA'))),]) + geom_bar(alpha=1,size=1,color = IPbeslightgreen, fill = IPbeslightgreen,aes(x=question, y=1*value), stat = "identity") + coord_flip() + theme_bw() + scale_x_discrete(breaks = legend$code, labels = str_wrap(as.character(legend$txt),50)) + ylab('Number of papers') + xlab('')
-  Panes[[i]] <- grid.arrange(pie,bar,
-                             ncol=2, nrow=1, layout_matrix = rbind(c(1,2)), widths=c(1.7,4),
-                             top = textGrob(l[i,'title'],gp=gpar(fontsize=20,font=3)))
-  ggsave(Panes[[i]], filename=sprintf('output/T3-Q%s.pdf',l[i,'Q']), width= 10, height = 4)
+  bar <- ggplot(sbst_long[!(str_detect(sbst_long$question,regex('_none|_irrelevant|_unclear'))),]) + geom_bar(alpha=1,size=1,color = 'grey', fill = 'grey',aes(x=question, y=1*value), stat = "identity") + coord_flip() + minimal_theme_bars + scale_x_discrete(breaks = legend$code, labels = str_wrap(as.character(legend$txt),50)) + ylab('Number of papers') + xlab('') + ggtitle(l[i,'title'])
+
+  # Panes[[i]] <- grid.arrange(pie,bar,
+  #                            ncol=2, nrow=1, layout_matrix = rbind(c(1,2)), widths=c(1.7,4))
+  # ggsave(Panes[[i]], filename=sprintf('output/Q%s%sPieBar2.pdf',l[i,'Q'],l[i,'short']), width= 10, height = 4)
   library(cowplot)
-  title <- ggdraw() +
-    draw_label(as.character(l[i,'title']), fontface = 'bold', x = 0, hjust = 0) +
-    theme(plot.margin = margin(0, 0, 0, 7))
   gt[[i]] <- ggdraw() +
     draw_plot(bar) +
     draw_plot(pie, x = 0.65, y = 0.09, width = .3, height = .4)
-   p<-grid.arrange(
-    title, gt[[i]], ncol = 1,heights = c(0.1, 1)
-  )
-  ggsave(p, filename=sprintf('output/T3_Q%sPieBar.pdf',l[i,'Q']), width= 8, height = 4)
+  ggsave(pie, filename=sprintf('output/Q%s%sPie.pdf',l[i,'Q'],l[i,'short']), width= 4, height = 4)
+  ggsave(bar, filename=sprintf('output/Q%s%sBar.pdf',l[i,'Q'],l[i,'short']), width= 10, height = 4)
+  ggsave(gt[[i]], filename=sprintf('output/Q%s%sPieBar.pdf',l[i,'Q'],l[i,'short']), width= 10, height = 4)
+  ggsave(pie, filename=sprintf('output/Q%s%sPie.jpg',l[i,'Q'],l[i,'short']), width= 4, height = 4)
+  ggsave(bar, filename=sprintf('output/Q%s%sBar.jpg',l[i,'Q'],l[i,'short']), width= 10, height = 4)
+  ggsave(gt[[i]], filename=sprintf('output/Q%s%sPieBar.jpg',l[i,'Q'],l[i,'short']), width= 10, height = 4)
 
   familysummary <- data.frame(MF = c('MF1','MF1','MF2','MF2','MF3','MF3','MF4','MF4'),
                                 Answer = c('Yes','No','Yes','No','Yes','No','Yes','No'),
                                 N = NA,
                                 Percentage=NA)
-  familysummary$N <- sapply(1:nrow(familysummary),FUN=function(x) ifelse(familysummary$Answer[x] == 'No',sum(sbst[,sprintf('%s.key',as.character(familysummary$MF[x]))]==1 & str_detect(s3_single[, as.character(l[i,'Q'])],regex('application does not assess')), na.rm=T),sum(sbst[,sprintf('%s.key',as.character(familysummary$MF[x]))]==1 & !(str_detect(s3_single[, as.character(l[i,'Q'])],regex('application does not assess'))), na.rm=T)))
-  familysummary$Percentage = familysummary$N/sapply(familysummary$MF,FUN = function(x)sum(familysummary[familysummary$MF==x,'N']))
+  familysummary$N <- sapply(1:nrow(familysummary),FUN=function(x) ifelse(
+    familysummary$Answer[x] == 'No',
+    sum(sbst[,(1+as.numeric(familysummary[x,'MF']))]==1 & pmax(sbst[,str_detect(colnames(sbst),'none|irrelevant')])==1, na.rm=T),
+    sum(sbst[,(1+as.numeric(familysummary[x,'MF']))]==1 & pmax(sbst[,str_detect(colnames(sbst),'none|irrelevant')])==0, na.rm=T)))
 
-  pfam[[i]] <- ggplot(familysummary) + geom_bar(aes(x = MF, fill=Answer, y=Percentage*100),stat = 'identity',position='stack') + scale_fill_manual(name = '',breaks = c('Yes','No'), labels=c('It is assessed','Not assessed'),values  = c(IPbeslightgreen, 'red')) + ylab('Percentage in the method family') + xlab('Method family') + theme_minimal() + scale_x_discrete(labels= MFLabels)
-  ggsave(pfam[[i]], filename=sprintf('output/T3_Q%sByFam.pdf',l[i,'Q']), width= 8, height = 4)
-  }
-require(openxlsx)
-write.xlsx(list("Q7.1" = M[[1]], "Q7.2" = M[[2]], "Q7.3" = M[[3]]), file = "Theme7_OtherAnswers.xlsx", row.names=T)
+  familysummary$Percentage <- familysummary$N/sapply(familysummary$MF,FUN = function(x)sum(familysummary[familysummary$MF==x,'N']))
 
-Theme7 <- grid.arrange(gt[[1]], gt[[2]], gt[[3]],pfam[[1]],pfam[[2]],pfam[[3]],
-                       nrow=2, heights=c(3,3),widths=c(7,7,7),layout_matrix = rbind(c(1,2,3),c(4,5,6)))
-ggsave(Theme7,filename='output/Theme7.pdf',width=21, height=8)
+  pfam[[i]] <- ggplot(familysummary) + geom_bar(color='black', aes(x = MF, fill=Answer, y=Percentage*100),stat = 'identity',position='stack') + scale_fill_manual(name = '',breaks = c('Yes','No'), labels=c('It is assessed','Not assessed'),values  = c('grey', 'white')) + ylab('Percentage in the method family') + xlab('Method family') + minimal_theme_bars + scale_x_discrete(labels= MFLabels)
+  ggsave(pfam[[i]], filename=sprintf('output/Q%s%sMFbars.pdf',l[i,'Q'],l[i,'short']), width= 10, height = 4)
+  ggsave(pfam[[i]], filename=sprintf('output/Q%s%sMFbars.jpg',l[i,'Q'],l[i,'short']), width= 10, height = 4)
+}
+
+#########-------------- Theme-based plots--------------------###################
+####---Abundancy plots---###
+Theme5 <- c('5.2','5.3','5.4','5.5','5.6')
+Theme8 <- c('8.9','8.10','8.12','8.13')
+themes <- list(theme=list(Theme5,Theme8), title=c('Number of ILK aspects adressed per paper', 'Number of Recognition aspects adressed per paper'), name = c('Theme5', 'Theme8'))
+
+for(i in 1:length(themes$title)){
+  cols<-c(str_c('Q',unlist(themes$theme[i]),'_none',sep=""), str_c('Q',unlist(themes$theme[i]),'_irrelevant',sep=""))
+  a <- which(cols %in% colnames(s3_single))
+  A <- rowSums(cbind(s3_single[,cols[a]])==0)
+  p <- ggplot() + geom_bar(aes(x=as.factor(A), fill = 'grey46')) + minimal_theme_bars +  xlab(unlist(themes$title[i])) + ylab('Number of papers') + ggtitle(unlist(themes$title[i])) + scale_fill_identity()
+  ggsave(p, filename=sprintf('output/%s_AbundancyPlot.pdf',unlist(themes$name[i])), width= 10, height = 4)
+  ggsave(p, filename=sprintf('output/%s_AbundancyPlot.jpg',unlist(themes$name[i])), width= 10, height = 4)
+}
+
+#-----Frequency by subquestion in the theme by MF or in general
+Theme5 <- c('5.2','5.3','5.4','5.5','5.6')
+LabelsTheme5 <- c('Respect towards nature', 'Responsibility or care for the land','Kinship/communality with other people', 'Kinship/communality with non-human entities','Values of self-determination and ancestral law')
+themes <- list(theme=list(Theme5),
+               title=c('Which ILK aspects are addressed?'),
+               name = c('Theme5'),
+               label = list(LabelsTheme5))
+for(i in 1:length(themes$title)){
+  cols<-c(str_c('Q',unlist(themes$theme[i]),'_none',sep=""), str_c('Q',unlist(themes$theme[i]),'_irrelevant',sep=""))
+  b <- which(cols %in% colnames(s3_single))
+  a <- cbind(cbind(s3_single[,cols[b]])==0, s3_single[,c('paperID', as.character(MFcol))])#TRUE if it IS assessed
+  a %>%
+    gather(question, value, -paperID,-as.character(MFcol),) -> a_long
+  dfl <- a_long[,] %>%
+    group_by(question) %>%
+    summarise(n = n(),
+              assessed = sum(value==TRUE),
+              NotAssessed = sum(value==FALSE))
+  dfl$AssessedPerc <- dfl$assessed/dfl$n
+  p <- ggplot() + geom_bar(data=dfl,stat="identity",aes(x=question, y=AssessedPerc), fill='grey') + minimal_theme_bars +   xlab("") + ylab('Percentage of the papers') + ggtitle(unlist(themes$title[i])) + scale_x_discrete(labels = str_wrap(unlist(themes$label[i]),20)) + scale_y_continuous(labels = scales::percent)
+
+  ggsave(p, filename=sprintf('output/%s_Allsubquestions.pdf',unlist(themes$name[i])), width= 10, height = 4)
+  ggsave(p, filename=sprintf('output/%s_Allsubquestions.jpg',unlist(themes$name[i])), width= 10, height = 4)
+
+
+  a %>%
+    gather(question, value, -paperID,-as.character(MFcol),) %>%
+    gather(MF,MFvalue, -paperID, -question, -value)-> a_long
+  a_long<-a_long[a_long$MFvalue==1,]
+  dfl <- a_long[,] %>%
+    group_by(question,MF) %>%
+    summarise(n = n(),
+              assessed = sum(value==TRUE),
+              NotAssessed = sum(value==FALSE))
+  dfl$AssessedPerc <- dfl$assessed/dfl$n
+  dfl$MF <- str_replace_all(dfl$MF,'.key','')
+  pMF <- ggplot() + geom_bar(data=dfl,stat="identity",aes(x=question, y=AssessedPerc), fill='grey') + minimal_theme_bars + theme(axis.text.x = element_text(angle = 45,hjust = 1))+ xlab("") + ylab('Percentage of the papers in the method family') + ggtitle(unlist(themes$title[i])) + facet_wrap(vars(MF),labeller = labeller(MF=MFLabels)) + scale_x_discrete(labels = str_wrap(unlist(themes$label[i]),20)) + scale_y_continuous(labels = scales::percent)
+  ggsave(pMF, filename=sprintf('output/%s_AllsubquestionsByMF.pdf',unlist(themes$name[i])),  width= 12, height = 8)
+  ggsave(pMF, filename=sprintf('output/%s_AllsubquestionsByMF.jpg',unlist(themes$name[i])), width= 12, height = 8)
+}
+
+#
+# require(openxlsx)
+# write.xlsx(list("Q7.1" = M[[1]], "Q7.2" = M[[2]], "Q7.3" = M[[3]]), file = "Theme7_OtherAnswers.xlsx", row.names=T)
+#
+# Theme7 <- grid.arrange(gt[[1]], gt[[2]], gt[[3]],pfam[[1]],pfam[[2]],pfam[[3]],
+#                        nrow=2, heights=c(3,3),widths=c(7,7,7),layout_matrix = rbind(c(1,2,3),c(4,5,6)))
+# ggsave(Theme7,filename='output/Theme7.pdf',width=21, height=8)
+# ggsave(Theme7,filename='output/Theme7.jpg',width=21, height=8)
 
 
 
@@ -735,50 +794,6 @@ ggsave(Theme7,filename='output/Theme7.pdf',width=21, height=8)
 
 
 ########-----Data Overview 4 - Valuation of indigenous peoples' and like-minded local communities's-----########
-if(1==0){
-#Topic 5, p87 --> Q5.1 - Q5.8
-#Q5.1: Are there any authors from Indigenous Peoples or Like-minded Local Communities? none / one or more authors explicitly represented as such / unclear
-#Q5.2: The application identifies/assesses respect towards nature by (multiple possible):
-  #1) generally demonstrating and expressing deep respect to the land, sea, or their natural
-#surroundings; manifestation of spiritual connection to the land showing intimate
-#interaction associated with the land, sea, lakes or rivers; spiritual beings in the landscape;
-#sacred sites.
-  #2) identifying placed-based community ceremonies, rituals or gatherings that are linked
-#to the terrestrial or marine landscape.
-  #3)respecting those ceremonies, rituals or gatherings
-  #4)does not assess this
-#Q5.3:The application assesses responsibility or care for the land by (multiple possible):
-  #1) assessing overall protection & preservation of sites (mountains, rivers, landscapes, landforms, forests, etc.) for their sacred meaning, or cultural or historical significance;
-  #2) assessing whether actions/practices where natural resources use is compatible with and follows ancestral teachings about living in harmony with nature and respect for the land;
-  #3) Identifying non-over-exploitative production systems out of a sense of responsibilities towards future generations
-  #4) considering actions/practices to renew the sense of interconnection with terrestrial or marine surroundings and awareness about responsibility and care.
-  #5) does not assess this
-  #6) other
-#Q5.4: The application assesses kinship/communality with other people by (multiple possible):
-  #1) assessing equitable sharing use of seasonal resources,
-  #2) considering the satisfaction of community members’ needs, particularly women, elders and children.
-  #3) assessing whether the community shares teachings and knowledge on how to live sustainably with all elements of nature
-  #4) assessing the community internal practices of reciprocity (communal work or sharing of products); equitable trade with other communities.
-  #5) does not assess this
-  #6) other
-#Q5.5: The application assesses kinship/communality with non-human entities by  (multiple possible):
-   #1) identifying and assessing kinship relationships with animal through time identifying and assessing kinship relationships with animals’ habitat and other plant species
-  #2) identifying some plants as sacred,
-  #3) assessing the reluctance and discouragement of using plants, animals, mountains,rivers, and other non-living entities in nature for individualistic gains
-  #4) assessing the understanding of landforms as entitled to personhood or legal rights
-  #5) does not assess this
-  #6) Other
-#Q5.6: The application assesses values of self-determination and ancestral law, by (multiple possible):
-  #1) assessing the application of ancestral law, teachings, customs and uses,
-  #2) assessing the acknowledgement and inclusion of people’s beliefs, spirituality, and ceremonial practices
-  #3) assessing the community governance and community protocols or regulations,
-  #4) assessing the implementation of the FPIC,
-  #5) accounting for the intervention of Indigenous spiritual authorities and use of Indigenous language,
-  #6) including the Indigenous authors’ self-positioning or elders and knowledge-keepers authorship
-  #7) does not assess this
-  #8) other
-}
-#Pie chart for whether the authors are indigenous
 s3_single$`5.1`<-factor(s3_single$`5.1`, levels=c('none','unclear', 'one or more authors explicitly represented as such'),ordered=TRUE)
 Lbl2<-data.frame(Answer = c('one or more authors explicitly represented as such','unclear','none'),count = NA, Perc = NA, Label = NA)
 for (j in 1:3){
@@ -787,100 +802,11 @@ for (j in 1:3){
     Lbl2[j,'Label'] <- sprintf('%1.0f%%', Lbl2[j,'Perc'])
   }
 p51pie <- ggplot() +
-  geom_bar(aes(x = factor(1), fill = s3_single$`5.1`),width = 1) +
-  blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank())+ scale_fill_manual(name = '',breaks = c('none','one or more authors explicitly represented as such', 'unclear'),labels = c('No','Yes, one or more', 'Unclear'), values  = c('red', IPbeslightgreen, 'orange')) +
+  geom_bar(aes(x = factor(1), fill = s3_single$`5.1`),width = 1, color='black') +
+  blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank())+ scale_fill_manual(name = '',breaks = c('none','one or more authors explicitly represented as such', 'unclear'),labels = c('No','Yes, one or more', 'Unclear'), values  = c('white', 'grey45', 'grey92')) +
   xlab('') + ylab('') + ggtitle('Are there any authors from \nIndigenous Peoples or Like-minded \nLocal Communities?') +geom_text(aes(x = c(1.3,1,1.2), y = Lbl2$count/2+ c(0, cumsum(Lbl2$count)[-length(Lbl2$count)]),label = Lbl2$Label), size=5) + coord_polar("y", start = 0,direction = 1)
-ggsave(p51pie,file = 'output/T3-Q51.pdf', width = 5, height = 3)
-
-#5.2 -5.2: pie&bar
-legend52 <- data.frame(code=c('Q5.2_1', 'Q5.2_2', 'Q5.2_3', 'Q5.2_NA', 'Q5.2_Other'),
-                       txt=c('generally demonstrating and expressing deep respect to the land, sea, or their natural surroundings; manifestation of spiritual connection to the land showing intimate interaction associated with the land, sea, lakes or rivers; spiritual beings in the landscape; sacred sites.','identifying placed-based community ceremonies, rituals or gatherings that are linked to the terrestrial or marine landscape.','respecting those ceremonies, rituals or gatherings','does not assess this','Other'),
-                       keywords = c('generally demonstrating and expressing deep respect','identifying placed-based community ceremonies, rituals or gatherings','respecting those ceremonies, rituals or gatherings','does not assess this','Other'))
-legend53 <- data.frame(code=c('Q5.3_1', 'Q5.3_2', 'Q5.3_3', 'Q5.3_4','Q5.3_NA', 'Q5.3_Other'),
-                       txt=c('assessing overall protection and preservation of sites (mountains, rivers, landscapes, landforms, forests, etc.) for their sacred meaning, or cultural or historical significance;',
-                             'assessing whether actions/practices where natural resources use is compatible with and follows ancestral teachings about living in harmony with nature and respect for the land',
-                             'Identifying  non-over-exploitative production systems out of a sense of responsibilities towards future generations',
-                             'considering actions/practices to renew the sense of interconnection with terrestrial or marine surroundings and awareness about responsibility and care',
-                             'does not assess this','Other'),
-                       keywords = c('assessing overall protection','assessing whether actions/practices where natural resources use','Identifying non-over-exploitative production systems','considering actions/practices to renew the sense of interconnection','does not assess this','Other'))
-legend54 <- data.frame(code=c('Q5.4_1', 'Q5.4_2', 'Q5.4_3', 'Q5.4_4','Q5.4_NA', 'Q5.4_Other'),
-                       txt=c('assessing equitable sharing use of seasonal resources',
-                             'considering the satisfaction of community members’ needs, particularly women, elders and children.',
-                             'assessing whether the community shares teachings and knowledge on how to live sustainably with all elements of nature',
-                             'assessing the community internal practices of reciprocity (communal work or sharing of products); equitable trade with other communities.','does not assess this','Other'),
-                       keywords = c('assessing equitable sharing use of seasonal resources','considering the satisfaction of community members','assessing whether the community shares teachings and knowledge','assessing the community internal practices of reciprocity','does not assess this','Other'))
-legend55 <- data.frame(code=c('Q5.5_1', 'Q5.5_2', 'Q5.5_3', 'Q5.5_4','Q5.5_NA', 'Q5.5_Other'),
-                       txt=c('identifying and assessing kinship relationships with animal through time identifying and assessing kinship relationships with animals’ habitat and other  plant species',
-                             'identifying some plants as sacred',
-                             'assessing the reluctance and discouragement of using plants, animals, mountains, rivers, and other non-living entities in nature for individualistic gains',
-                             'assessing the understanding of landforms as entitled to personhood or legal rights','does not assess this','Other'),
-                       keywords = c('identifying and assessing kinship relationships with animal','identifying some plants as sacred','assessing the reluctance and discouragement of using plants, animals, mountains','assessing the understanding of landforms as entitled to personhood','does not assess this','Other'))
-legend56 <- data.frame(code=c('Q5.6_1', 'Q5.6_2', 'Q5.6_3', 'Q5.6_4','Q5.6_5','Q5.6_6','Q5.6_NA', 'Q5.6_Other'),
-                       txt=c('assessing the application of ancestral law, teachings, customs and uses',
-                             'assessing the acknowledgement and inclusion of people’s beliefs, spirituality, and ceremonial practices',
-                             'assessing the community governance and community protocols or regulations','assessing the implementation of the FPIC',
-                             'accounting for the intervention of Indigenous spiritual authorities and use of Indigenous language',
-                             'including the Indigenous authors’ self-positioning or elders and knowledge-keepers authorship','does not assess this','Other'),
-                       keywords = c('assessing the application of ancestral law, teachings, customs and uses','assessing the acknowledgement and inclusion of people','assessing the community governance and community protocols or regulations','assessing the implementation of the FPIC','accounting for the intervention of Indigenous spiritual authorities','including the Indigenous authors','does not assess this','Other'))
-l<-data.frame(Q = c('5.2','5.3','5.4','5.5','5.6'),
-        sbtitle = c('Respect towards nature is assessed by:', 'Responsibility or care for the land is assessed by:','Kinship/communality with other people is assessed by:','Kinship/communality with non-human entities \n is assessed by:','Values of self-determination and ancestral law \n is assessed by:'),
-        title = c('Assessment of respect towards nature.', 'Assessment of responsibility or care for the land.','Assessment of kinship/communality with other people.','Assessment of inship/communality with non-human entities.','Assessment of values of self-determination and ancestral law.'))
-legendlist<-list(legend52,legend53,legend54,legend55,legend56)
-Panes<-list()
-for(i in 1:nrow(l)){
-  legend <- legendlist[[i]]
-  sbst<-s3_single[,c('paperID','MF1.key','MF2.key','MF3.key','MF4.key',as.character(l[i,'Q']))]
-for(j in 1:(nrow(legend)-1)){
-  sbst[,as.character(l[i,'Q'])] <- gsub("â€™", "’", sbst[,as.character(l[i,'Q'])] )
-  sbst[,as.character(l[i,'Q'])] <- gsub("&", "and", sbst[,as.character(l[i,'Q'])] )
-  A <-  str_detect(sbst[,as.character(l[i,'Q'])], pattern = fixed(as.character(legend[j,'txt'])))
-  sbst[,as.character(l[i,'Q'])] <- str_replace(sbst[,as.character(l[i,'Q'])], pattern = fixed(as.character(legend[j,'txt'])),"")
-  sbst <- cbind(sbst, A)
-  colnames(sbst)[ncol(sbst)] <- as.character(legend[j,'code'])
-}
-  Otheridx <- (str_length(gsub("[;, ]","",sbst[,as.character(l[i,'Q'])]))>1)
-  sbst <- cbind(sbst, Otheridx)
-  colnames(sbst)[ncol(sbst)] <- as.character(legend[nrow(legend),'code'])
-#from wide to long format
-sbst %>%
-  gather(question, value, -paperID,-MF1.key,-MF2.key,-MF3.key,-MF4.key,-as.character(l[i,'Q'])) -> sbst_long
-
-pie <- ggplot() +
-  geom_bar(aes(x = factor(1), fill = s3_single[,as.character(l[i,'Q'])]=='does not assess this'),width = 1) +
-  blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank())+ scale_fill_manual(name = '',breaks = c(TRUE, FALSE),labels = c('Not assessed','It is assessed'), values  = c('red', IPbeslightgreen)) +
-  xlab('') + ylab('') + coord_polar("y", start = 0,direction = 1) + theme(legend.position='bottom' )
-#make ordered bar charts
-cnt<-aggregate(1*(sbst_long$value),by = list(sbst_long$question), FUN=function(x)sum(x))
-sbst_long$question<-factor(sbst_long$question, levels= cnt[order(cnt$x, decreasing = FALSE),'Group.1'])
-
-bar <- ggplot(sbst_long[!(str_detect(sbst_long$question,regex('_NA'))),]) + geom_bar(alpha=1,size=1,color = IPbeslightgreen, fill = IPbeslightgreen,aes(x=question, y=1*value), stat = "identity") + coord_flip() + theme_bw() + scale_x_discrete(breaks = legend$code, labels = str_wrap(as.character(legend$txt),50)) + ylab('Number of papers') + xlab('') + ggtitle('',subtitle=l[i,'sbtitle'])
-Panes[[i]] <- grid.arrange(pie,bar,
-             ncol=2, nrow=1, layout_matrix = rbind(c(1,2)), widths=c(1.7,4),
-             top = textGrob(l[i,'title'],gp=gpar(fontsize=20,font=3)))
-ggsave(Panes[[i]], filename=sprintf('output/T3-Q%s.pdf',l[i,'Q']), width= 10, height = 4)
-}
-
-#How many ILK aspects are dealt with in the paper?
-A <- rowSums(cbind(!(str_detect(s3_single$`5.2`,regex('does not assess this'))),
-                     !(str_detect(s3_single$`5.3`,regex('does not assess this'))),
-                       !(str_detect(s3_single$`5.4`,regex('does not assess this'))),
-                         !(str_detect(s3_single$`5.5`,regex('does not assess this'))),
-                           !(str_detect(s3_single$`5.6`,regex('does not assess this')))))
-Pane1 <- ggplot() + geom_bar(aes(x=as.factor(A), fill = IPbesdarkgreen)) + theme_minimal() +  xlab('Number of ILK aspects addressed') + ylab('Number of papers') + ggtitle('Number of ILK aspect adressed per paper') + scale_fill_identity()
-
-Pane1 <- ggplotGrob(Pane1)
-p51pie <- ggplotGrob(p51pie)
-gt <- gtable(widths = unit(c(1, 2), "null"), heights = unit(c(.2, 1, 1), "null"))
-gt <- gtable_add_grob(gt, Pane1, t = 1, b = 3, l = 1, r = 2)
-gt <- gtable_add_grob(gt, p51pie, t = 2, l = 2.8)
-#grid.draw(gt)
-ggsave(gt, filename='output/T3_Q51PieBar.pdf', width= 10, height = 4)
-dev.off()
-
-
-Theme5 <- grid.arrange(gt, Panes[[1]], Panes[[2]], Panes[[3]], Panes[[4]], Panes[[5]],
-                       nrow=3, heights=c(4,4,4),widths=c(7,7),layout_matrix = rbind(c(1,2),c(3,4),c(5,6)))
-ggsave(Theme5,filename='output/Theme5.pdf',width=20, height=12)
+ggsave(p51pie,file = 'output/Q51IndigineousAuthorsPie.pdf', width = 4, height = 4)
+ggsave(p51pie,file = 'output/Q51IndigineousAuthorsPie.jpg', width = 4, height = 4)
 
 
 
@@ -972,30 +898,15 @@ Theme8 <- grid.arrange(title[[1]],title[[2]],title[[3]],gt[[1]], gt[[2]], gt[[3]
                        nrow=3, heights=c(1,6,6),widths=c(9,9,9),layout_matrix = rbind(c(1,2,3),c(4,5,6),c(7,8,9)))
 
 ggsave(Theme8,filename='output/Theme8-1.pdf',width=20, height=12)
+ggsave(Theme8,filename='output/Theme8-1.jpg',width=20, height=12)
 
 
 #########Recognition graphs (heatmaps)#####
 #Recognition: knowledge types
 #Q8.9 The application explicitly distinguishes and mentions the following types of knowledge:
-legend89 <- data.frame(code=c('Q8.9_1', 'Q8.9_2', 'Q8.9_3', 'Q8.9_4','Q8.9_5', 'Q8.9_NA', 'Q8.9_Other'),
-                       txt=c('Lay and experiential knowledge, held by consumers, citizens, general public','Indigineous Local Knowledge, held by Indiginous Peoples or Like-minded Community members  or representatives','Scientific knowledge or academic expertise, held by academics or researchers','Technical knowledge, held by people in relevant professions (excl. academics)','Policy knowledge, held by policy makers, (excl. academics)','The application does not explicitly mention (types of) knowledge','Other'))
-
-#Recognition: broad values
-#Q8.10 Recognition of broad values mentions the following types of knowledge:
-  legend810 <- data.frame(code=c('Q8.10_1', 'Q8.10_2', 'Q8.10_3', 'Q8.10_4', 'Q8.10_NA'),
-                         txt=c('A: Livelihood security, human welfare and prosperity, happiness, responsibility (as sustainable use),  intragenerational and intergenerational justice','B: Responsibility as respectful cohabitation, coexistence, care (supporting regeneration, reducing harm), protecting the environment, stewardship, rights of nature, inter- and multispecies justice','C: Tradition, enjoyment, beauty and aesthetic experience, inspiration, health, care (as maintenance, supporting regeneration, healing), awe, belonging and rootedness, bio-cultural diversity','D: care, reciprocity, harmony with nature, reciprocal responsibilities, livelihood sovereignty, spiritual sovereignty, recognition justice, respect, responsibility and care for the land, kinship and interpenetration with non-human persons, self-determination','none of the above'))
-#Recognition: value types
-#Q8.12 - The application assesses the following types of values:
-  legend812 <- data.frame(code=c('Q8.12_1', 'Q8.12_2', 'Q8.12_3', 'Q8.12_4', 'Q8.12_5', 'Q8.12_6', 'Q8.12_7', 'Q8.12_unclear', 'Q8.12_irrelevant'),
-                          txt=c('use values: direct use: consumptive (e.g. crops, livestock, aquaculture –provisioning ES)','use values: direct use: non-consumptive (e.g. recreation, spiritual/cultural well-being, education –cultural ES)','use values: indirect use (e.g. pest control, pollination, soil fertility – often regulating ES)','option values (future use of known and unknown benefits)','non-use values: philanthropic: bequest value (e.g. satisfaction of knowing future generation’s benefits)','non-use values: philanthropic: altruistic value (e.g. satisfaction of knowing other people’s benefits)','non-use values: biodiversity: existence value (e.g. satisfaction of knowing that species/ecosystem exists)','unclear','irrelevant'))
-#Recognition: value dimensions
-#Q8.13 Value justification: the application has an emphasis on:
-  legend813 <- data.frame(code=c('Q8.13_1', 'Q8.13_2', 'Q8.13_3', 'Q8.13_unclear', 'Q8.13_irrelevant'),
-                          txt=c('Instrumental (to achieve a particular end)','Intrinsic (inherent worth, dignity of nonhuman beings, as well as non-instrumental values)','Relational (that contribute to desirable relationships)','Unclear','irrelevant'))
 
 #Also print out the open question Q8.11
-  l<-data.frame(Q = c('8.9','8.10','8.12','8.13'),
-                title = c('Recognition: knowledge types','Recognition: broad values','Recognition: value types','Recognition: value dimensions'))
+
   legendlist<-list(legend89,legend810,legend812,legend813)
   Panes <- list()
   gt <- list()
@@ -1079,6 +990,7 @@ for(i in 1:nrow(l)){
                          nrow=3, heights=c(1,6,6),widths=c(8,8,8,8),layout_matrix = rbind(c(1,2,3,4),c(5,6,7,8),c(9,10,11,12)))
 
   ggsave(Theme8,filename='output/Theme8-2.pdf',width=28, height=12)
+  ggsave(Theme8,filename='output/Theme8-2.jpg',width=28, height=12)
 
   Theme8b <- grid.arrange(Panes[[1]],Panes[[2]],Panes[[3]],Panes[[4]],
                       nrow=2, heights=c(6,6),widths=c(8,8),layout_matrix = rbind(c(1,2),c(3,4)))
@@ -1093,7 +1005,7 @@ for(i in 1:nrow(l)){
                          txt=c('no info on the process','a general description on the process, lacking detail on some steps of the process.','detailed descriptions of the process','Method’s instruments (e.g. protocols and data collection material such as questionnaires) are shared with general public and study participants in a way suitable for those groups and in line with ethics regulations','Method’s proceedings documentation (e.g. notes about meetings, discussions, decisions and appeals) are shared with general public, stakeholders and study participants in a way suitable for those groups and in line with ethics regulation','Unclear','Other'))
   #Representation of different stakeholders in the valuation process (in sampling, for participation) by:
   legend84 <- data.frame(code=c('Q8.4_1', 'Q8.4_2', 'Q8.4_3','Q8.4_NA', 'Q8.4_Other'),
-                         txt=c('discussing and reflecting on who was (not) represented (in the sample or among the participants)','presenting results and data on representation (involvement in process) of different groups of people','presenting results and data on statistical representativeness of the sample','the application does not reflect on representation','Other'))
+                         txt=c('discussing and reflecting on who was (not) represented (in the sample or among the participants)','presenting results and data on representation (involvement in process) of different groups of people','presenting results and data on statistical representativeness of the  sample','the application does not reflect on representation','Other'))
 
   #ÒThe application identifies and targets stakeholder groups (for sample or for   participation) primarily based on:
   legend85 <- data.frame(code=c('Q8.5_1', 'Q8.5_2', 'Q8.5_3', 'Q8.5_4', 'Q8.5_5', 'Q8.5_6', 'Q8.5_7', 'Q8.5_8', 'Q8.5_9', 'Q8.5_10','Q8.5_NA', 'Q8.5_Other'),
@@ -1109,8 +1021,7 @@ for(i in 1:nrow(l)){
 
   #Regarding participation level, the application:
   legend88 <- data.frame(code=c('Q8.8_1', 'Q8.8_2', 'Q8.8_3','Q8.8_4','Q8.8_unclear','Q8.8_NA', 'Q8.8_Other'),
-                         txt=c('Consulted participants as data providers, no clearly mentioned consent procedures (FPIC, GDPR-compliance).','Consulted participants as data providers, with clear consent procedures (PFIC, GDPR-compliant),..).','Consulted and discussed results and findings with participants','Engaged stakeholders in every step, including question framing, method selection, ...., results and conclusions, reporting.','Unclear','The application does not take a participatory approach and/or does not involve human
-participants/respondents','Other'))
+                         txt=c('Consulted participants as data providers, no clearly mentioned consent procedures (FPIC, GDPR-compliance).','Consulted participants as data providers, with clear consent procedures (PFIC, GDPR-compliant),..).','Consulted and discussed results and findings with participants','Engaged stakeholders in every step, including question framing, method selection, ...., results and conclusions, reporting.','Unclear','The application does not take a participatory approach and/or does not involve human participants/respondents','Other'))
 
   l<-data.frame(Q = c('8.3','8.4','8.5','8.6','8.7','8.8'),
                 title = c('Transparency level','stakeholder representation',' stakeholder identification','stakeholder inclusion actions','Power','Participation'))
@@ -1119,7 +1030,7 @@ participants/respondents','Other'))
                  'Reflection on representation','No reflection',
                  'Groups are identified','No groups identified',
                  'Inclusiveness is ensured','No inclusive participation ensured','Power dynamics assessed','Not assessed',
-                 'Participatory process','No participatory process'), byrow = T,nrow = )
+                 'Participatory process','No participatory process'), byrow = T,nrow =6 )
 
   Panes <- list()
   pie <-list()
@@ -1140,7 +1051,7 @@ participants/respondents','Other'))
       sbst <- cbind(sbst, A)
       colnames(sbst)[ncol(sbst)] <- as.character(legend[j,'code'])
     }
-    if(i!=5){#Only the first one has an 'Other' option
+    if(i!=5){
       Otheridx <- (str_length(gsub("[;, ]","",sbst[,as.character(l[i,'Q'])]))>1)
       sbst <- cbind(sbst, Otheridx)
       colnames(sbst)[ncol(sbst)] <- as.character(legend[nrow(legend),'code'])
@@ -1204,11 +1115,15 @@ participants/respondents','Other'))
     pfam[[i]] <- ggplot(familysummary) + geom_bar(aes(x = MF, fill=Answer, y=Percentage*100),stat = 'identity',position='stack') + scale_fill_manual(name = '',breaks = c('Yes','No'), labels = Lbls[i,],values  = c(IPbeslightgreen, 'red')) + ylab('Percentage in the method family') + xlab('Method family') + theme_minimal() + scale_x_discrete(labels= MFLabels)
     ggsave(pfam[[i]], filename=sprintf('output/T3_Q%sByFam.pdf',l[i,'Q']), width= 8, height = 4)
   }
+  require(openxlsx)
+  write.xlsx(list("Q8.3" = M[[1]], "Q8.4" = M[[2]], "Q8.5" = M[[3]], "Q8.6" = M[[4]], "Q8.7" = M[[5]], "Q8.8" = M[[6]]), file = "Theme8-2_OtherAnswers.xlsx", row.names=T)
+
 
   Theme8 <- grid.arrange(title[[1]],title[[2]],title[[3]],gt[[1]], gt[[2]], gt[[3]],title[[4]],title[[5]],title[[6]], gt[[4]],pie[[5]],gt[[6]],
                          nrow=4, heights=c(1,6,1,6),widths=c(8,8,8),layout_matrix = rbind(c(1,2,3),c(4,5,6),c(7,8,9),c(10,11,12)))
 
   ggsave(Theme8,filename='output/Theme8-3.pdf',width=28, height=12)
+  ggsave(Theme8,filename='output/Theme8-3.jpg',width=28, height=12)
 
   Theme8b <- grid.arrange(Panes[[1]],Panes[[2]],Panes[[3]],Panes[[4]],pie[[5]],Panes[[6]],
                           nrow=2, heights=c(6,6),widths=c(8,8,8),layout_matrix = rbind(c(1,2,3),c(4,5,6)))
