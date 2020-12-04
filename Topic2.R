@@ -191,10 +191,10 @@ scale.names = c("Local (incl. village, parish, municipality, town, city)",
                 "Continental",
                 "Global")
 
-#pdf("output/Fig_2.1_scale_corrected.pdf", width=15, height = 8, pointsize = 12)
+pdf("output/2.1_Scale_bar_3Dec.pdf", width= 15, height = 8, pointsize = 20)
 par(mar=c(5,20,1,1))
-barplot(rev(scale_tb_final[-10]), horiz=T, names.arg = rev(scale.names), las = 1, col = IPbeslightgreen, border = IPbeslightgreen, xlim = c(0, 400), main = "Scale of application")
-#dev.off()
+barplot(rev(scale_tb_final[-10]), horiz=T, names.arg = rev(scale.names), las = 1, col = gray(0.7), xlim = c(0, 400), main = "Scale of application", xlab = "Number of applications")
+dev.off()
 
 
 MF_cols = paste0("MF", 1:4, ".key")
@@ -381,11 +381,11 @@ names(habitat_tb_final) <- habitat.name.plot
 habitat_tb_final <-  habitat_tb_final[-(14)]
 
 
-#pdf("output/Fig_habitat_corrected_4Nov.pdf", width=15, height = 8, pointsize = 12)
-
+pdf("output/Q2.2_Habitat_bar_3Dec.pdf", width=15, height = 8, pointsize = 20)
+# jpeg(file="output/Q2.2_Habitat_bar_3Dec.jpeg", width = 15, height = 8, res = 300)
 par(mar=c(5,20,1,1))
-barplot(rev(habitat_tb_final), las=1, horiz=T, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, max(habitat_tb_final) *1.1), xlab = "# of applications", main = "The application assesses the following habitats ")
-#dev.off()
+barplot(rev(habitat_tb_final), las=1, horiz=T, col = gray(0.7), xlim = c(0, max(habitat_tb_final) *1.1), xlab = "Number of applications", main = "The application assesses the following habitats ")
+dev.off()
 
 #pdf("output/Fig_habitat_corrected_30Oct.pdf", width=15, height = 8, pointsize = 12)
 #png("output/Fig_habitat_corrected_30Oct.png", width=800, height = 600, pointsize = 12)
@@ -400,18 +400,21 @@ summary(s3_single$"2.7")
 table(s3_single$"2.7")
 barplot(table(s3_single$"2.7"))
 
-#pdf("output/Fig_2.7_temporal frequency.pdf", width=8, height = 8, pointsize = 12)
-barplot(table(s3_single$"2.7"), las = 1, col = IPbeslightgreen, border = IPbeslightgreen, ylab = "# of applications", xlab = "temporal frequency")
-#dev.off()
+pdf("output/Q2.7_Temporal Frequency_bar_3Dec.pdf", width=8, height = 8, pointsize = 20)
+barplot(table(s3_single$"2.7"), las = 1, col = gray(0.7), ylab = "Number of applications", xlab = "Temporal frequency")
+dev.off()
 
+pdf("output/Q2.7_Temporal Frequency_pie_3Dec.pdf", width=8, height = 8, pointsize = 20)
+pie(table(s3_single$"2.7"), init.angle = 90, col = gray.colors(3, start = 0.9, end = 0.3), main = "Temporal frenquency")
+dev.off()
 
 
 ### 2.8 - The application assesses values change over time:
 summary(s3_single$"2.8")
 
-#pdf("output/Fig_2.8_overTime.pdf", width=8, height = 8, pointsize = 12)
-pie(table(s3_single$"2.8"), labels = c("No", "Yes"), main = "The application assesses values change over time")
-#dev.off()
+pdf("output/Q2.8_overTime_pie_3Dec.pdf", width=10, height = 10, pointsize = 20)
+pie(table(s3_single$"2.8"), labels = c("No", "Yes"), main = "The application assesses values change over time", init.angle = 90, col = gray.colors(2, start = 0.9, end = 0.3))
+dev.off()
 
 
 
@@ -431,10 +434,10 @@ time_split_v = unlist(split_res_l_2.9)
 time_split_v_fac = factor(time_split_v)
 time_tb_sorted = sort(table(time_split_v_fac), decreasing = F)
 
-#pdf("output/Fig_2.9_overTime.pdf", width=12, height = 8, pointsize = 12)
+pdf("output/Q2.9_TemporalChange_bar_3Dec.pdf", width=12, height = 8, pointsize = 20)
 par(mar=c(5,20,5,5))
-barplot(sort(time_tb_sorted, F), horiz=T, las=1, xlim = c(0, 1000), col = IPbeslightgreen, border = IPbeslightgreen)
-#dev.off()
+barplot(sort(time_tb_sorted, F)[-(9)], horiz=T, las=1, xlim = c(0, 100), col = gray(0.7), main = "Temporal Changes", xlab = "Number of applications")
+dev.off()
 
 
 ### 2.10 There are multiple classifications of 'what is valued'. We want to know how these fit in the IPBES categories. The application assesses the following 'targets of valuation' regarding Nature Itself (multiple possible)
@@ -533,12 +536,9 @@ names(NCP_nature_by_mf_df) = c("MF1", "MF2", "MF3", "MF4")
 
 barplot(NCP_nature_by_mf_df)
 
-# pdf("output/Fig_nature_MF_12Nov.pdf", width=10, height = 10, pointsize = 12)
+pdf("output/Q2.10_Nature_pie_3Dec.pdf", width=15, height = 15, pointsize = 20)
 pie(NCP_nature_by_mf_df, col = viridis(4), main = "NCP Nature", init.angle = 90, labels = NA)
-# dev.off()
-
-
-
+dev.off()
 
 
 # dim(NCP_nature_given_detected_df)
@@ -695,9 +695,9 @@ names(NCP_regul_by_mf_df) = c("MF1", "MF2", "MF3", "MF4")
 
 barplot(NCP_regul_by_mf_df)
 
-# pdf("output/Fig_regult_MF_12Nov.pdf", width=10, height = 10, pointsize = 12)
+pdf("output/Q2.11_Regulating_Pie_3Dec.pdf", width=10, height = 10, pointsize = 20)
 pie(NCP_regul_by_mf_df, col = viridis(4), main = "Regulating Nature Contribution to People", init.angle = 90, labels = NA)
-# dev.off()
+dev.off()
 
 # pie(NCP_nature_by_mf_df, col = viridis(4), main = "NCP Nature")
 
@@ -801,9 +801,9 @@ names(NCP_material_by_mf_df) = c("MF1", "MF2", "MF3", "MF4")
 
 barplot(NCP_material_by_mf_df)
 
- # pdf("output/Fig_material_MF_12Nov.pdf", width=10, height = 10, pointsize = 12)
+pdf("output/Q2.12_Material_pie_3Dec.pdf", width=10, height = 10, pointsize = 20)
 pie(NCP_material_by_mf_df, col = viridis(4), main = "Material Nature Contribution to People", init.angle = 90, labels = NA)
- # dev.off()
+dev.off()
 
 
 ### 2.13 There are multiple classifications of 'what is valued'. We want to know how these fit in the IPBES categories. The application assesses the following 'targets of valuation' regarding non-material Nature Contributions To People (multiple possible)
