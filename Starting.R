@@ -339,5 +339,5 @@ for(i in c('8.4','8.5','8.6','8.8')){
 
 
 save(s3_single,L, file = 'output/s3_single_WithDummies.RData')
-
+write.xlsx(s3_single, file = 'output/s3_single.xlsx')
 
