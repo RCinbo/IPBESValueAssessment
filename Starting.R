@@ -178,14 +178,25 @@ for (i in 1:nrow(s3_single)){
 
 ########Add the loadings to the pre-SOD method families and IPBES categories
 lMF <- read.xlsx('methods x MF x IPBESclasses SOD.xlsx')
+Methods <- read.xlsx('Corrected/1.2_MethodList_ByRowID_LuizaCorrected_n1163.xlsx')
+s3_single$MethodSOD <- NA
+for(i in as.numeric(Methods$RowID)){
+  if(as.numeric(Methods[i,'PaperID'])!=s3_single[i,'paperID']){
+    sprintf('The paperID at row %d of the methodsexcel (%s) does not equal the one in s3_single (%d)',i,Methods[i,'PaperID'],s3_single[i,'paperID'])
+  }else{
+    if(Methods[i,'MethodID'] == ""){
+      s3_single[i,'MethodSOD']<-NA
+    }else{
+      s3_single[i,'MethodSOD'] <- Methods[i,'MethodID']
+    }
+  }
+}
 
-s3_single$dummy<-c(as.character(rep(lMF$methods.ID_LUIZA,12)),str_c(lMF[1:11,'methods.ID_LUIZA'],lMF[12:22,'methods.ID_LUIZA'],sep=";"))#only added this because I want to test it without having the actual column
-s3_single[1,'dummy']<-NA
-split<-str_split(s3_single$dummy,pattern=";")
+split<-str_split(s3_single$MethodSOD,pattern=";")
 if(sum(is.na(split))>0){
   a <- which(is.na(split))
   for(i in a){
-    sprintf('There are no methods defined for PaperID %s',s3_single[i,'paperID'])
+    print(sprintf('There are no methods defined for PaperID %s, Row Number %d',s3_single[i,'paperID'],i))
   }
 }
 b<- which(!is.na(split))
@@ -199,10 +210,10 @@ for(i in b){
   s3_single[i,c('IPBES.econ_SOD', 'IPBES.soccul_SOD', 'IPBES.bioph_SOD', 'IPBES.health_SOD','IPBES.ILK_SOD')] <- colMeans(lMF[d,ipbescol])
 }
 
-save(s3_single, file = 's3_single_BeforeExplode.RData')
+save(s3_single, file = 'output/s3_single_BeforeExplode.RData')
 
 
-load('s3_single_BeforeExplode.RData')
+load('output/s3_single_BeforeExplode.RData')
 #########-----make corrections for what was filled in in the 'other' text fields
 require(openxlsx)
 L <- data.frame(
@@ -327,6 +338,6 @@ for(i in c('8.4','8.5','8.6','8.8')){
 }
 
 
-save(s3_single,L, file = 's3_single_WithDummies.RData')
+save(s3_single,L, file = 'output/s3_single_WithDummies.RData')
 
 
