@@ -10,7 +10,8 @@ library(gridExtra)
 require (gtable)
 #s3_single_WithDummies.Rdata is built in the starting.R script --> first run this and get a copy of the 's3_single' and 'L' dataframe on your local computer.
 load('s3_single_WithDummies.Rdata')
-MFcol <- c('MF1.key','MF2.key','MF3.key','MF4.key')#the columns in s3_single to use for method families
+MFkeycol <- c('MF1.key','MF2.key','MF3.key','MF4.key')#the columns in s3_single to use for method families
+MFSODcol <- c('MF1.SOD','MF2.SOD','MF3.SOD','MF4.SOD')#the columns in s3_single to use
 ############Define a color scheme#####################
 IPbesdarkgreen <- rgb(92/255, 102/255, 93/255) #5c665d
 IPbeslightgreen <- rgb(181/255, 212/255, 141/255) #b5d48d
@@ -648,49 +649,68 @@ barplot(socio_all_tb, las=1, horiz=T, cex.names = 0.8, col = IPbeslightgreen, bo
 
 
 ########-----Data Overview 6 (theme 7)- Valuation for ecological sustainability-----########
-#Topic 7: Ecological Sustainability
-#make this true if you want to print out the 'other' answers to an excel file
-
 l<-data.frame(Q = c('7.1','7.2','7.3',
                     '5.2','5.3','5.4','5.5','5.6',
                     '8.9','8.10','8.12','8.13',
-                    '8.3','8.4','8.5','8.6','8.7','8.8'
+                    '8.3','8.4','8.5','8.6','8.7','8.8',
+                    '4.1','4.2','4.3','4.4','4.5',
+                    '8.1','8.2','8.14'
                     ),
               title = c('Was ECOLOGICAL CONDITION assessed & how?','Was ECOSYSTEM CAPACITY assessed and how?','Was SUSTAINABLE USE/MANAGEMENT  of ecosystems assessed and how?',
                         'The application identifies/assesses respect towards nature by...', 'The application assesses responsibility or care for the land by...','The application assesses kinship/communality with other people by...', 'The application assesses kinship/communality with non-human entities by...','The application assesses values of self-determination and ancestral law, by...',
                         'Recognition: knowledge types','Recognition: broad values','Recognition: value types','Recognition: value dimensions',
-                        'Transparency level','Stakeholder representation','Stakeholder identification','Stakeholder inclusion actions','Power','Participation'),
+                        'Transparency level','Stakeholder representation','Stakeholder identification','Stakeholder inclusion actions','Power','Participation', 'Replicability of the results','Consistency of the results','Prcision of the results','Internal validity of the results','External validity of the results',
+                        'Was INTRA-GENERATIONAL JUSTICE assessed & how?','Was INTER-GENERATIONAL JUSTICE assessed and how?','Who is part of the community of justice?'),
               short = c('EcologicalCondition','EcosystemCapacity','SustainableUseManagement',
                         'NatureRespect','ResponsibilityLand','KinshipPeople','KinshipNonHuman','SelfDeterminationAncestralLaw',
-                        'RecogKnowledgeTypes', 'RecogBroadValues','RecogValueTypes','RecogValueDimensions'),
+                        'RecogKnowledgeTypes', 'RecogBroadValues','RecogValueTypes','RecogValueDimensions',
+                        'Transparency','StkhldrRepr','StkhldrIdent','StkhldrIncl','Power','Participation',
+                        'Replicability','Consistency','Precision','IntValidity','ExtValidity',
+                        'IntraJustice','InterGenJustice', 'CommunityJustice'),
               ordered = c(TRUE,TRUE,TRUE,
                           TRUE,TRUE,TRUE,TRUE,TRUE,
                           TRUE,TRUE,TRUE,TRUE,
-                          FALSE, FALSE,TRUE, ))
+                          FALSE, FALSE,TRUE, TRUE,TRUE,FALSE,
+                          TRUE,TRUE,TRUE,TRUE,TRUE,
+                          TRUE,TRUE,TRUE))
 legendlist<-list(L[str_detect(L$Question,'7.1'),], L[str_detect(L$Question,'7.2'),], L[str_detect(L$Question,'7.3'),],
                  L[str_detect(L$Question,'5.2'),], L[str_detect(L$Question,'5.3'),], L[str_detect(L$Question,'5.4'),], L[str_detect(L$Question,'5.5'),], L[str_detect(L$Question,'5.6'),],
-                 L[str_detect(L$Question,'8.9'),], L[str_detect(L$Question,'8.10'),], L[str_detect(L$Question,'8.12'),], L[str_detect(L$Question,'8.13'),])
+                 L[str_detect(L$Question,'8.9'),], L[str_detect(L$Question,'8.10'),], L[str_detect(L$Question,'8.12'),], L[str_detect(L$Question,'8.13'),],
+                 L[str_detect(L$Question,'8.3'),], L[str_detect(L$Question,'8.4'),], L[str_detect(L$Question,'8.5'),], L[str_detect(L$Question,'8.6'),], L[str_detect(L$Question,'8.7'),], L[str_detect(L$Question,'8.8'),],
+                 L[str_detect(L$Question,'4.1'),], L[str_detect(L$Question,'4.2'),], L[str_detect(L$Question,'4.3'),], L[str_detect(L$Question,'4.4'),], L[str_detect(L$Question,'4.5'),],
+                 L[str_detect(L$code,'8.1_'),], L[str_detect(L$Question,'8.2'),], L[str_detect(L$Question,'8.14'),])
 
 Panes <- list()
 gt <- list()
 pfam<- list()
+MFkey<-T #set to true if you want figures by keyword-base method family
+MFSOD<-T #set to true if you want figures by SOD method family
 for(i in 1:nrow(l)){
   legend <- legendlist[[i]]
-  sbst <- s3_single[,c('paperID',MFcol,as.character(legend$code))]
+  sbst <- s3_single[,c('paperID',MFkeycol,MFSODcol,as.character(legend$code))]
 
   #from wide to long format
   sbst %>%
-    gather(question, value, -paperID,-as.character(MFcol),) -> sbst_long
+    gather(question, value, -paperID,-as.character(MFkeycol),-as.character(MFSODcol)) -> sbst_long
+  if(sum(str_detect(colnames(sbst),'_unclear'))>0){
+    fillCol <- as.factor(1*(sbst[,str_detect(colnames(sbst),'_unclear')]==1)+2*(pmax(sbst[,str_detect(colnames(sbst),'_none|_irrelevant')]) == 1))
+    fillCol[fillCol=='3'] <-'2'
+    pie <- ggplot() +
+      geom_bar(aes(x = factor(1), fill = fillCol), width = 1, color='black') + blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank())+ scale_fill_manual(name = '',breaks = c('0','1','2'),labels = c('It is assessed','Unclear','It is assessed'), values  = c('black', 'grey','white')) +
+      xlab('') + ylab('') + coord_polar("y", start = 0,direction = 1) + theme(legend.position='bottom' )
+  }else{
+    pie <- ggplot() +
+      geom_bar(aes(x = factor(1), fill = (pmax(sbst[,str_detect(colnames(sbst),'_none|_irrelevant')]) == 1)), width = 1, color='black') +
+      blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank())+ scale_fill_manual(name = '',breaks = c(TRUE, FALSE),labels = c('Not assessed','It is assessed'), values  = c('white', 'grey')) +
+      xlab('') + ylab('') + coord_polar("y", start = 0,direction = 1) + theme(legend.position='bottom' )
+  }
 
-  pie <- ggplot() +
-    geom_bar(aes(x = factor(1), fill = (pmax(sbst[,str_detect(colnames(sbst),'_none|_irrelevant')]) == 1)),width = 1, color='black') +
-    blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank())+ scale_fill_manual(name = '',breaks = c(TRUE, FALSE),labels = c('Not assessed','It is assessed'), values  = c('white', 'grey')) +
-    xlab('') + ylab('') + coord_polar("y", start = 0,direction = 1) + theme(legend.position='bottom' )
-  #make ordered bar charts
-  cnt<-aggregate(1*(sbst_long$value),by = list(sbst_long$question), FUN=function(x)sum(x))
-  sbst_long$question<-factor(sbst_long$question, levels= cnt[order(cnt$x, decreasing = FALSE),'Group.1'])
-
-  bar <- ggplot(sbst_long[!(str_detect(sbst_long$question,regex('_none|_irrelevant|_unclear'))),]) + geom_bar(alpha=1,size=1,color = 'grey', fill = 'grey',aes(x=question, y=1*value), stat = "identity") + coord_flip() + minimal_theme_bars + scale_x_discrete(breaks = legend$code, labels = str_wrap(as.character(legend$txt),50)) + ylab('Number of papers') + xlab('') + ggtitle(l[i,'title'])
+  if(l[i,'ordered']){#make ordered bar charts
+    cnt<-aggregate(1*(sbst_long$value),by = list(sbst_long$question), FUN=function(x)sum(x))
+    sbst_long$question<-factor(sbst_long$question, levels= cnt[order(cnt$x, decreasing = FALSE),'Group.1'])
+    selection <- !(str_detect(sbst_long$question,regex('_none|_irrelevant|_unclear')))
+}else{selection <- !(str_detect(sbst_long$question,regex('_irrelevant|_unclear')))}
+  bar <- ggplot(sbst_long[selection,]) + geom_bar(alpha=1,size=1,color = 'grey', fill = 'grey',aes(x=question, y=1*value), stat = "identity") + coord_flip() + minimal_theme_bars + scale_x_discrete(breaks = legend$code, labels = str_wrap(as.character(legend$txt),50)) + ylab('Number of papers') + xlab('') + ggtitle(l[i,'title'])
 
   # Panes[[i]] <- grid.arrange(pie,bar,
   #                            ncol=2, nrow=1, layout_matrix = rbind(c(1,2)), widths=c(1.7,4))
@@ -710,23 +730,39 @@ for(i in 1:nrow(l)){
                                 Answer = c('Yes','No','Yes','No','Yes','No','Yes','No'),
                                 N = NA,
                                 Percentage=NA)
-  familysummary$N <- sapply(1:nrow(familysummary),FUN=function(x) ifelse(
-    familysummary$Answer[x] == 'No',
-    sum(sbst[,(1+as.numeric(familysummary[x,'MF']))]==1 & pmax(sbst[,str_detect(colnames(sbst),'none|irrelevant')])==1, na.rm=T),
-    sum(sbst[,(1+as.numeric(familysummary[x,'MF']))]==1 & pmax(sbst[,str_detect(colnames(sbst),'none|irrelevant')])==0, na.rm=T)))
+  if(MFkey){
+      familysummary$N <- sapply(1:nrow(familysummary),FUN=function(x) ifelse(
+      familysummary$Answer[x] == 'No',
+      sum(sbst[,(1+as.numeric(familysummary[x,'MF']))]==1 & pmax(sbst[,str_detect(colnames(sbst),'none|irrelevant')])==1, na.rm=T),
+      sum(sbst[,(1+as.numeric(familysummary[x,'MF']))]==1 & pmax(sbst[,str_detect(colnames(sbst),'none|irrelevant')])==0, na.rm=T)))
 
-  familysummary$Percentage <- familysummary$N/sapply(familysummary$MF,FUN = function(x)sum(familysummary[familysummary$MF==x,'N']))
+    familysummary$Percentage <- familysummary$N/sapply(familysummary$MF,FUN = function(x)sum(familysummary[familysummary$MF==x,'N']))
 
-  pfam[[i]] <- ggplot(familysummary) + geom_bar(color='black', aes(x = MF, fill=Answer, y=Percentage*100),stat = 'identity',position='stack') + scale_fill_manual(name = '',breaks = c('Yes','No'), labels=c('It is assessed','Not assessed'),values  = c('grey', 'white')) + ylab('Percentage in the method family') + xlab('Method family') + minimal_theme_bars + scale_x_discrete(labels= MFLabels)
-  ggsave(pfam[[i]], filename=sprintf('output/Q%s%sMFbars.pdf',l[i,'Q'],l[i,'short']), width= 10, height = 4)
-  ggsave(pfam[[i]], filename=sprintf('output/Q%s%sMFbars.jpg',l[i,'Q'],l[i,'short']), width= 10, height = 4)
+    pfam[[i]] <- ggplot(familysummary) + geom_bar(color='black', aes(x = MF, fill=Answer, y=Percentage*100),stat = 'identity',position='stack') + scale_fill_manual(name = '',breaks = c('Yes','No'), labels=c('It is assessed','Not assessed'),values  = c('grey', 'white')) + ylab('Percentage in the method family') + xlab('Method family') + minimal_theme_bars + scale_x_discrete(labels= MFLabels)
+    ggsave(pfam[[i]], filename=sprintf('output/Q%s%sMFkeybars.pdf',l[i,'Q'],l[i,'short']), width= 10, height = 4)
+    ggsave(pfam[[i]], filename=sprintf('output/Q%s%sMFkeybars.jpg',l[i,'Q'],l[i,'short']), width= 10, height = 4)
+  }
+  if(MFSOD){
+    familysummary$N <- sapply(1:nrow(familysummary),FUN=function(x) ifelse(
+      familysummary$Answer[x] == 'No',
+      sum(sbst[pmax(sbst[,str_detect(colnames(sbst),'none|irrelevant')])==1,(5+as.numeric(familysummary[x,'MF']))], na.rm=T),
+      sum(sbst[pmax(sbst[,str_detect(colnames(sbst),'none|irrelevant')])==0,(5+as.numeric(familysummary[x,'MF']))], na.rm=T)))
+
+    familysummary$Percentage <- familysummary$N/sapply(familysummary$MF,FUN = function(x)sum(familysummary[familysummary$MF==x,'N']))
+
+    pfam[[i]] <- ggplot(familysummary) + geom_bar(color='black', aes(x = MF, fill=Answer, y=Percentage*100),stat = 'identity',position='stack') + scale_fill_manual(name = '',breaks = c('Yes','No'), labels=c('It is assessed','Not assessed'),values  = c('grey', 'white')) + ylab('Percentage in the method family') + xlab('Method family') + minimal_theme_bars + scale_x_discrete(labels= MFLabels)
+    ggsave(pfam[[i]], filename=sprintf('output/Q%s%sMFSODbars.pdf',l[i,'Q'],l[i,'short']), width= 10, height = 4)
+    ggsave(pfam[[i]], filename=sprintf('output/Q%s%sMFSODbars.jpg',l[i,'Q'],l[i,'short']), width= 10, height = 4)
+  }
 }
 
 #########-------------- Theme-based plots--------------------###################
 ####---Abundancy plots---###
 Theme5 <- c('5.2','5.3','5.4','5.5','5.6')
 Theme8 <- c('8.9','8.10','8.12','8.13')
-themes <- list(theme=list(Theme5,Theme8), title=c('Number of ILK aspects adressed per paper', 'Number of Recognition aspects adressed per paper'), name = c('Theme5', 'Theme8'))
+Theme4 <- c('4.1','4.2','4.3','4.4','4.5')
+Theme8Justice <- c('8.1','8.2','8.14')
+themes <- list(theme=list(Theme5,Theme8, Theme4, Theme8Justice), title=c('Number of ILK aspects adressed per paper', 'Number of Recognition aspects adressed per paper', 'Number of reliability aspects adressed per paper', 'Number of Justice aspects adressed per paper'), name = c('Theme5', 'Theme8', 'Theme4', 'Theme8Justice'))
 
 for(i in 1:length(themes$title)){
   cols<-c(str_c('Q',unlist(themes$theme[i]),'_none',sep=""), str_c('Q',unlist(themes$theme[i]),'_irrelevant',sep=""))
@@ -739,31 +775,38 @@ for(i in 1:length(themes$title)){
 
 #-----Frequency by subquestion in the theme by MF or in general
 Theme5 <- c('5.2','5.3','5.4','5.5','5.6')
+Theme4 <- c('4.1','4.2','4.3','4.4','4.5')
+Theme8Justice <- c('8.1','8.2','8.14')
 LabelsTheme5 <- c('Respect towards nature', 'Responsibility or care for the land','Kinship/communality with other people', 'Kinship/communality with non-human entities','Values of self-determination and ancestral law')
-themes <- list(theme=list(Theme5),
-               title=c('Which ILK aspects are addressed?'),
-               name = c('Theme5'),
-               label = list(LabelsTheme5))
+LabelsTheme4 <- c('Replicability','Consistency','Precision','Internal Validity','External Validity')
+LabelsTheme8Justice <- c('Was INTRA-GENERATIONAL JUSTICE assessed & how?','Was INTER-GENERATIONAL JUSTICE assessed and how?','Who is part of the community of justice?')
+themes <- list(theme=list(Theme5, Theme4, Theme8Justice),
+               title=c('Which ILK aspects are addressed?', 'Which reliability aspects are adressed?', 'Which Justice aspects are assessed?'),
+               name = c('Theme5', 'Theme4', 'Theme8Justice'),
+               label = list(LabelsTheme5, LabelsTheme4, LabelsTheme8Justice))
+MFkey<-T #set to true if you want figures by keyword-base method family
+MFSOD<-T #set to true if you want figures by SOD method family
 for(i in 1:length(themes$title)){
   cols<-c(str_c('Q',unlist(themes$theme[i]),'_none',sep=""), str_c('Q',unlist(themes$theme[i]),'_irrelevant',sep=""))
   b <- which(cols %in% colnames(s3_single))
-  a <- cbind(cbind(s3_single[,cols[b]])==0, s3_single[,c('paperID', as.character(MFcol))])#TRUE if it IS assessed
+  a <- cbind(cbind(s3_single[,cols[b]])==0, s3_single[,c('paperID', as.character(MFkeycol), as.character(MFSODcol))])#TRUE if it IS assessed
   a %>%
-    gather(question, value, -paperID,-as.character(MFcol),) -> a_long
+    gather(question, value, -paperID,-as.character(MFkeycol),-as.character(MFSODcol)) -> a_long
   dfl <- a_long[,] %>%
     group_by(question) %>%
     summarise(n = n(),
               assessed = sum(value==TRUE),
               NotAssessed = sum(value==FALSE))
   dfl$AssessedPerc <- dfl$assessed/dfl$n
-  p <- ggplot() + geom_bar(data=dfl,stat="identity",aes(x=question, y=AssessedPerc), fill='grey') + minimal_theme_bars +   xlab("") + ylab('Percentage of the papers') + ggtitle(unlist(themes$title[i])) + scale_x_discrete(labels = str_wrap(unlist(themes$label[i]),20)) + scale_y_continuous(labels = scales::percent)
+  idx <- order(unlist(themes$theme[i]))
+  p <- ggplot() + geom_bar(data=dfl,stat="identity",aes(x=question, y=AssessedPerc), fill='grey') + minimal_theme_bars +   xlab("") + ylab('Percentage of the papers') + ggtitle(unlist(themes$title[i])) + scale_x_discrete(labels = str_wrap(unlist(themes$label[i])[idx],20)) + scale_y_continuous(labels = scales::percent)
 
   ggsave(p, filename=sprintf('output/%s_Allsubquestions.pdf',unlist(themes$name[i])), width= 10, height = 4)
   ggsave(p, filename=sprintf('output/%s_Allsubquestions.jpg',unlist(themes$name[i])), width= 10, height = 4)
 
-
-  a %>%
-    gather(question, value, -paperID,-as.character(MFcol),) %>%
+  if(MFkey){
+  a[,-which(colnames(a)%in%as.character(MFSODcol))]%>%
+    gather(question, value, -paperID,-as.character(MFkeycol),) %>%
     gather(MF,MFvalue, -paperID, -question, -value)-> a_long
   a_long<-a_long[a_long$MFvalue==1,]
   dfl <- a_long[,] %>%
@@ -773,9 +816,26 @@ for(i in 1:length(themes$title)){
               NotAssessed = sum(value==FALSE))
   dfl$AssessedPerc <- dfl$assessed/dfl$n
   dfl$MF <- str_replace_all(dfl$MF,'.key','')
-  pMF <- ggplot() + geom_bar(data=dfl,stat="identity",aes(x=question, y=AssessedPerc), fill='grey') + minimal_theme_bars + theme(axis.text.x = element_text(angle = 45,hjust = 1))+ xlab("") + ylab('Percentage of the papers in the method family') + ggtitle(unlist(themes$title[i])) + facet_wrap(vars(MF),labeller = labeller(MF=MFLabels)) + scale_x_discrete(labels = str_wrap(unlist(themes$label[i]),20)) + scale_y_continuous(labels = scales::percent)
+  pMF <- ggplot() + geom_bar(data=dfl,stat="identity",aes(x=question, y=AssessedPerc), fill='grey') + minimal_theme_bars + theme(axis.text.x = element_text(angle = 45,hjust = 1))+ xlab("") + ylab('Percentage of the papers in the method family') + ggtitle(unlist(themes$title[i])) + facet_wrap(vars(MF),labeller = labeller(MF=MFLabels)) + scale_x_discrete(labels = str_wrap(unlist(themes$label[i])[idx],20)) + scale_y_continuous(labels = scales::percent)
   ggsave(pMF, filename=sprintf('output/%s_AllsubquestionsByMF.pdf',unlist(themes$name[i])),  width= 12, height = 8)
   ggsave(pMF, filename=sprintf('output/%s_AllsubquestionsByMF.jpg',unlist(themes$name[i])), width= 12, height = 8)
+  }
+  if(MFSOD){
+    a[,-which(colnames(a)%in%as.character(MFkeycol))] %>%
+      gather(question, value, -paperID,-as.character(MFSODcol),) %>%
+      gather(MF,MFvalue, -paperID, -question, -value)-> a_long
+    a_long<-a_long[a_long$MFvalue==1,]
+    dfl <- a_long[,] %>%
+      group_by(question,MF) %>%
+      summarise(n = n(),
+                assessed = sum(value==TRUE),
+                NotAssessed = sum(value==FALSE))
+    dfl$AssessedPerc <- dfl$assessed/dfl$n
+    dfl$MF <- str_replace_all(dfl$MF,'.SOD','')
+    pMF <- ggplot() + geom_bar(data=dfl[!is.na(dfl$MF),],stat="identity",aes(x=question, y=AssessedPerc), fill='grey') + minimal_theme_bars + theme(axis.text.x = element_text(angle = 45,hjust = 1))+ xlab("") + ylab('Percentage of the papers in the method family') + ggtitle(unlist(themes$title[i])) + facet_wrap(vars(MF),labeller = labeller(MF=MFLabels)) + scale_x_discrete(labels = str_wrap(unlist(themes$label[i])[idx],20)) + scale_y_continuous(labels = scales::percent)
+    ggsave(pMF, filename=sprintf('output/%s_AllsubquestionsByMF.pdf',unlist(themes$name[i])),  width= 12, height = 8)
+    ggsave(pMF, filename=sprintf('output/%s_AllsubquestionsByMF.jpg',unlist(themes$name[i])), width= 12, height = 8)
+  }
 }
 
 #
@@ -809,323 +869,5 @@ ggsave(p51pie,file = 'output/Q51IndigineousAuthorsPie.pdf', width = 4, height = 
 ggsave(p51pie,file = 'output/Q51IndigineousAuthorsPie.jpg', width = 4, height = 4)
 
 
+#Alluvial plot MF and IPBES categories
 
-############-----Data Overview 7 (theme 8) Valuation for distributive justice & recognition
-#distributive justice: Q8.1 - Q8.2
-#Who is part of the community of justice?: Q8.14
-#Recognition: Q8.9 - Q8.13
-PrintOthers<-TRUE
-
-legend81 <- data.frame(code=c('Q8.1_1', 'Q8.1_2', 'Q8.1_3', 'Q8.1_4', 'Q8.1_NA', 'Q8.1_Other'),
-                       txt=c('presenting benefits or costs disaggregated by different groups of people (e.g, by stakeholder type, livelihood, socio-demographic characteristics, location, country, etc)','estimating inequality using an index/indicator of inequality (e.g., Gini, HHI, )','assessing participants\' perceptions of intragenerational justice, or of the (in)equality of distribution of gains and losses - with respect to how people think the distribution of outcomes ought to be;','assessing weights / importance of prioritising needs of disadvantaged groups (e.g. in welfare function, a weight on an indicator in an MCA, in discussions)','the application does not assess intra-generational justice','Other'))
-legend82 <- data.frame(code=c('Q8.2_1', 'Q8.2_2', 'Q8.2_3', 'Q8.2_NA', 'Q8.2_Other'),
-                       txt=c('how values compare over time (using discounting, overtaking, Chichilnisky criteria, etc)','values, benefits or costs disaggregated by generations','future or past generations\' needs, wants, values, or ability to live a good life by explicitly discussing these','the application does not assess intergenerational justice','Other'))
-legend814 <- data.frame(code=c('Q8.14_1', 'Q8.14_2', 'Q8.14_3', 'Q8.14_4', 'Q8.14_5', 'Q8.14_6', 'Q8.14_NA', 'Q8.14_Other'),
-                       txt=c('A specific part of the current people','All current people','Future people','Past people, ancestors, spirits','Non-human beings','Mother earth','irrelevant','Other'))
-
-l<-data.frame(Q = c('8.1','8.2','8.14'),
-              title = c('Was INTRA-GENERATIONAL JUSTICE assessed & how?','Was INTER-GENERATIONAL JUSTICE assessed and how?','Who is part of the community of justice?'))
-legendlist<-list(legend81,legend82,legend814)
-Panes <- list()
-gt <- list()
-pfam <- list()
-title <-list()
-if(PrintOthers){M <- list()}
-for(i in 1:nrow(l)){
-  legend <- legendlist[[i]]
-  sbst <- s3_single[,c('paperID','MF1.key','MF2.key','MF3.key','MF4.key',as.character(l[i,'Q']))]
-  for(j in 1:(nrow(legend)-1)){
-    sbst[,as.character(l[i,'Q'])] <- gsub("â€™", "’", sbst[,as.character(l[i,'Q'])] )
-    sbst[,as.character(l[i,'Q'])] <- gsub("&", "and", sbst[,as.character(l[i,'Q'])] )
-    sbst[,as.character(l[i,'Q'])] <- gsub("â€˜", "‘", sbst[,as.character(l[i,'Q'])] )
-    A <-  str_detect(sbst[,as.character(l[i,'Q'])], pattern = fixed(as.character(legend[j,'txt'])))
-    sbst[,as.character(l[i,'Q'])] <- str_replace(sbst[,as.character(l[i,'Q'])], pattern = fixed(as.character(legend[j,'txt'])),"")
-    sbst <- cbind(sbst, A)
-    colnames(sbst)[ncol(sbst)] <- as.character(legend[j,'code'])
-  }
-  Otheridx <- (str_length(gsub("[;, ]","",sbst[,as.character(l[i,'Q'])]))>1)
-  sbst <- cbind(sbst, Otheridx)
-  colnames(sbst)[ncol(sbst)] <- as.character(legend[nrow(legend),'code'])
-  if(PrintOthers){
-    M[[i]] <- matrix(nrow=(sum(Otheridx)), ncol = (1+nrow(legend)))
-    colnames(M[[i]]) <- c('PaperID',as.character(legend$txt))
-    rownames(M[[i]]) <- sbst[Otheridx,as.character(l[i,'Q'])]
-    M[[i]][,1] <- sbst[Otheridx,'paperID']
-  }
-  #from wide to long format
-  sbst %>%
-    gather(question, value, -paperID,-MF1.key,-MF2.key,-MF3.key,-MF4.key,-as.character(l[i,'Q'])) -> sbst_long
-  Lbls<-matrix(c('It is assessed','Not assessed','It is assessed','Not assessed','Justice is assessed','No justice aspects were assessed'), byrow = T,nrow = 3)
-
-  pie <- ggplot() +
-    geom_bar(aes(x = factor(1), fill = (str_detect(s3_single[,as.character(l[i,'Q'])],regex('application does not assess'))|str_detect(s3_single[,as.character(l[i,'Q'])],regex('irrelevant')))),width = 1) +
-    blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank())+ scale_fill_manual(name = '',breaks = c(TRUE, FALSE),labels = rev(Lbls[i,]), values  = c('red', IPbeslightgreen)) +
-    xlab('') + ylab('') + coord_polar("y", start = 0,direction = 1) + theme(legend.position='bottom' )
-  #make ordered bar charts
-  cnt<-aggregate(1*(sbst_long$value),by = list(sbst_long$question), FUN=function(x)sum(x))
-  sbst_long$question<-factor(sbst_long$question, levels= cnt[order(cnt$x, decreasing = FALSE),'Group.1'])
-
-  bar <- ggplot(sbst_long[!(str_detect(sbst_long$question,regex('_NA'))),]) + geom_bar(alpha=1,size=1,color = IPbeslightgreen, fill = IPbeslightgreen,aes(x=question, y=1*value), stat = "identity") + coord_flip() + theme_bw() + scale_x_discrete(breaks = legend$code, labels = str_wrap(as.character(legend$txt),50)) + ylab('Number of papers') + xlab('')
-  Panes[[i]] <- grid.arrange(pie,bar,
-                             ncol=2, nrow=1, layout_matrix = rbind(c(1,2)), widths=c(1.7,4),
-                             top = textGrob(l[i,'title'],gp=gpar(fontsize=20,font=3)))
-  ggsave(Panes[[i]], filename=sprintf('output/T3-Q%s.pdf',l[i,'Q']), width= 10, height = 4)
-  library(cowplot)
-  title[[i]] <- ggdraw() +
-    draw_label(as.character(l[i,'title']), fontface = 'bold', x = 0, hjust = 0) +
-    theme(plot.margin = margin(0, 0, 0, 7))
-  gt[[i]]<- ggdraw() +
-    draw_plot(bar) +
-    draw_plot(pie, x = 0.65, y = 0.09, width = .3, height = .4)
-  p<-grid.arrange(
-    title[[i]], gt[[i]], ncol = 1,heights = c(0.1, 1)
-  )
-  ggsave(p, filename=sprintf('output/T3_Q%sPieBar.pdf',l[i,'Q']), width= 8, height = 4)
-
-  familysummary <- data.frame(MF = c('MF1','MF1','MF2','MF2','MF3','MF3','MF4','MF4'),
-                              Answer = c('Yes','No','Yes','No','Yes','No','Yes','No'),
-                              N = NA,
-                              Percentage=NA)
-  familysummary$N <- sapply(1:nrow(familysummary),FUN=function(x) ifelse(familysummary$Answer[x] == 'No',sum(sbst[,sprintf('%s.key',as.character(familysummary$MF[x]))]==1 & (str_detect(s3_single[, as.character(l[i,'Q'])],regex('application does not assess'))|str_detect(s3_single[,as.character(l[i,'Q'])],regex('irrelevant'))), na.rm=T),sum(sbst[,sprintf('%s.key',as.character(familysummary$MF[x]))]==1 & !(str_detect(s3_single[, as.character(l[i,'Q'])],regex('application does not assess'))), na.rm=T)))
-  familysummary$Percentage = familysummary$N/sapply(familysummary$MF,FUN = function(x)sum(familysummary[familysummary$MF==x,'N']))
-
-
-    pfam[[i]] <- ggplot(familysummary) + geom_bar(aes(x = MF, fill=Answer, y=Percentage*100),stat = 'identity',position='stack') + scale_fill_manual(name = '',breaks = c('Yes','No'), labels = Lbls[i,],values  = c(IPbeslightgreen, 'red')) + ylab('Percentage in the method family') + xlab('Method family') + theme_minimal() + scale_x_discrete(labels= MFLabels)
-  ggsave(pfam[[i]], filename=sprintf('output/T3_Q%sByFam.pdf',l[i,'Q']), width= 8, height = 4)
-}
-
-Theme8 <- grid.arrange(title[[1]],title[[2]],title[[3]],gt[[1]], gt[[2]], gt[[3]], pfam[[1]],pfam[[2]],pfam[[3]],
-                       nrow=3, heights=c(1,6,6),widths=c(9,9,9),layout_matrix = rbind(c(1,2,3),c(4,5,6),c(7,8,9)))
-
-ggsave(Theme8,filename='output/Theme8-1.pdf',width=20, height=12)
-ggsave(Theme8,filename='output/Theme8-1.jpg',width=20, height=12)
-
-
-#########Recognition graphs (heatmaps)#####
-#Recognition: knowledge types
-#Q8.9 The application explicitly distinguishes and mentions the following types of knowledge:
-
-#Also print out the open question Q8.11
-
-  legendlist<-list(legend89,legend810,legend812,legend813)
-  Panes <- list()
-  gt <- list()
-  pfam <- list()
-  title <-list()
-if(PrintOthers){M <- list()}
-for(i in 1:nrow(l)){
-    legend <- legendlist[[i]]
-    sbst <- s3_single[,c('paperID','MF1.key','MF2.key','MF3.key','MF4.key',as.character(l[i,'Q']))]
-    for(j in 1:(nrow(legend)-1*(i==1))){
-      sbst[,as.character(l[i,'Q'])] <- gsub("â€™", "’", sbst[,as.character(l[i,'Q'])] )
-      sbst[,as.character(l[i,'Q'])] <- gsub("&", "and", sbst[,as.character(l[i,'Q'])] )
-      sbst[,as.character(l[i,'Q'])] <- gsub("â€˜", "‘", sbst[,as.character(l[i,'Q'])] )
-      sbst[,as.character(l[i,'Q'])] <- gsub("â€“", "–", sbst[,as.character(l[i,'Q'])] )
-      A <-  str_detect(sbst[,as.character(l[i,'Q'])], pattern = fixed(as.character(legend[j,'txt'])))
-      sbst[,as.character(l[i,'Q'])] <- str_replace(sbst[,as.character(l[i,'Q'])], pattern = fixed(as.character(legend[j,'txt'])),"")
-      sbst <- cbind(sbst, A)
-      colnames(sbst)[ncol(sbst)] <- as.character(legend[j,'code'])
-    }
-    if(i==1){#Only the first one has an 'Other' option
-    Otheridx <- (str_length(gsub("[;, ]","",sbst[,as.character(l[i,'Q'])]))>1)
-    sbst <- cbind(sbst, Otheridx)
-    colnames(sbst)[ncol(sbst)] <- as.character(legend[nrow(legend),'code'])
-    }
-    if(PrintOthers){
-      M[[i]] <- matrix(nrow=(sum(Otheridx)), ncol = (1+nrow(legend)))
-      colnames(M[[i]]) <- c('PaperID',as.character(legend$txt))
-      rownames(M[[i]]) <- sbst[Otheridx,as.character(l[i,'Q'])]
-      M[[i]][,1] <- sbst[Otheridx,'paperID']
-    }
-    #from wide to long format
-    sbst %>%
-      gather(question, value, -paperID,-MF1.key,-MF2.key,-MF3.key,-MF4.key,-as.character(l[i,'Q'])) -> sbst_long
-    sbst_long %>% group_by(question) %>% summarise(MF1 = sum(value==TRUE & MF1.key==1),
-                                                    MF2 = sum(value==TRUE & MF2.key==1),
-                                                    MF3 = sum(value==TRUE & MF3.key==1),
-                                                    MF4 = sum(value==TRUE & MF4.key==1),
-                                                   AllArticles = sum(value==TRUE))%>% as.data.frame() %>% gather(MethodFamily, Number, -question)-> smmrysbst
-    heatmap<- ggplot(smmrysbst[!str_detect(smmrysbst$question,regex('NA')),], aes(x=MethodFamily, y = question, fill=Number)) + geom_tile() + geom_text(aes(label = Number)) + scale_y_discrete(breaks = legend$code, labels = str_wrap(as.character(legend$txt),50)) + scale_fill_gradient(low = IPbeslightgreen, high=IPbesdarkgreen) + ylab('') + scale_x_discrete(labels=MFLabels)
-
-    Lbls<-matrix(c('It is mentioned','Not mentioned', 'It is assessed','Not assessed','It is assessed','Not assessed','It is assessed','Not assessed'), byrow = T,nrow = 4)
-
-    pie <- ggplot() +
-      geom_bar(aes(x = factor(1), fill = (str_detect(s3_single[,as.character(l[i,'Q'])],regex('none of the above'))|str_detect(s3_single[,as.character(l[i,'Q'])],regex('The application does not explicitly mention'))|str_detect(s3_single[,as.character(l[i,'Q'])],regex('irrelevant')))),width = 1) +
-      blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank())+ scale_fill_manual(name = '',breaks = c(TRUE, FALSE),labels = rev(Lbls[i,]), values  = c('red', IPbeslightgreen)) +
-      xlab('') + ylab('') + coord_polar("y", start = 0,direction = 1) + theme(legend.position='bottom' )
-    #make ordered bar charts
-    cnt<-aggregate(1*(sbst_long$value),by = list(sbst_long$question), FUN=function(x)sum(x))
-    sbst_long$question<-factor(sbst_long$question, levels= cnt[order(cnt$x, decreasing = FALSE),'Group.1'])
-
-    bar <- ggplot(sbst_long[!(str_detect(sbst_long$question,regex('_NA'))),]) + geom_bar(alpha=1,size=1,color = IPbeslightgreen, fill = IPbeslightgreen,aes(x=question, y=1*value), stat = "identity") + coord_flip() + theme_bw() + scale_x_discrete(breaks = legend$code, labels = str_wrap(as.character(legend$txt),50)) + ylab('Number of papers') + xlab('')
-    Panes[[i]] <- grid.arrange(pie,heatmap,
-                               ncol=2, nrow=1, layout_matrix = rbind(c(1,2)), widths=c(1.7,4),
-                               top = textGrob(l[i,'title'],gp=gpar(fontsize=20,font=3)))
-    ggsave(Panes[[i]], filename=sprintf('output/T3-Q%s.pdf',l[i,'Q']), width= 10, height = 4)
-    library(cowplot)
-    title[[i]] <- ggdraw() +
-      draw_label(as.character(l[i,'title']), fontface = 'bold', x = 0, hjust = 0) +
-      theme(plot.margin = margin(0, 0, 0, 7))
-    gt[[i]]<- ggdraw() +
-      draw_plot(bar) +
-      draw_plot(pie, x = 0.65, y = 0.09, width = .3, height = .4)
-     p<-grid.arrange(
-      title[[i]], gt[[i]], ncol = 1,heights = c(0.1, 1)
-    )
-    ggsave(p, filename=sprintf('output/T3_Q%sPieBar.pdf',l[i,'Q']), width= 8, height = 4)
-
-    familysummary <- data.frame(MF = c('MF1','MF1','MF2','MF2','MF3','MF3','MF4','MF4'),
-                                Answer = c('Yes','No','Yes','No','Yes','No','Yes','No'),
-                                N = NA,
-                                Percentage=NA)
-    familysummary$N <- sapply(1:nrow(familysummary),FUN=function(x) ifelse(familysummary$Answer[x] == 'No',sum(sbst[,sprintf('%s.key',as.character(familysummary$MF[x]))]==1 & (str_detect(s3_single[, as.character(l[i,'Q'])],regex('application does not assess'))|str_detect(s3_single[,as.character(l[i,'Q'])],regex('The application does not explicitly mention'))|str_detect(s3_single[,as.character(l[i,'Q'])],regex('none of the above'))|str_detect(s3_single[,as.character(l[i,'Q'])],regex('irrelevant'))), na.rm=T),sum(sbst[,sprintf('%s.key',as.character(familysummary$MF[x]))]==1 & !(str_detect(s3_single[, as.character(l[i,'Q'])],regex('application does not assess'))), na.rm=T)))
-    familysummary$Percentage = familysummary$N/sapply(familysummary$MF,FUN = function(x)sum(familysummary[familysummary$MF==x,'N']))
-
-
-    pfam[[i]] <- ggplot(familysummary) + geom_bar(aes(x = MF, fill=Answer, y=Percentage*100),stat = 'identity',position='stack') + scale_fill_manual(name = '',breaks = c('Yes','No'), labels = Lbls[i,],values  = c(IPbeslightgreen, 'red')) + ylab('Percentage in the method family') + xlab('Method family') + theme_minimal() + scale_x_discrete(labels= MFLabels)
-    ggsave(pfam[[i]], filename=sprintf('output/T3_Q%sByFam.pdf',l[i,'Q']), width= 8, height = 4)
-}
-
-  Theme8 <- grid.arrange(title[[1]],title[[2]],title[[3]],title[[4]],gt[[1]], gt[[2]], gt[[3]], gt[[4]], pfam[[1]],pfam[[2]],pfam[[3]],pfam[[4]],
-                         nrow=3, heights=c(1,6,6),widths=c(8,8,8,8),layout_matrix = rbind(c(1,2,3,4),c(5,6,7,8),c(9,10,11,12)))
-
-  ggsave(Theme8,filename='output/Theme8-2.pdf',width=28, height=12)
-  ggsave(Theme8,filename='output/Theme8-2.jpg',width=28, height=12)
-
-  Theme8b <- grid.arrange(Panes[[1]],Panes[[2]],Panes[[3]],Panes[[4]],
-                      nrow=2, heights=c(6,6),widths=c(8,8),layout_matrix = rbind(c(1,2),c(3,4)))
-
-  ggsave(Theme8b,filename='output/Theme8-2b.pdf',width=15, height=12)
-
-
-########-----Data overview 8 (theme 8) Procedural justice
-#Procedural justice : Q8.3 - Q8.8
-  #♣Regarding the transparency of the valuation process, the application provides:
-  legend83 <- data.frame(code=c('Q8.3_NA','Q8.3_1', 'Q8.3_2', 'Q8.3_3','Q8.3_4', 'Q8.3_unclear', 'Q8.3_Other'),
-                         txt=c('no info on the process','a general description on the process, lacking detail on some steps of the process.','detailed descriptions of the process','Method’s instruments (e.g. protocols and data collection material such as questionnaires) are shared with general public and study participants in a way suitable for those groups and in line with ethics regulations','Method’s proceedings documentation (e.g. notes about meetings, discussions, decisions and appeals) are shared with general public, stakeholders and study participants in a way suitable for those groups and in line with ethics regulation','Unclear','Other'))
-  #Representation of different stakeholders in the valuation process (in sampling, for participation) by:
-  legend84 <- data.frame(code=c('Q8.4_1', 'Q8.4_2', 'Q8.4_3','Q8.4_NA', 'Q8.4_Other'),
-                         txt=c('discussing and reflecting on who was (not) represented (in the sample or among the participants)','presenting results and data on representation (involvement in process) of different groups of people','presenting results and data on statistical representativeness of the  sample','the application does not reflect on representation','Other'))
-
-  #ÒThe application identifies and targets stakeholder groups (for sample or for   participation) primarily based on:
-  legend85 <- data.frame(code=c('Q8.5_1', 'Q8.5_2', 'Q8.5_3', 'Q8.5_4', 'Q8.5_5', 'Q8.5_6', 'Q8.5_7', 'Q8.5_8', 'Q8.5_9', 'Q8.5_10','Q8.5_NA', 'Q8.5_Other'),
-                         txt=c('different interests in the use/management/protection of nature (e.g. farmers, bird watchers, extraction companies, local communities)','different power or influence in the decision making (e.g. land owners, big companies, local inhabitants, landless people, tourists)','political role or mandate (NGO, government rep, citizen group, private sector,..)','gender','age','income and wealth','rights of access and use of resources','type of knowledge held (academic, technical, experience, indigenous,..)','indigenous rights or worldviews','other factors (e.g. disabled people)','the application does not identify different groups','Other'))
-
-  #The application addresses inclusiveness of multiple stakholders and   minorities in the design of the valuation process by adjusting/providing:
-  legend86 <- data.frame(code=c('Q8.6_1', 'Q8.6_2', 'Q8.6_3','Q8.6_4','Q8.6_5','Q8.6_NA', 'Q8.6_Other'),
-                         txt=c('Type of communication (verbal/written/visuals/otherwise)','(Extra) time, place, costs (compensation)','Child care','Language(s) used','Group composition and size','The application does not mention any process design features to ensure inclusive participation of different stakeholders','Other'))
-
-  #Regarding internal power dynamics, the application:
-  legend87 <- data.frame(code=c('Q8.7_NA','Q8.7_1'),
-                         txt=c('Does not assess power dynamics of the application of the method in their case study in results or discussion','Presents results and data on power dynamics (by e.g. showing speaking time, interruptions, use of physical space, testing difference in outputs in different power context..., )'))
-
-  #Regarding participation level, the application:
-  legend88 <- data.frame(code=c('Q8.8_1', 'Q8.8_2', 'Q8.8_3','Q8.8_4','Q8.8_unclear','Q8.8_NA', 'Q8.8_Other'),
-                         txt=c('Consulted participants as data providers, no clearly mentioned consent procedures (FPIC, GDPR-compliance).','Consulted participants as data providers, with clear consent procedures (PFIC, GDPR-compliant),..).','Consulted and discussed results and findings with participants','Engaged stakeholders in every step, including question framing, method selection, ...., results and conclusions, reporting.','Unclear','The application does not take a participatory approach and/or does not involve human participants/respondents','Other'))
-
-  l<-data.frame(Q = c('8.3','8.4','8.5','8.6','8.7','8.8'),
-                title = c('Transparency level','stakeholder representation',' stakeholder identification','stakeholder inclusion actions','Power','Participation'))
-  legendlist<-list(legend83,legend84,legend85,legend86,legend87,legend88)
-  Lbls<-matrix(c('Info provided','No info on the process',
-                 'Reflection on representation','No reflection',
-                 'Groups are identified','No groups identified',
-                 'Inclusiveness is ensured','No inclusive participation ensured','Power dynamics assessed','Not assessed',
-                 'Participatory process','No participatory process'), byrow = T,nrow =6 )
-
-  Panes <- list()
-  pie <-list()
-  gt <- list()
-  pfam <- list()
-  title <-list()
-  if(PrintOthers){M <- list()}
-  for(i in 1:nrow(l)){
-    legend <- legendlist[[i]]
-    sbst <- s3_single[,c('paperID','MF1.key','MF2.key','MF3.key','MF4.key',as.character(l[i,'Q']))]
-    for(j in 1:(nrow(legend)-1*(i!=5))){
-      sbst[,as.character(l[i,'Q'])] <- gsub("â€™", "’", sbst[,as.character(l[i,'Q'])] )
-      sbst[,as.character(l[i,'Q'])] <- gsub("&", "and", sbst[,as.character(l[i,'Q'])] )
-      sbst[,as.character(l[i,'Q'])] <- gsub("â€˜", "‘", sbst[,as.character(l[i,'Q'])] )
-      sbst[,as.character(l[i,'Q'])] <- gsub("â€“", "–", sbst[,as.character(l[i,'Q'])] )
-      A <-  str_detect(sbst[,as.character(l[i,'Q'])], pattern = fixed(as.character(legend[j,'txt'])))
-      sbst[,as.character(l[i,'Q'])] <- str_replace(sbst[,as.character(l[i,'Q'])], pattern = fixed(as.character(legend[j,'txt'])),"")
-      sbst <- cbind(sbst, A)
-      colnames(sbst)[ncol(sbst)] <- as.character(legend[j,'code'])
-    }
-    if(i!=5){
-      Otheridx <- (str_length(gsub("[;, ]","",sbst[,as.character(l[i,'Q'])]))>1)
-      sbst <- cbind(sbst, Otheridx)
-      colnames(sbst)[ncol(sbst)] <- as.character(legend[nrow(legend),'code'])
-    }
-    if(PrintOthers){
-      M[[i]] <- matrix(nrow=(sum(Otheridx)), ncol = (1+nrow(legend)))
-      colnames(M[[i]]) <- c('PaperID',as.character(legend$txt))
-      rownames(M[[i]]) <- sbst[Otheridx,as.character(l[i,'Q'])]
-      M[[i]][,1] <- sbst[Otheridx,'paperID']
-    }
-    #from wide to long format
-    sbst %>%
-      gather(question, value, -paperID,-MF1.key,-MF2.key,-MF3.key,-MF4.key,-as.character(l[i,'Q'])) -> sbst_long
-    sbst_long %>% group_by(question) %>% summarise(MF1 = sum(value==TRUE & MF1.key==1),
-                                                   MF2 = sum(value==TRUE & MF2.key==1),
-                                                   MF3 = sum(value==TRUE & MF3.key==1),
-                                                   MF4 = sum(value==TRUE & MF4.key==1),
-                                                   AllArticles = sum(value==TRUE))%>% as.data.frame() %>% gather(MethodFamily, Number, -question)-> smmrysbst
-    sbst_long %>% group_by(question) %>% summarise(MF1 = round(sum(value==TRUE & MF1.key==1)/sum(MF1.key==1)*100,2),
-                                                   MF2 = round(sum(value==TRUE & MF2.key==1)/sum(MF2.key==1)*100,2),
-                                                   MF3 = round(sum(value==TRUE & MF3.key==1)/sum(MF3.key==1)*100,2),
-                                                   MF4 = round(sum(value==TRUE & MF4.key==1)/sum(MF4.key==1)*100,2),
-                                                   AllArticles = round(sum(value==TRUE)/sum(MF1.key==1|MF2.key==1|MF3.key==1|MF4.key==1)*100,2))%>% as.data.frame() %>% gather(MethodFamily, Number, -question)-> smmrysbstPerc
-    heatmap<- ggplot(smmrysbst[!str_detect(smmrysbst$question,regex('NA')),], aes(x=MethodFamily, y = question, fill=Number)) + geom_tile() + geom_text(aes(label = Number)) + scale_y_discrete(breaks = legend$code, labels = str_wrap(as.character(legend$txt),50)) + scale_fill_gradient(low = IPbeslightgreen, high=IPbesdarkgreen) + ylab('') + scale_x_discrete(labels=MFLabels)
-    heatmap2<- ggplot(smmrysbstPerc[!str_detect(smmrysbstPerc$question,regex('NA')),], aes(x=MethodFamily, y = question, fill=Number)) + geom_tile() + geom_text(aes(label = Number)) + scale_y_discrete(breaks = legend$code, labels = str_wrap(as.character(legend$txt),50)) + scale_fill_gradient(low = IPbeslightgreen, high=IPbesdarkgreen) + ylab('') + scale_x_discrete(labels=MFLabels)
-
-
-    pie[[i]] <- ggplot() +
-      geom_bar(aes(x = factor(1), fill = (str_detect(s3_single[,as.character(l[i,'Q'])],regex('no info on the process'))|str_detect(s3_single[,as.character(l[i,'Q'])],regex('application does not'))|str_detect(s3_single[,as.character(l[i,'Q'])],regex('Does not assess power dynamics')))),width = 1) +
-      blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank())+ scale_fill_manual(name = '',breaks = c(TRUE, FALSE),labels = rev(Lbls[i,]), values  = c('red', IPbeslightgreen)) +
-      xlab('') + ylab('') + coord_polar("y", start = 0,direction = 1) + theme(legend.position='bottom' )
-    #make ordered bar charts
-    cnt<-aggregate(1*(sbst_long$value),by = list(sbst_long$question), FUN=function(x)sum(x))
-    sbst_long$question<-factor(sbst_long$question, levels= cnt[order(cnt$x, decreasing = FALSE),'Group.1'])
-
-    bar <- ggplot(sbst_long[!(str_detect(sbst_long$question,regex('_NA'))),]) + geom_bar(alpha=1,size=1,color = IPbeslightgreen, fill = IPbeslightgreen,aes(x=question, y=1*value), stat = "identity") + coord_flip() + theme_bw() + scale_x_discrete(breaks = legend$code, labels = str_wrap(as.character(legend$txt),50)) + ylab('Number of papers') + xlab('')
-    Panes[[i]] <- grid.arrange(pie[[i]],heatmap,
-                               ncol=2, nrow=1, layout_matrix = rbind(c(1,2)), widths=c(1.7,4),
-                               top = textGrob(l[i,'title'],gp=gpar(fontsize=20,font=3)))
-    ggsave(Panes[[i]], filename=sprintf('output/T3-Q%s.pdf',l[i,'Q']), width= 10, height = 4)
-    library(cowplot)
-    title[[i]] <- ggdraw() +
-      draw_label(as.character(l[i,'title']), fontface = 'bold', x = 0, hjust = 0) +
-      theme(plot.margin = margin(0, 0, 0, 7))
-    gt[[i]]<- ggdraw() +
-      draw_plot(bar) +
-      draw_plot(pie[[i]], x = 0.65, y = 0.09, width = .3, height = .4)
-    p<-grid.arrange(
-      title[[i]], gt[[i]], ncol = 1,heights = c(0.1, 1)
-    )
-    ggsave(p, filename=sprintf('output/T3_Q%sPieBar.pdf',l[i,'Q']), width= 8, height = 4)
-
-    familysummary <- data.frame(MF = c('MF1','MF1','MF2','MF2','MF3','MF3','MF4','MF4'),
-                                Answer = c('Yes','No','Yes','No','Yes','No','Yes','No'),
-                                N = NA,
-                                Percentage=NA)
-    familysummary$N <- sapply(1:nrow(familysummary),FUN=function(x) ifelse(familysummary$Answer[x] == 'No',sum(sbst[,sprintf('%s.key',as.character(familysummary$MF[x]))]==1 & (str_detect(s3_single[,as.character(l[i,'Q'])],regex('no info on the process'))|str_detect(s3_single[,as.character(l[i,'Q'])],regex('application does not'))|str_detect(s3_single[,as.character(l[i,'Q'])],regex('Does not assess power dynamics'))), na.rm=T),sum(sbst[,sprintf('%s.key',as.character(familysummary$MF[x]))]==1 & !(str_detect(s3_single[, as.character(l[i,'Q'])],regex('application does not assess'))), na.rm=T)))
-    familysummary$Percentage = familysummary$N/sapply(familysummary$MF,FUN = function(x)sum(familysummary[familysummary$MF==x,'N']))
-
-
-    pfam[[i]] <- ggplot(familysummary) + geom_bar(aes(x = MF, fill=Answer, y=Percentage*100),stat = 'identity',position='stack') + scale_fill_manual(name = '',breaks = c('Yes','No'), labels = Lbls[i,],values  = c(IPbeslightgreen, 'red')) + ylab('Percentage in the method family') + xlab('Method family') + theme_minimal() + scale_x_discrete(labels= MFLabels)
-    ggsave(pfam[[i]], filename=sprintf('output/T3_Q%sByFam.pdf',l[i,'Q']), width= 8, height = 4)
-  }
-  require(openxlsx)
-  write.xlsx(list("Q8.3" = M[[1]], "Q8.4" = M[[2]], "Q8.5" = M[[3]], "Q8.6" = M[[4]], "Q8.7" = M[[5]], "Q8.8" = M[[6]]), file = "Theme8-2_OtherAnswers.xlsx", row.names=T)
-
-
-  Theme8 <- grid.arrange(title[[1]],title[[2]],title[[3]],gt[[1]], gt[[2]], gt[[3]],title[[4]],title[[5]],title[[6]], gt[[4]],pie[[5]],gt[[6]],
-                         nrow=4, heights=c(1,6,1,6),widths=c(8,8,8),layout_matrix = rbind(c(1,2,3),c(4,5,6),c(7,8,9),c(10,11,12)))
-
-  ggsave(Theme8,filename='output/Theme8-3.pdf',width=28, height=12)
-  ggsave(Theme8,filename='output/Theme8-3.jpg',width=28, height=12)
-
-  Theme8b <- grid.arrange(Panes[[1]],Panes[[2]],Panes[[3]],Panes[[4]],pie[[5]],Panes[[6]],
-                          nrow=2, heights=c(6,6),widths=c(8,8,8),layout_matrix = rbind(c(1,2,3),c(4,5,6)))
-
-  ggsave(Theme8b,filename='output/Theme8-3b.pdf',width=26, height=12)
