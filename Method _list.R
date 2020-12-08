@@ -334,7 +334,7 @@ levels(cut_1.1) = c(1,2,3,"> 4")
 cut_1.1
 
 pdf("output/Q1.1_NrMainMethods_Pie_3Dec.pdf", width=15, height = 15, pointsize = 20)
-png("output/Q1.1_NrMainMethods_Pie_3Dec.png", width = 800, height = 800, pointsize = 20)
+# png("output/Q1.1_NrMainMethods_Pie_3Dec.png", width = 800, height = 800, pointsize = 20)
 pie(table(cut_1.1), main = "Number of main methods per application", init.angle = 90, col = gray.colors(4, start = 0.9, end = 0.3))
 dev.off()
 
@@ -368,7 +368,7 @@ sum(table((method.corrected.data$MethodID)))
 
 # match two data frames using RowID (!= uniqueID )
 
-
+res_all_df_old = readxl::read_xlsx("Corrected/Step3_1.2_all_2020-10-20_luiza.xlsx", sheet = 1)
 rowid_match = match(method.corrected.data$RowID, res_all_df$RowID)
 table(is.na(rowid_match))
 table(table(rowid_match)) # duplicated
@@ -426,8 +426,6 @@ plot(res_all_onlyold_df$PaperID[c(1:1520)] == as.numeric(method.corrected.data$P
 # 2198 %in% method.corrected.data$PaperID
 # 14743 %in% method.corrected.data$PaperID
 
-
-
 # 2-step matching
 ## we ignore last 7 data records
 res_all_onlyold_df = res_all_onlyold_df[1:1520,]
@@ -441,13 +439,21 @@ old2new_idx = match( res_all_df$uniqueID_newdata, res_all_onlyold_df$uniqueID_ne
 
 corrected2new_idx = corrected2old_idx[old2new_idx]
 
+write.xlsx(res_all_df, file = "output/Method_Dataset_beforeCorrected.xlsx")
+
+beforeCorrected <- read.xlsx("output/Method_Dataset_beforeCorrected.xlsx")
+
+tail(beforeCorrected, 25)
 
 # UPDATE the new data by corrected
 res_all_df$MethodID = method.corrected.data$MethodID[corrected2new_idx]
+tail(res_all_df$MethodID, 25)
 
+res_all_df$MethodID[1521:1542] <- beforeCorrected$MethodID[1521:1542]
 
 table(res_all_df$MethodID)
 table(is.na(res_all_df$MethodID))
+
 
 res_all_df[which(is.na(res_all_df$MethodID)),]
 
@@ -456,9 +462,12 @@ newrows = cbind(method.corrected.data[c(655, 845), -1], uniqueID_newdata= nrow(r
 
 # final dataset
 res_all_df_final = rbind(res_all_df, newrows)
-stopifnot(nrow(res_all_df_final)==1544) # must be 1522 + 2
+stopifnot(nrow(res_all_df_final)==1544) # must be 1542 + 2
 table(table(res_all_df_final$uniqueID_newdata))
-tail(res_all_df_final) # # to visually confirm
+tail(res_all_df_final, n = 25) # # to visually confirm
+#
+# res_all_df_final$MethodID[res_all_df_final$RowID == 1147] <- res_all_df_final$RawData[res_all_df_final$RowID == 1147]
+# res_all_df_final$MethodID[res_all_df_final$RowID == 1148] <- res_all_df_final$RawData[res_all_df_final$RowID == 1148]
 
 # aggregate once again by ;
 res_methodid_final_agg = tapply(res_all_df_final$MethodID, INDEX = res_all_df_final$RowID, FUN = function(x) paste0(unique(x[!is.na(x)]), collapse = ";"))
@@ -524,15 +533,11 @@ s3_single$'1.2'[str_detect(s3_single$'1.2', "5")]
 s3_single$paperID[str_detect(s3_single$'1.2', "5")]
 s3_single$'1.2'[str_detect(s3_single$'1.2', "Bayesian")]
 
-
-
 s3_single$'1.4'[str_detect(s3_single$'1.4', "5")]
 s3_single$paperID[str_detect(s3_single$'1.4', "5")]
 s3_single$'1.4'[str_detect(s3_single$'1.4', "Bayesian")]
 s3_single$paperID[str_detect(s3_single$'1.4', "Bayesian")]
 
-
-#
 # table(s3_full$what.s.the.paper.ID[str_detect(s3_full$X1.2...Carefully.list.ALL.main.valuation.methods, "5")] %in% s3_single$paperID[str_detect(s3_single$'1.2', "5")])
 #
 #
@@ -567,9 +572,6 @@ method_split_v[method_split_v == 100] = 92
 
 method_split_v_fac = factor(method_split_v)
 method_tb_sorted = sort(table(method_split_v_fac), decreasing = F)
-
-
-
 
 
 # names(method_tb_sorted)[!(names(method_tb_sorted) %in%  new_method_lutb$ID)]
