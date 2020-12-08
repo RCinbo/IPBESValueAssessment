@@ -191,7 +191,8 @@ scale.names = c("Local (incl. village, parish, municipality, town, city)",
                 "Continental",
                 "Global")
 
-pdf("output/2.1_Scale_bar_3Dec.pdf", width= 15, height = 8, pointsize = 20)
+pdf("output/Q2.1_Scale_bar_3Dec.pdf", width= 15, height = 8, pointsize = 20)
+# png("output/Q2.1_Scale_bar_3Dec.png", width= 25, height = 15, unit = "cm", res = 400)
 par(mar=c(5,20,1,1))
 barplot(rev(scale_tb_final[-10]), horiz=T, names.arg = rev(scale.names), las = 1, col = gray(0.7), xlim = c(0, 400), main = "Scale of application", xlab = "Number of applications")
 dev.off()
@@ -382,7 +383,7 @@ habitat_tb_final <-  habitat_tb_final[-(14)]
 
 
 pdf("output/Q2.2_Habitat_bar_3Dec.pdf", width=15, height = 8, pointsize = 20)
-# jpeg(file="output/Q2.2_Habitat_bar_3Dec.jpeg", width = 15, height = 8, res = 300)
+ png(file="output/Q2.2_Habitat_bar_3Dec.png", width=25, height = 15, units= "cm", res = 400)
 par(mar=c(5,20,1,1))
 barplot(rev(habitat_tb_final), las=1, horiz=T, col = gray(0.7), xlim = c(0, max(habitat_tb_final) *1.1), xlab = "Number of applications", main = "The application assesses the following habitats ")
 dev.off()
@@ -401,10 +402,12 @@ table(s3_single$"2.7")
 barplot(table(s3_single$"2.7"))
 
 pdf("output/Q2.7_Temporal Frequency_bar_3Dec.pdf", width=8, height = 8, pointsize = 20)
+png("output/Q2.7_Temporal Frequency_bar_3Dec.png", width=15, height = 8, unit = "cm", res = 400)
 barplot(table(s3_single$"2.7"), las = 1, col = gray(0.7), ylab = "Number of applications", xlab = "Temporal frequency")
 dev.off()
 
 pdf("output/Q2.7_Temporal Frequency_pie_3Dec.pdf", width=8, height = 8, pointsize = 20)
+# png("output/Q2.7_Temporal Frequency_pie_3Dec.png", width=10, height = 8, unit = "cm", res = 400)
 pie(table(s3_single$"2.7"), init.angle = 90, col = gray.colors(3, start = 0.9, end = 0.3), main = "Temporal frenquency")
 dev.off()
 
@@ -413,6 +416,7 @@ dev.off()
 summary(s3_single$"2.8")
 
 pdf("output/Q2.8_overTime_pie_3Dec.pdf", width=10, height = 10, pointsize = 20)
+# png("output/Q2.8_overTime_pie_3Dec.png", width=14, height = 10, unit= "cm", res = 400)
 pie(table(s3_single$"2.8"), labels = c("No", "Yes"), main = "The application assesses values change over time", init.angle = 90, col = gray.colors(2, start = 0.9, end = 0.3))
 dev.off()
 
@@ -435,6 +439,7 @@ time_split_v_fac = factor(time_split_v)
 time_tb_sorted = sort(table(time_split_v_fac), decreasing = F)
 
 pdf("output/Q2.9_TemporalChange_bar_3Dec.pdf", width=12, height = 8, pointsize = 20)
+png("output/Q2.9_TemporalChange_bar_3Dec.png", width=20, height = 15, unit = "cm", res = 400)
 par(mar=c(5,20,5,5))
 barplot(sort(time_tb_sorted, F)[-(9)], horiz=T, las=1, xlim = c(0, 100), col = gray(0.7), main = "Temporal Changes", xlab = "Number of applications")
 dev.off()
@@ -1038,9 +1043,10 @@ dev.off()
 # how many ES were studied in each application?
 boxplot(rowSums(ES_cnt_df))
 
-#pdf("output/howmanyNCPperApp.pdf", width=10, height = 10, pointsize = 12)
-barplot(table(rowSums(ES_cnt_df)), las = 1, ylim = c(0, 350), main = "How many NCP were studied per application?", ylab = "# of applications", xlab = "3 of NCP per application")
-#dev.off()
+pdf("output/Q2.10-14.howmanyNCPperApplication_bar.pdf", width= 20, height = 10, pointsize = 20)
+# png("output/Q2.10-14.howmanyNCPperApplication_bar.png", width= 25, height = 15, unit = "cm", res = 400)
+barplot(table(rowSums(ES_cnt_df)), las = 1, ylim = c(0, 350), main = "How many NCP (value type) were studied per application?", ylab = "Number of applications", xlab = "Value types per application")
+dev.off()
 
 # were there studies with no ES category studied?
 table(rowSums(ES_cnt_df) == 0 ) # no
@@ -1050,8 +1056,9 @@ ES_category_cnt_v = rowSums(ES_cnt_df > 0)
 boxplot(ES_category_cnt_v)
 ES_category_cnt_tb =(table(ES_category_cnt_v))
 
-#pdf("output/howmanyNCPCategoriesperApp.pdf", width=10, height = 10, pointsize = 12)
-pie(ES_category_cnt_tb, main = "# of NCP categories per application", col = brewer.YlGnBu(5))
+pdf("output/Q2.10-14.howmanyNCPCategoriesperApp_pie.pdf", width=10, height = 10, pointsize = 20)
+# png("output/Q2.10-14.howmanyNCPCategoriesperApp_pie.png", width=13, height = 10, unit = "cm", res = 400)
+pie(ES_category_cnt_tb, main = "Number of Value type categories per application",  init.angle = 90, col = gray.colors(5, start = 0.9, end = 0.3))
 dev.off()
 
 ##### Add up them all
@@ -1205,17 +1212,17 @@ length(NCP_short_names)
 
 
 
-# pdf("output/Fig_FullNCP_12Nov.pdf", width=16, height = 18, pointsize = 18)
-# png("output/Fig_FullNCP_30Oct.png", width=800, height = 1000, pointsize = 12)
+pdf("output/Q2.10-14_FullNCP_8Dec.pdf", width=16, height = 18, pointsize = 20)
+# png("output/Q2.10-14_FullNCP_8Dect.png", width=25, height = 23, unit = "cm", res = 400)
 par(mar = c(5, 25, 5, 5))
-barplot(colSums(NCP_nature_full[-c(1:2)]), horiz = T, las = 1, col= c(rep("palegreen3", 5), rep("lightblue1", 9), rep("skyblue2", 4), rep("blue", 3), rep("peachpuff", 11)), border = c(rep("palegreen3", 5), rep("lightblue1", 9), rep("skyblue3", 4), rep("blue", 3), rep("peachpuff", 11)), names.arg  = NCP_short_names, xlab = "# of applications")
-# dev.off()
+barplot(rev(colSums(NCP_nature_full[-c(1:2)])), horiz = T, las = 1, col= c(rep("peachpuff", 11), rep("blue", 3), rep("skyblue2", 4), rep("lightblue1", 9), rep("palegreen3", 5)), border = c(rep("peachpuff", 11), rep("blue", 3), rep("skyblue2", 4), rep("lightblue1", 9), rep("palegreen3", 5)), names.arg  = rev(NCP_short_names), xlab = "Number of applications")
+dev.off()
 
 
 
 
 
-
+### Levelplot
 
 
 combinedNCP_by_mf_df = foreach (idx = 1:32, .combine = "rbind") %do% {
@@ -1251,15 +1258,7 @@ levelplot(t(combinedNCP_by_mf_rela2_df), col.regions = rev(viridis(31)), main = 
 # dev.off()
 
 
-
-
-
-
-
-
-
-
-
+###
 
 
 
@@ -1284,22 +1283,28 @@ short.names.multivalues = c(
   "Bringing them together and assign weights to individual value targets \nbased on a group discussion about acceptable weights given to different values",
 "Bringing them together and assigning weights to individual value targets \nbased on researcher defined (or even) weights",                     "Bringing them together by converting all values to a common unit",
   "irrelevant: application does not attempt to bring the different values together",                                                         "Keeping the results from the study of the separate value and \nuse the results as a basis for a group discussion.",                            "The application asks respondents or participants to rank options \nincluding multiple values and infer the weight of individual components from their ranking.",
-"The application assesses multiple values as bundles and \ndo not attempt to weigh individual value targets",                                  "unclear: method of bringing values together is not explained"
+"The application assesses multiple values as bundles and \ndo not attempt to weigh individual value targets",                                  "Other/unclear" #"unclear: method of bringing values together is not explained"
 )
 # names(value_tb_reduced_temporary) = names(value_tb_reduced)
 names(value_tb_reduced_temporary)= short.names.multivalues
 value_tb_reduced_temporary["other"]=17
+value_tb_reduced_temporary[8] <- value_tb_reduced_temporary[8] + value_tb_reduced_temporary[9]
+# names(value_tb_reduced_temporary[8]) = "unclear/other"
+value_tb_reduced_temporary[-9]
 
-pdf("output/Fig_2.15_11Nov.pdf", width=16, height = 10, pointsize = 18)
-#png("output/Fig_2.15_11Nov.png", width=1200, height = 800, pointsize = 18)
+
+pdf("output/Q2.15_MultiValues_bar_8Dec.pdf", width=16, height = 10, pointsize = 20)
+# png("output/Q2.15_MultiValues_bar_8Dec.png", width=25, height = 15, unit = "cm", res= 400)
 par(mar=c(5, 25, 5, 5))
-barplot(rev(value_tb_reduced_temporary[-(4)]), horiz=T, las=1, cex.names = 0.7, col = IPbeslightgreen, border = IPbeslightgreen, xlab = "Number of applications", xlim =c(0, 300))
+barplot(rev(value_tb_reduced_temporary[-c(4,9)]), horiz=T, las=1, cex.names = 0.7, col = gray(0.7), xlab = "Number of applications", xlim =c(0, 300))
 dev.off()
 
-pdf("output/Fig_2.15_pie_11Nov.pdf", width=10, height = 10, pointsize = 18)
+
 multivalues_sum <- c(sum(value_tb_reduced[-c(4)]), value_tb_reduced[4])
-pie(multivalues_sum,  col = c(IPbeslightgreen, 'red'), labels = NA, init.angle = 90, border = F)
-legend("bottomright", c('It is assessed', 'Not assessed'), fill = c(IPbeslightgreen, 'red'), bty = "n", border = F, horiz = T)
+pdf("output/Q2.15_Multivalues_pie_8Dec.pdf", width=10, height = 10, pointsize = 20)
+# png("output/Q2.15_Multivalues_pie_8Dec.png", width=15, height = 15, unit = "cm", res = 400)
+pie(multivalues_sum,  col = gray.colors(2, start = 0.7, end = 0.3), labels = NA, init.angle = 90, border = F, main = "overall values")
+legend("bottomright", c('It is assessed', 'Not assessed'), fill = gray.colors(2, start = 0.7, end = 0.3), bty = "n", border = F, horiz = T, cex = 1.0)
 dev.off()
 
 
@@ -1328,10 +1333,10 @@ long.names.conflict = c(
 
 names(summary.2.16) <- short.names.comflict
 
-#pdf("output/Fig_2.16_pie_11Nov.pdf", width=14, height = 10, pointsize = 18)
-pie(summary.2.16, init.angle = 90, col = c(IPbeslightgreen, "red", IPbesdarkgreen, "white"), border = F, labels = NA)
-
-#dev.off()
+pdf("output/Q2.16_InterestConflict_pie_8Dec.pdf", width=14, height = 10, pointsize = 18)
+# png("output/Q2.16_InterestConflict_pie_8Dec.png", width=30, height = 30, unit = "cm", res = 400)
+pie(summary.2.16, init.angle = 90, col = gray.colors(4, start = 0.2, end = 0.9), border = F) #col = c(IPbeslightgreen, "red", IPbesdarkgreen, "white")
+dev.off()
 
 
 
@@ -1414,7 +1419,7 @@ cnt_otherchoice_elicit = length(which(elicit_other_choice_cnt > 0))
 s3_single$paperID[elicit_other_choice_cnt > 0 ]
 s3_single_with_other_elicit_df = s3_single[elicit_other_choice_cnt > 0, c("paperID", "3.1")]
 
-write.xlsx(s3_single_with_other_elicit_df, paste0("output/s3_single_with_other_elicit_n", cnt_otherchoice_elicit, ".xlsx"))
+# write.xlsx(s3_single_with_other_elicit_df, paste0("output/s3_single_with_other_elicit_n", cnt_otherchoice_elicit, ".xlsx"))
 
 
 # Identify other answers in the uncorrected data
@@ -1453,13 +1458,18 @@ NCP_elicit_given_detected_final <- colSums(NCP_elicit_given_detected_df[-c(1:2)]
 
 names(NCP_elicit_given_detected_final) <- elicit_given_answer
 
-NCP_elicit_given_detected_final["other"] = cnt_otherchoice_elicit
+NCP_elicit_given_detected_final["Other/unclear"] = cnt_otherchoice_elicit
 
 
-#pdf("output/Fig_3.1_11Nov.pdf", width=16, height = 10, pointsize = 18)
+NCP_elicit_given_detected_final[12]
+NCP_elicit_given_detected_final[13] = NCP_elicit_given_detected_final[12] + NCP_elicit_given_detected_final[13]
+# names(NCP_elicit_given_detected_final[13]) = "Other/unclear"
+
+pdf("output/Q3.1_Elicitation_bar_8Dec.pdf", width=16, height = 10, pointsize = 20)
+# png("output/Q3.1_Elicitation_bar_8Dec.png", width=30, height = 15, unit = "cm", res = 400)
 par(mar = c(5, 30, 5, 5))
-barplot(rev(NCP_elicit_given_detected_final), horiz = T, las= 1, col = IPbeslightgreen, border = IPbeslightgreen)
-#dev.off()
+barplot(rev(NCP_elicit_given_detected_final[-(12)]), horiz = T, las= 1, col = gray(0.7), xlab = "Number of applications")
+dev.off()
 
 
 
@@ -1499,10 +1509,10 @@ s3_single_with_other_data_df = s3_single[other_data_cnt == 1, c("paperID", "3.2"
 barplot(same_spatiotemporal_sorted)
 
 
-# pdf("output/Fig_3.2_11Nov.pdf", width=10, height = 10, pointsize = 18)
-# png("output/Fig_3.2_11Nov.png", width=800, height = 800, pointsize = 18)
-pie(same_spatiotemporal_sorted, init.angle = 90, col = c("gray", IPbesdarkgreen, IPbeslightgreen), border = F, labels = NA)
-#dev.off()
+pdf("output/Q3.2_Datasource_pie_8Dec.pdf", width=15, height = 15, pointsize = 20)
+# png("output/Q3.2_Datasource_pie_8Dec.png", width=15, height = 15, unit = "cm", res = 400)
+pie(same_spatiotemporal_sorted, init.angle = 90, col = gray.colors(3, start= 0.2, end = 0.9)) #col = c("gray", IPbesdarkgreen, IPbeslightgreen),
+dev.off()
 
 
 ## 3.3 How are values articulated in this application? (e.g. time spent; number of people visiting; stated or narrated importance; avoided damage costs; healthy life years; species number; rarity....) please state how the main results (from main methods) are represented in the paper. If multiple, make a list using semicolons
@@ -1524,7 +1534,7 @@ articulated_sorted = sort(table(articulated_split_v_fac), decreasing = F)
 length(articulated_sorted)  # 2013
 
 other_df_3.3= cbind(paperID= s3_single$paperID, ANSWER_RAW= as.character(s3_single$"3.3") )
-write.xlsx(other_df_3.3, file = "output/3.3_allanswers.xlsx") # does it make sense to check all?
+# write.xlsx(other_df_3.3, file = "output/3.3_allanswers.xlsx") # does it make sense to check all?
 
 
 
@@ -1646,21 +1656,21 @@ values_given_detected_df_final["other"] <- cnt_otherchoice_values
 
 
 
-pdf("output/Fig_3.4_11Nov.pdf", width=16, height = 10, pointsize = 18)
+pdf("output/Q3.4_ValueForm_bar_8Dec.pdf", width=16, height = 10, pointsize = 20)
+# png("output/Q3.4_ValueForm_bar_8Dec.png", width=23, height = 10, unit = "cm", res = 400)
 par(mar = c(5, 25, 5, 5))
-barplot(rev(values_given_detected_df_final), horiz = T, las= 1, col = IPbeslightgreen, border = IPbeslightgreen)
+barplot(rev(values_given_detected_df_final), horiz = T, las= 1, col = gray(0.7), xlab = "Number of applications")
 dev.off()
 
 
 
-#pdf("output/Fig_3.4_pie_11Nov.pdf", width=10, height = 10, pointsize = 18)
-#png("output/Fig_3.4_pie_11Nov.png", width=800, height = 800, pointsize = 18)
-pie(values_given_detected_df_final, init.angle = 90, col = brewer.Greens(length(values_given_detected_df_final)), border = F, labels = NA)
+pdf("output/Q3.4_ValueForm_pie_8Dec.pdf", width=23, height = 15, pointsize = 20)
+# png("output/Q3.4_ValueForm_pie_8Dec.png", width=28, height = 15, units = "cm", res = 400)
+ # par(mar = c(2, 18, 2, 11))
+pie(values_given_detected_df_final, init.angle = 90, col = gray.colors(6, start = 0.3, end = 0.9), border = F) #col = brewer.Greens(length(values_given_detected_df_final))
+# legend("bottomright", names(values_given_detected_df_final), fill = gray.colors(6, start = 0.3, end = 0.9), bty = "n", border = F, horiz = F) # inset=c(-0.5,-0.5),
 
-#dev.off()
-
-legend("right", inset=c(-1,0), names(values_given_detected_df_final), fill = brewer.Greens(length(values_given_detected_df_final)), bty = "n", border = F, horiz = F)
-
+dev.off()
 
 
 ## 3.5 Aggregation: The application aggregateds different staekholders' values into an 'overall value or importance' by:
@@ -1724,7 +1734,7 @@ cnt_otherchoice_stakeholder = length(which(stakeholder_other_choice_cnt > 0)); c
 s3_single$paperID[stakeholder_other_choice_cnt > 0 ]
 s3_single_with_other_stakeholder_df = s3_single[stakeholder_other_choice_cnt > 0, c("paperID", "3.5")]
 
-write.xlsx(s3_single_with_other_stakeholder_df, paste0("output/s3_single_with_other_stakeholder_n", cnt_otherchoice_stakeholder, ".xlsx"))
+# write.xlsx(s3_single_with_other_stakeholder_df, paste0("output/s3_single_with_other_stakeholder_n", cnt_otherchoice_stakeholder, ".xlsx"))
 
 #
 # escapeForStringR = function(x) {
@@ -1770,7 +1780,7 @@ stakeholder_given_detected_df[is.na(stakeholder_given_detected_df)] = 0
 stakeholder_given_detected_df_final <- colSums(stakeholder_given_detected_df[-c(1:2)])
 stakeholder_given_detected_df_final[["other"]] <- cnt_otherchoice_stakeholder
 
-stakeholder.name.short <- c("Irrelevant","Simple: non-weighted aggregation nof participants values", "Simple: non-weighted aggregation to a higher social scale", "Unclear", "Weighted aggregation by numerical weighting to a higher social scale", "Weighted aggregation by numerical weighting", "Weighted aggregation by a group process", "other")
+stakeholder.name.short <- c("Irrelevant","Simple: non-weighted aggregation nof participants values", "Simple: non-weighted aggregation to a higher social scale", "Unclear", "Weighted aggregation by numerical weighting to a higher social scale", "Weighted aggregation by numerical weighting", "Weighted aggregation by a group process", "Other/unclear")
 
 
 names(stakeholder_given_detected_df_final) <- stakeholder.name.short
@@ -1783,17 +1793,23 @@ stakeholder_given_detected_df_final["other"] <- cnt_otherchoice_stakeholder
 stakeholder_sum <- c(sum(stakeholder_given_detected_df_final[-c(1)]), stakeholder_given_detected_df_final[1])
 
 
-# pdf("output/Fig_3.5_pie_11Nov.pdf", width=10, height = 10, pointsize = 18)
-pie(stakeholder_sum,  col = c(IPbeslightgreen, 'red'), labels = NA, init.angle = 90, border = F)
-legend("bottomright", c('It is assessed', 'Not assessed'), fill = c(IPbeslightgreen, 'red'), bty = "n", border = F, horiz = T)
-# dev.off()
+pdf("output/Q3.5_Stakeholder_pie_8Dec.pdf", width=10, height = 10, pointsize = 18)
+# png("output/Q3.5_Stakeholder_pie_8Dec.png", width=13, height = 13, units = "cm", res = 400)
+
+pie(stakeholder_sum,  col = gray.colors(2, start = 0.9, end = 0.2), labels = NA, init.angle = 90, border = F)
+legend("bottom", c('It is assessed', 'Not assessed'), fill = gray.colors(2, start = 0.9, end = 0.2), bty = "n", border = F, horiz = T, cex = 1.0)
+dev.off()
 
 
 
-# pdf("output/Fig_3.5_12Nov.pdf", width=18, height = 8, pointsize = 18)
+stakeholder_given_detected_df_final[8] <- stakeholder_given_detected_df_final[8] + stakeholder_given_detected_df_final[4]
+
+pdf("output/Q3.5_Stakeholder_bar_8Dec.pdf", width=18, height = 8, pointsize = 20)
+ # png("output/Q3.5_Stakeholder_bar_8Dec.png", width=30, height = 15, units = "cm", res = 400)
+
 par(mar = c(5, 30, 5, 5))
-barplot(rev(stakeholder_given_detected_df_final[-c(1)]), horiz = T, las= 1, col = IPbeslightgreen, border = IPbeslightgreen, xlab = "Number of applications")
-# dev.off()
+barplot(rev(stakeholder_given_detected_df_final[-c(1, 4, 9)]), horiz = T, las= 1, col = gray(0.7), xlab = "Number of applications")
+ dev.off()
 
 
 
@@ -1982,7 +1998,7 @@ barplot(wellbeing_tb_final, horiz=T, las=2)
 names(wellbeing_tb_final)
 wellbeing_tb_final_plot <- c(
     "Livelihood dependence on access to natural resources",                                                                                      "Livelihood dependence on management of land",                                                                                               "(Loss of) profits from natural resources",                                                                                                  "Physical health outcomes linked to nature & biodiversity",                                                                                 "Mental health outcomes linked to nature & biodiversity",                                                                                   "Subjective well-being linked to nature & biodiversity",
-  "Change in utility of individuals linked to changes in nature & biodiversity",                                                                "A composite indicator (combining different aspects \nof well-being into one, such as Human Development Index, \nBetter Life Index etc.) l linked to nature & biodiversity",
+  "Change in utility of individuals linked to changes in nature & biodiversity",                                                                "A composite indicator (combining different aspects \nof well-being into one, such as Human Development Index, \nBetter Life Index etc.) linked to nature & biodiversity",
   "Well-being indicator is assessed but not linked to nature & biodiversity",                                                                 "Application.does.not.assess.human.wellbeing.with.one.of.these.indicators",                                                                  "other"
 
 )
@@ -1995,18 +2011,22 @@ names(wellbeing_tb_final) <- wellbeing_tb_final_plot
 # wellbeing_tb_final <-  wellbeing_tb_final[-(10)]
 
 
-pdf("output/Fig_6.1_corrected_12Nov.pdf", width=15, height = 8, pointsize = 18)
+# pdf("output/Fig_6.1_corrected_12Nov.pdf", width=15, height = 8, pointsize = 18)
+pdf("output/Q6.1_Wellbeing_bar_8Dec.pdf", width=18, height = 13, pointsize = 20)
+# png("output/Q6.1_Wellbeing_bar_8Dec.png", width=30, height = 20, units = "cm", res = 400)
+
 par(mar=c(5,30,1,1))
-barplot(rev(wellbeing_tb_final[-(10)]), las=1, horiz=T, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, 150), xlab = "Number of applications")
+barplot(rev(wellbeing_tb_final[-(10)]), las=1, horiz=T, col = gray(0.7), xlim = c(0, 150), xlab = "Number of applications")
 dev.off()
 
 
 wellbeing_sum <- c(sum(wellbeing_tb_final[-c(10)]), wellbeing_tb_final[10])
 
 
-pdf("output/Fig_6.1_pie_11Nov.pdf", width=10, height = 10, pointsize = 18)
-pie(wellbeing_sum,  col = c(IPbeslightgreen, 'red'), labels = NA, init.angle = 90, border = F)
-legend("bottomright", c('It is assessed', 'Not assessed'), fill = c(IPbeslightgreen, 'red'), bty = "n", border = F, horiz = T)
+pdf("output/Q6.1_Wellbeing_pie_8Dec.pdf", width=10, height = 10, pointsize = 18)
+# png("output/Q6.1_Wellbeing_pie_8Dec.png", width=20, height = 20, units = "cm", res = 400)
+pie(wellbeing_sum,  col = gray.colors(2, start = 0.9, end = 0.2), labels = NA, init.angle = 90, border = F)
+legend("bottom", c('It is assessed', 'Not assessed'), fill = gray.colors(2, start = 0.9, end = 0.2), bty = "n", border = F, horiz = T, cex = 1.2)
 dev.off()
 
 
@@ -2170,18 +2190,21 @@ names(preference_tb_final) <- preference_tb_final_plot
 
 
 #pdf("output/Fig_6.2_corrected_12Nov.pdf", width=15, height = 8, pointsize = 18)
+pdf("output/Q6.2_Preference_bar_8Dec.pdf", width=25, height = 10, pointsize = 20)
+# png("output/Q6.2_Preference_bar_8Dec.png", width=25, height = 10, units= "cm", res = 400)
 par(mar=c(5,20,1,1))
-barplot(rev(preference_tb_final[-c(6)]), las=1, horiz=T, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, 250), xlab = "Number of applications")
-#dev.off()
+barplot(rev(preference_tb_final[-c(6)]), las=1, horiz=T, col = gray(0.7), xlim = c(0, 250), xlab = "Number of applications")
+dev.off()
 
 
 preference_sum <- c(sum(preference_tb_final[-c(6)]), preference_tb_final[6])
 
 
-#pdf("output/Fig_6.2_pie_12Nov.pdf", width=10, height = 10, pointsize = 18)
-pie(preference_sum,  col = c(IPbeslightgreen, 'red'), labels = NA, init.angle = 90, border = F)
-legend("bottomright", c('It is assessed', 'Not assessed'), fill = c(IPbeslightgreen, 'red'), bty = "n", border = F, horiz = T)
-#dev.off()
+pdf("output/Q6.2_Preference_pie_8Dec.pdf", width=10, height = 10, pointsize = 18)
+# png("output/Q6.2_Preference_pie_8Dec.png", width=20, height = 20, units = "cm", res = 400)
+pie(preference_sum,  col = gray.colors(2, start = 0.9, end = 0.2), labels = NA, init.angle = 90, border = F)
+legend("bottom", c('It is assessed', 'Not assessed'), fill = gray.colors(2, start = 0.9, end = 0.2), bty = "n", border = F, horiz = T, cex= 1.2)
+dev.off()
 
 
 preference_by_mf_df = foreach (idx = 1:7, .combine = "rbind") %do% {
@@ -2320,19 +2343,22 @@ cost_tb_final_plot <- c(
 names(cost_tb_final) <- cost_tb_final_plot
 
 
-#pdf("output/Fig_6.3_corrected_12Nov.pdf", width=15, height = 8, pointsize = 18)
+pdf("output/Q6.3_Cost_bar_8Dec.pdf", width=15, height = 8, pointsize = 20)
+# png("output/Q6.3_Cost_bar_8Dec.png", width=25, height = 15, units = "cm", res = 400)
 par(mar=c(5,28,1,1))
-barplot(rev(cost_tb_final[-c(6)]), las=1, horiz=T, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, 150), xlab = "Number of applications")
-#dev.off()
+barplot(rev(cost_tb_final[-c(6)]), las=1, horiz=T, col = gray(0.7), xlim = c(0, 150), xlab = "Number of applications")
+dev.off()
 
 
 cost_sum <- c(sum(cost_tb_final[-c(6)]), cost_tb_final[6])
 
 
-pdf("output/Fig_6.3_pie_12Nov.pdf", width=10, height = 10, pointsize = 18)
-pie(cost_sum,  col = c(IPbeslightgreen, 'red'), labels = NA, init.angle = 90, border = F)
-legend("bottomright", c('It is assessed', 'Not assessed'), fill = c(IPbeslightgreen, 'red'), bty = "n", border = F, horiz = T)
-#dev.off()
+pdf("output/Q6.3_Cost_pie_8Dec.pdf", width=10, height = 10, pointsize = 18)
+# png("output/Q6.3_Cost_pie_8Dec.png", width=20, height = 20, units = "cm", res = 400)
+
+pie(cost_sum,  col = gray.colors(2, start = 0.9, end = 0.2), labels = NA, init.angle = 90, border = F)
+legend("bottom", c('It is assessed', 'Not assessed'), fill = gray.colors(2, start = 0.9, end = 0.2), bty = "n", border = F, horiz = T, cex= 1.3)
+dev.off()
 
 
 cost_by_mf_df = foreach (idx = 1:7, .combine = "rbind") %do% {
@@ -2492,18 +2518,23 @@ socio_tb_final_plot <- c(
 names(socio_tb_final) <- socio_tb_final_plot
 barplot(socio_tb_final, horiz = T, las = 1)
 
-pdf("output/Fig_6.5_corrected_12Nov.pdf", width=15, height = 8, pointsize = 18)
+# pdf("output/Fig_6.5_corrected_12Nov.pdf", width=15, height = 8, pointsize = 18)
+pdf("output/Q6.5_SocioDemo_bar_8Dec.pdf", width=15, height = 8, pointsize = 20)
+# png("output/Q6.5_SocioDemo_bar_8Dec.png", width=25, height = 10, units = "cm", res = 400)
+
 par(mar=c(5,28,1,1))
-barplot(rev(socio_tb_final[-c(7,8)]), las=1, horiz=T, col = IPbeslightgreen, border =IPbeslightgreen, xlim = c(0, 150), xlab = "Number of applications")
+barplot(rev(socio_tb_final[-c(7,8)]), las=1, horiz=T, col = gray(0.7), xlim = c(0, 150), xlab = "Number of applications")
 dev.off()
 
 
 socio_sum <- c(sum(socio_tb_final[-c(7,8)]), socio_tb_final[7], socio_tb_final[8])
 
 
-pdf("output/Fig_6.5_pie_12Nov.pdf", width=10, height = 10, pointsize = 18)
-pie(socio_sum,  col = c(IPbeslightgreen, 'orange','red'), labels = NA, init.angle = 90, border = F)
-legend("bottomright", c('It is assessed', 'Not assessed', 'Irrelevant'), fill = c(IPbeslightgreen, 'orange','red'), bty = "n", border = F, horiz = T)
+pdf("output/Q6.5_SocioDemo_pie_8Dec.pdf", width=10, height = 10, pointsize = 18)
+# png("output/Q6.5_SocioDemo_pie_8Dec.png", width=20, height = 20, units = "cm", res = 400)
+
+pie(socio_sum,  col = gray.colors(3, start = 0.9, end = 0.2), labels = NA, init.angle = 90, border = F)
+legend("bottom", c('It is assessed', 'Not assessed', 'Irrelevant'), fill = gray.colors(3, start = 0.9, end = 0.2), bty = "n", border = F, horiz = T, cex = 1.3)
 dev.off()
 
 

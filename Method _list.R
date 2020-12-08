@@ -333,7 +333,8 @@ cut_1.1 = cut(s3_single$"1.1", breaks = c(0, 1.5, 2.5, 3.5, max(s3_single$"1.1")
 levels(cut_1.1) = c(1,2,3,"> 4")
 cut_1.1
 
-pdf("output/Fig_1.1_NrMainMethods_Pie_3Dec.pdf", width=15, height = 15, pointsize = 20)
+pdf("output/Q1.1_NrMainMethods_Pie_3Dec.pdf", width=15, height = 15, pointsize = 20)
+png("output/Q1.1_NrMainMethods_Pie_3Dec.png", width = 800, height = 800, pointsize = 20)
 pie(table(cut_1.1), main = "Number of main methods per application", init.angle = 90, col = gray.colors(4, start = 0.9, end = 0.3))
 dev.off()
 
@@ -412,7 +413,7 @@ plot(res_all_onlyold_df$PaperID[1:1522] == as.numeric(method.corrected.data$Pape
 plot(res_all_onlyold_df$PaperID[c(1:1520)] == as.numeric(method.corrected.data$PaperID)[c(1:654, 656:844, 846:1522)], type="l")
 
 
-# Extra data poitns at the end of the dataset..
+# Extra data points at the end of the dataset..
 # 14743 %in% method.corrected.data$PaperID
 # which(14743 == method.corrected.data$PaperID)
 # which(14743 == res_all_onlyold_df$PaperID)
@@ -640,7 +641,8 @@ cut_1.3
 
 cut_1.3[is.na(cut_1.3)] = 0
 
-pdf("output/1.3_NrAdditionalMethods_Pie_3Dec.pdf", width=15, height = 15, pointsize = 20)
+pdf("output/Q1.3_NrAdditionalMethods_Pie_3Dec.pdf", width=15, height = 15, pointsize = 20)
+png("output/Q1.3_NrAdditionalMethods_Pie_3Dec.png", width = 600, height = 600, pointsize = 20)
 pie(table(cut_1.3), main = "Number of additional methods per application", init.angle = 90, col = gray.colors(5, start = 0.9, end = 0.3))
 dev.off()
 
@@ -890,7 +892,8 @@ goal_tb_sorted_reduced <- goal_tb_sorted_reduced[-c(2,4)]
 
 # names(goal_tb_sorted_reduced[1]) = "Other/unclear"
 
-pdf("output/1.5_GoalCombiningMethods_bar_3Dec.pdf", width=15, height = 5, pointsize = 20)
+pdf("output/Q1.5_GoalCombiningMethods_bar_3Dec.pdf", width=15, height = 5, pointsize = 20)
+png("output/Q1.5_GoalCombiningMethods_bar_3Dec.png", width = 1200, height = 400,  pointsize = 20)
 par(mar=c(5, 25, 5, 5))
 barplot(goal_tb_sorted_reduced, las=1, horiz=T, xlim=c(0, max(goal_tb_sorted_reduced) * 1.2 ), col = gray(0.7), main = "the goal of combining valuation methods", xlab= "Number of applications")
 dev.off()
