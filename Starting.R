@@ -184,7 +184,7 @@ for(i in as.numeric(Methods$RowID)){
   if(as.numeric(Methods[i,'PaperID'])!=s3_single[i,'paperID']){
     sprintf('The paperID at row %d of the methodsexcel (%s) does not equal the one in s3_single (%d)',i,Methods[i,'PaperID'],s3_single[i,'paperID'])
   }else{
-    if(Methods[i,'MethodID'] == ""){
+    if((Methods[i,'MethodID'] == "")|is.na(Methods[i,'MethodID'])){
       s3_single[i,'MethodSOD']<-NA
     }else{
       s3_single[i,'MethodSOD'] <- Methods[i,'MethodID']
@@ -208,6 +208,20 @@ for(i in b){
   d <- which(lMF$methods.ID_LUIZA %in% as.numeric(methods))
   s3_single[i,c('MF1.SOD', 'MF2.SOD', 'MF3.SOD', 'MF4.SOD')] <- colMeans(lMF[d,mfcol])
   s3_single[i,c('IPBES.econ_SOD', 'IPBES.soccul_SOD', 'IPBES.bioph_SOD', 'IPBES.health_SOD','IPBES.ILK_SOD')] <- colMeans(lMF[d,ipbescol])
+}
+
+#Add monetary-nonmonetary and add biophys-socio-cultural
+Mon <- read.xlsx('Corrected/Articulation_luiza_SOD.xlsx')
+s3_single %>% mutate(Monetary = NA,
+                     NonMonetary = NA,
+                     MonetaryUnclear = NA,
+                     Biophysical = NA,
+                     SocioCultural = NA,
+                     BiophSocCulUnclear =NA) -> s3_single
+for(i in 1:nrow(s3_single)){
+  if(s3_single[i,'paperID'] != Mon[i,'paperID']){print(sprintf('Paper %d does not match the row number in de file',s3_single[i,'paperID']))}else{
+    s3_single[i,c('Monetary','NonMonetary','MonetaryUnclear','Biophysical','SocioCultural','BiophSocCulUnclear')] <- Mon[i,c("monetary","non-monetary","mon/non-mon.unclear","Biophysical","Social-Cultural","bioph/socioc.unclear")]
+  }
 }
 
 save(s3_single, file = 'output/s3_single_BeforeExplode.RData')
