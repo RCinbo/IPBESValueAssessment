@@ -199,16 +199,23 @@ if(sum(is.na(split))>0){
     print(sprintf('There are no methods defined for PaperID %s, Row Number %d',s3_single[i,'paperID'],i))
   }
 }
+
 b<- which(!is.na(split))
+SODmethods <- unique(lMF[,'method.name.SOD'])
+A <- matrix(0,nrow = nrow(s3_single), ncol = length(SODmethods))
+colnames(A) <- SODmethods
 s3_single %>% mutate(MF1.SOD = NA, MF2.SOD = NA, MF3.SOD = NA, MF4.SOD = NA, IPBES.econ_SOD = NA, IPBES.soccul_SOD = NA,IPBES.bioph_SOD = NA,IPBES.health_SOD = NA,IPBES.ILK_SOD = NA) -> s3_single
-mfcol <- c(5,6,7,8)#the columns where the methodfamily loadings are
-ipbescol<- c(9,10,11,12,13)#the columns in lMF where the IPBES category loadings are
+mfcol <- c(7,8,9,10)#the columns where the methodfamily loadings are
+ipbescol<- c(11,12,13,14,15)#the columns in lMF where the IPBES category loadings are
 for(i in b){
   methods <- split[[i]]
   d <- which(lMF$methods.ID_LUIZA %in% as.numeric(methods))
   s3_single[i,c('MF1.SOD', 'MF2.SOD', 'MF3.SOD', 'MF4.SOD')] <- colMeans(lMF[d,mfcol])
   s3_single[i,c('IPBES.econ_SOD', 'IPBES.soccul_SOD', 'IPBES.bioph_SOD', 'IPBES.health_SOD','IPBES.ILK_SOD')] <- colMeans(lMF[d,ipbescol])
+  SODmethods <- unique(lMF[d,'method.name.SOD'])
+  A[b[i],SODmethods] <-1
 }
+s3_single <- cbind(s3_single,A)
 
 #Add monetary-nonmonetary and add biophys-socio-cultural
 Mon <- read.xlsx('Corrected/Articulation_luiza_SOD.xlsx')

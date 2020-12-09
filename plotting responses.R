@@ -24,7 +24,7 @@ g_legend<-function(a.gplot){
   legend <- tmp$grobs[[leg]]
   return(legend)}
 ###########Labeller for the method families##########
-MFLabels <- c('Biophysical valuation','Statement-based valuation','Behaviour-based valuation','Integrated valuation', 'AllArticles') # change the names here if needed.
+MFLabels <- c('Nature-based valuation','Statement-based valuation','Behaviour-based valuation','Integrated valuation', 'AllArticles') # change the names here if needed.
 names(MFLabels) <- c('MF1','MF2','MF3','MF4', 'All articles')
 
 blank_theme <- theme_minimal()+
@@ -654,31 +654,42 @@ l<-data.frame(Q = c('7.1','7.2','7.3',
                     '8.9','8.10','8.12','8.13',
                     '8.3','8.4','8.5','8.6','8.7','8.8',
                     '4.1','4.2','4.3','4.4','4.5',
-                    '8.1','8.2','8.14'
+                    '8.1','8.2','8.14',
+                    '2.15', '2.16',
+                    '6.1', '6.2', '6.3', '6.5'
                     ),
               title = c('Was ECOLOGICAL CONDITION assessed & how?','Was ECOSYSTEM CAPACITY assessed and how?','Was SUSTAINABLE USE/MANAGEMENT  of ecosystems assessed and how?',
                         'The application identifies/assesses respect towards nature by...', 'The application assesses responsibility or care for the land by...','The application assesses kinship/communality with other people by...', 'The application assesses kinship/communality with non-human entities by...','The application assesses values of self-determination and ancestral law, by...',
                         'Recognition: knowledge types','Recognition: broad values','Recognition: value types','Recognition: value dimensions',
                         'Transparency level','Stakeholder representation','Stakeholder identification','Stakeholder inclusion actions','Power','Participation', 'Replicability of the results','Consistency of the results','Prcision of the results','Internal validity of the results','External validity of the results',
-                        'Was INTRA-GENERATIONAL JUSTICE assessed & how?','Was INTER-GENERATIONAL JUSTICE assessed and how?','Who is part of the community of justice?'),
+                        'Was INTRA-GENERATIONAL JUSTICE assessed & how?','Was INTER-GENERATIONAL JUSTICE assessed and how?','Who is part of the community of justice?',
+                        'The application assesses multiple values and brings them together into an overall value or importance by:','The application mentions interests and conflicts:',
+                        'The application assesses human well-being using one of the following indicators (multiple possible):', 'The application assesses the preferences (or importance) that humans assign to nature and biodiversity in terms of (multiple possible):','The application assesses the costs to protect nature & biodiversity for its
+own sake or to maintain nature’s contributions to people in the form of (multiple possible):','If the application assesses human well-being (specified above), is the well-being indicator assessed for different socio-demographic groups?'),
               short = c('EcologicalCondition','EcosystemCapacity','SustainableUseManagement',
                         'NatureRespect','ResponsibilityLand','KinshipPeople','KinshipNonHuman','SelfDeterminationAncestralLaw',
                         'RecogKnowledgeTypes', 'RecogBroadValues','RecogValueTypes','RecogValueDimensions',
                         'Transparency','StkhldrRepr','StkhldrIdent','StkhldrIncl','Power','Participation',
                         'Replicability','Consistency','Precision','IntValidity','ExtValidity',
-                        'IntraJustice','InterGenJustice', 'CommunityJustice'),
+                        'IntraJustice','InterGenJustice', 'CommunityJustice',
+                        'MultipleValues','InterestsConflicts',
+                        'HumanWellBeing', 'AssessBiodiversity','CostsProtect','WellBeingIndicator'),
               ordered = c(TRUE,TRUE,TRUE,
                           TRUE,TRUE,TRUE,TRUE,TRUE,
                           TRUE,TRUE,TRUE,TRUE,
                           FALSE, FALSE,TRUE, TRUE,TRUE,FALSE,
                           TRUE,TRUE,TRUE,TRUE,TRUE,
-                          TRUE,TRUE,TRUE))
+                          TRUE,TRUE,TRUE,
+                          TRUE,FALSE,
+                          TRUE,TRUE,TRUE,TRUE))
 legendlist<-list(L[str_detect(L$Question,'7.1'),], L[str_detect(L$Question,'7.2'),], L[str_detect(L$Question,'7.3'),],
                  L[str_detect(L$Question,'5.2'),], L[str_detect(L$Question,'5.3'),], L[str_detect(L$Question,'5.4'),], L[str_detect(L$Question,'5.5'),], L[str_detect(L$Question,'5.6'),],
                  L[str_detect(L$Question,'8.9'),], L[str_detect(L$Question,'8.10'),], L[str_detect(L$Question,'8.12'),], L[str_detect(L$Question,'8.13'),],
                  L[str_detect(L$Question,'8.3'),], L[str_detect(L$Question,'8.4'),], L[str_detect(L$Question,'8.5'),], L[str_detect(L$Question,'8.6'),], L[str_detect(L$Question,'8.7'),], L[str_detect(L$Question,'8.8'),],
                  L[str_detect(L$Question,'4.1'),], L[str_detect(L$Question,'4.2'),], L[str_detect(L$Question,'4.3'),], L[str_detect(L$Question,'4.4'),], L[str_detect(L$Question,'4.5'),],
-                 L[str_detect(L$code,'8.1_'),], L[str_detect(L$Question,'8.2'),], L[str_detect(L$Question,'8.14'),])
+                 L[str_detect(L$code,'8.1_'),], L[str_detect(L$Question,'8.2'),], L[str_detect(L$Question,'8.14'),],
+                 L[str_detect(L$code,'2.15'),], L[str_detect(L$Question,'2.16'),],
+                 L[str_detect(L$Question,'6.1'),],L[str_detect(L$code,'6.2'),], L[str_detect(L$Question,'6.3'),], L[str_detect(L$Question,'6.5'),])
 
 Panes <- list()
 gt <- list()
@@ -698,7 +709,7 @@ for(i in 1:nrow(l)){
     pie <- ggplot() +
       geom_bar(aes(x = factor(1), fill = fillCol), width = 1, color='black') + blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank())+ scale_fill_manual(name = '',breaks = c('0','1','2'),labels = c('It is assessed','Unclear','It is assessed'), values  = c('black', 'grey','white')) +
       xlab('') + ylab('') + coord_polar("y", start = 0,direction = 1) + theme(legend.position='bottom' )
-  }else{
+  }else if (sum(str_detect(colnames(sbst),'_none|_irrelevant'))>0){
     pie <- ggplot() +
       geom_bar(aes(x = factor(1), fill = (pmax(sbst[,str_detect(colnames(sbst),'_none|_irrelevant')]) == 1)), width = 1, color='black') +
       blank_theme + theme(axis.text.x=element_blank(), axis.text.y = element_blank())+ scale_fill_manual(name = '',breaks = c(TRUE, FALSE),labels = c('Not assessed','It is assessed'), values  = c('white', 'grey')) +
