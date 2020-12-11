@@ -881,4 +881,23 @@ ggsave(p51pie,file = 'output/Q51IndigineousAuthorsPie.jpg', width = 4, height = 
 
 
 #Alluvial plot MF and IPBES categories
-
+library(ggalluvial)
+lMF <- read.xlsx('methods x MF x IPBESclasses SOD.xlsx')
+#Only keep the unique SOD methods
+a <- sapply(X=unique(lMF$method.name.SOD), FUN=function(x) min(which(lMF$method.name == x)))
+A <- lMF[a,c("method.name.SOD",  "MF1.-.Nature.based.valuation","MF2.-.Statement-based","MF3.-.Behaviour.based.valuation","MF4.-.Integrated.valuation" ,"Economic.valuation","socio-cultural.valuation","biophysical.valuation","health.related","ILK.related")]
+limit<-1 #we only say the method belong to the metod family/ipbes category if it scores higher than 'limit'
+Along<-data.frame(MF=rep(c("Nature based","Statement-based","Behaviour based valuation","Integrated"), each=5),
+                  IPBES= rep(c('Economic valuation','socio-cultural valuation','biophysical valuation','health related','ILK related'),4),
+                  n=NA)
+for (i in 1:nrow(Along)){
+Along[i,'n'] <- sum((lMF[,which(str_detect(colnames(lMF),str_replace_all(as.character(Along[i,'IPBES'])," ",".")))]>limit) & (lMF[,which(str_detect(colnames(lMF),str_replace_all(as.character(Along[i,'MF'])," ",".")))]>limit) )
+}
+p<-ggplot(data = Along, aes(axis1 = MF, axis2 = IPBES, y = n)) + geom_alluvium(aes(fill = MF, colour = MF), alpha = .75, width = 0, reverse = FALSE) +
+  guides(fill = FALSE) +
+  geom_stratum(width = 1/8, reverse = FALSE) +
+  geom_text(stat = "stratum", aes(label = after_stat(stratum)),
+            reverse = FALSE, angle=90) +
+  scale_x_continuous(breaks = c(1,2), labels = c("Method family", "IPBES category")) + ylab('Nuber of methods') + theme_bw() + theme(legend.position = "none")
+ggsave(p,file = "output/MethodsAlluvialPlot.pdf", height = 12, width=8)
+ggsave(p,file = "output/MethodsAlluvialPlot.jpg", height = 12, width=8)
