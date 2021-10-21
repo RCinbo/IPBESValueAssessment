@@ -1,0 +1,120 @@
+---
+title: "IPBES Value Assessment"
+author: 
+  - name: Raïsa Carmen
+    email: raisa.carmen@inbo.be
+    orcid: 0000-0003-1025-8702
+  - name: Sander Jacobs
+    email: sander.jacobs@inbo.be
+    orcid: 0000-0002-2196-4234
+date: "21-10-2021"
+output: 
+  bookdown::gitbook: default
+  bookdown::pdf_document2:
+    toc: true
+    fig_caption: yes
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(scales)
+library(stringr)
+library(tidyverse)
+library(grDevices)
+library(likert)
+library(writexl)
+library(grid)
+library(gridExtra)
+require(gtable)
+knitr::opts_chunk$set(echo = TRUE)
+#load the final dataset 
+load('output/s3_single_WithDummies.Rdata')
+#the columns in s3_single to use for method families
+MFkeycol <- c('MF1.key','MF2.key','MF3.key','MF4.key')
+#the columns in s3_single to use
+MFSODcol <- c('MF1.SOD','MF2.SOD','MF3.SOD','MF4.SOD')
+#Labels for the method families
+MFLabels <- c('Nature-based valuation','Statement-based valuation','Behaviour-based valuation','Integrated valuation', 'AllArticles') # change the names here if needed.
+names(MFLabels) <- c('MF1','MF2','MF3','MF4', 'All articles')
+#define colors for the figures
+IPbesdarkgreen <- rgb(92/255, 102/255, 93/255) #5c665d
+IPbeslightgreen <- rgb(181/255, 212/255, 141/255) #b5d48d
+colfunc <- colorRampPalette(c(rgb(92/255, 102/255, 93/255), 
+                              rgb(181/255, 212/255, 141/255))
+                            )
+#Useful function if you want just one legend for several figures
+g_legend <- function(a.gplot){
+  tmp <- ggplot_gtable(ggplot_build(a.gplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)
+}
+#define themes for clean figures
+blank_theme <- theme_minimal()+
+  theme(
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    panel.border = element_blank(),
+    panel.grid=element_blank(),
+    axis.ticks = element_blank(),
+    plot.title=element_text(size=14, face="bold")
+  )
+minimal_theme_bars <- theme_bw() + 
+  theme(panel.border = element_blank(), 
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        axis.line = element_line(colour = "black")
+        )
+```
+
+# Introduction
+This report will summarize all responses for the IPBES Value assessment. The data cleaning process can be found in the R script *'DataCleaning.R'*. Starting from the cleaned dataset, we develop data overviews for each of the themes in this report. 
+
+
+# Data overviews
+
+## Certainty respondents
+After each theme, respondents were asked how certain the were about their answers. 
+
+```{r certainty, echo=FALSE, message = FALSE, fig.width = 8, fig.height = 5, fig.cap= "Respondent ratings of how certain they are about their aswers for each of the topics and overall."}
+A <- data.frame(colnm = c('1.7', '2.20', '3.6','4.6','5.7','6.6','7.4','8.15','8.17'),
+              subject = c('topic 1: Methods and their use', 'topic 2: Context of application','topic 3: Application descriptors','topic 4: Reliability and Validity','topic 5: IPLMLC','topic 6: Human well-being','topic 7: Ecological Sustainability','topic 8: Justice','All topics'))
+
+L <- as.data.frame(s3_single[,sapply(A$colnm,FUN = function(x)
+  which(colnames(s3_single) == x))])
+
+for (i in 1:ncol(L)) {
+  L[,i] <- recode_factor(factor(as.factor(L[,i]), 
+                                levels = c('5','4','3','2','1')),
+                         '1' = 'very sure',
+                         '2' = 'sure',
+                         '3' = 'in between',
+                         '4' = 'unsure',
+                         '5' = 'very unsure')
+  L[,i] <- factor(L[,i],levels = 
+                    c('very unsure','unsure','in between','sure','very sure'),
+                  ordered = TRUE)
+}
+  l <- likert(L)
+  a <- order(rowSums(l$results[,5:6]))
+  plotCertainty <- likert.bar.plot(l, 
+                                   low.color = 'red', 
+                                   high.color = 'forestgreen', 
+                                   plot.percent.low = TRUE, 
+                                   plot.percent.neutral = TRUE,
+                                   plot.percent.high = TRUE,
+                                   legend.position = "bottom", legend = '') +
+    theme_classic() + ylab('Percentage of the respondents') +
+    theme(legend.position = 'bottom') + 
+    scale_x_discrete(limits = summary(l, center = 3)[a,'Item'],
+                     labels = sapply(summary(l,center = 3)[a,'Item'], 
+                                     FUN = function(x)  
+                                       str_wrap(A[A$colnm == x,'subject'], 
+                                                width = 22))
+                     )
+  plotCertainty
+  ggsave(plotCertainty, filename = 'output/CertaintyLikertPlot.pdf', width = 8, height = 5)
+  ggsave(plotCertainty, filename = 'output/CertaintyLikertPlot.jpg', width = 8, height = 5)
+```
+
+Figure \@ref(fig:certainty) shows how certain the respondents were for their answers in each of the topics. At the end of the questionnaire, they were also asked to rate their confidence foor all topics (denoted by "All topics" in Figure \@ref(fig:certainty)). It can be seen that the highest certainty is observed for "`r A[A$colnm == l$results[a[length(a)], 1],"subject"]`" while the highest uncertainty is observed for "`r A[A$colnm == l$results[a[1], 1],"subject"]`".
