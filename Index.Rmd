@@ -26,6 +26,7 @@ library(writexl)
 library(grid)
 library(gridExtra)
 require(gtable)
+library(openxlsx)
 knitr::opts_chunk$set(echo = TRUE)
 #load the final dataset 
 load('output/s3_single_WithDummies.Rdata')
@@ -72,8 +73,96 @@ This report will summarize all responses for the IPBES Value assessment. The dat
 
 
 # Data overviews
+```{r Figurefunctions, echo=FALSE}
+lgnd <- read.xlsx("data/LegendListForDummyColumns.xlsx")
+### this function generates a figure with bars and a pie-chart
+PieBar <- function(Q, title, short, ordered, save){
+  legend <- lgnd[str_detect(lgnd$Question,Q),]
+  sbst <- s3_single[,c('paperID',MFkeycol,MFSODcol,as.character(legend$code))]
+  #from wide to long format
+  sbst %>%
+    gather(question, value, -paperID,-as.character(MFkeycol),
+           -as.character(MFSODcol)) -> 
+    sbst_long
+  if (sum(str_detect(colnames(sbst),'_unclear')) > 0) {
+    fillCol <- as.factor(1*(sbst[,str_detect(colnames(sbst),'_unclear')] == 1) + 
+                           2*(pmax(sbst[,str_detect(colnames(sbst),
+                                                    '_none|_irrelevant')]) == 1)
+                         )
+    fillCol[fillCol == '3'] <- '2'
+    pie <- ggplot() +
+      geom_bar(aes(x = factor(1), fill = fillCol), width = 1, color = 'black') + 
+      blank_theme + 
+      theme(axis.text.x = element_blank(), axis.text.y = element_blank()) + 
+      scale_fill_manual(name = '', 
+                        breaks = c('0','1','2'), 
+                        labels = c('It is assessed','Unclear','It is assessed'),
+                        values  = c('black', 'grey','white')) +
+      xlab('') + ylab('') + 
+      coord_polar("y", start = 0,direction = 1) + 
+      theme(legend.position = 'bottom' )
+  }else if (sum(str_detect(colnames(sbst),'_none|_irrelevant')) > 0) {
+    pie <- ggplot() +
+      geom_bar(aes(x = factor(1), fill = (pmax(sbst[,str_detect(
+        colnames(sbst), '_none|_irrelevant')]) == 1)), 
+        width = 1, 
+        color = 'black') +
+      blank_theme + 
+      theme(axis.text.x = element_blank(), axis.text.y = element_blank()) +
+      scale_fill_manual(name = '', 
+                        breaks = c(TRUE, FALSE),
+                        labels = c('Not assessed','It is assessed'), 
+                        values  = c('white', 'grey')) +
+      xlab('') + ylab('') + 
+      coord_polar("y", start = 0,direction = 1) + 
+      theme(legend.position = 'bottom' )
+  }
 
-## Certainty respondents
+  if (ordered) {#make ordered bar charts
+    cnt <- aggregate(1*(sbst_long$value), by = list(sbst_long$question), 
+                   FUN = function(x) sum(x))
+    sbst_long$question <- factor(sbst_long$question, 
+                                 levels = cnt[order(cnt$x, decreasing = FALSE),
+                                              'Group.1'])
+    selection <- !(str_detect(sbst_long$question,
+                              regex('_none|_irrelevant|_unclear')))
+  }else{
+      selection <- !(str_detect(sbst_long$question,
+                                regex('_irrelevant|_unclear')))
+      }
+  bar <- ggplot(sbst_long[selection,]) + 
+    geom_bar(alpha = 1, size = 1,color = 'grey', fill = 'grey',
+             aes(x = question, y = 1*value), 
+             stat = "identity") + 
+    coord_flip() + 
+    minimal_theme_bars + 
+    scale_x_discrete(breaks = legend$code, 
+                     labels = str_wrap(as.character(legend$txt),50)) + 
+    ylab('Number of papers') + xlab('') + ggtitle(title)
+  library(cowplot)
+  piebar <- ggdraw() +
+    draw_plot(bar) +
+    draw_plot(pie, x = 0.65, y = 0.09, width = .3, height = .4)
+  return(piebar)
+  if (save) {
+    ggsave(pie, 
+           filename = sprintf('output/Q%s%sPie.pdf',Q,short), 
+           width = 4, height = 4)
+    ggsave(bar, filename = sprintf('output/Q%s%sBar.pdf',Q,short), 
+           width = 10, height = 4)
+    ggsave(piebar, filename = sprintf('output/Q%s%sPieBar.pdf', Q, short), 
+           width = 10, height = 4)
+    ggsave(pie, filename = sprintf('output/Q%s%sPie.jpg', Q, short), 
+           width = 4, height = 4)
+    ggsave(bar, filename = sprintf('output/Q%s%sBar.jpg', Q, short), 
+           width = 10, height = 4)
+    ggsave(piebar, filename = sprintf('output/Q%s%sPieBar.jpg', Q, short),
+           width = 10, height = 4)
+  }
+}
+```
+## General overviews
+
 After each theme, respondents were asked how certain the were about their answers. 
 
 ```{r certainty, echo=FALSE, message = FALSE, fig.width = 8, fig.height = 5, fig.cap= "Respondent ratings of how certain they are about their aswers for each of the topics and overall."}
@@ -118,3 +207,81 @@ for (i in 1:ncol(L)) {
 ```
 
 Figure \@ref(fig:certainty) shows how certain the respondents were for their answers in each of the topics. At the end of the questionnaire, they were also asked to rate their confidence foor all topics (denoted by "All topics" in Figure \@ref(fig:certainty)). It can be seen that the highest certainty is observed for "`r A[A$colnm == l$results[a[length(a)], 1],"subject"]`" while the highest uncertainty is observed for "`r A[A$colnm == l$results[a[1], 1],"subject"]`".
+
+The alluvial plot in Figure \@ref(fig:alluvial) shows how the method families are related to the IPBES categories. The behaviour based valuation and statement-based method family are the largest (they envelop the most methods). The alluvial plot shows how many methods in each of the families belong to each of the IPBES categories. As expected, many statement-based methods belong to the socio-cultural valuation category. Many of the nature-based methods belong to biophysical valuation category.
+```{r alluvial, echo=FALSE, message = FALSE, fig.width = 8, fig.height = 12, fig.cap= "Alluvial plot to show the relation between the method families and the IPBES categories."}
+library(ggalluvial)
+lMF <- read.xlsx('data/methods x MF x IPBESclasses SOD.xlsx')
+#Only keep the unique SOD methods
+a <- sapply(X = unique(lMF[!is.na(lMF$method.name.SOD),'method.name.SOD']), FUN = function(x) min(which(lMF$method.name == x)))
+A <- lMF[a,c("method.name.SOD", 
+             "MF1.-.Nature.based.valuation",
+             "MF2.-.Statement-based",
+             "MF3.-.Behaviour.based.valuation",
+             "MF4.-.Integrated.valuation" ,
+             "Economic.valuation",
+             "socio-cultural.valuation",
+             "biophysical.valuation","health.related",
+             "ILK.related")]
+limit <- 1 #we only say the method belong to the metod family/ipbes category if it scores higher than 'limit'
+Along <- data.frame(MF = rep(c("Nature based","Statement-based",
+                             "Behaviour based valuation","Integrated"), 
+                           each = 5),
+                  IPBES = rep(c('Economic valuation','socio-cultural valuation',
+                                'biophysical valuation','health related',
+                                'ILK related'),4),
+                  n = NA)
+for (i in 1:nrow(Along)) {
+Along[i,'n'] <- sum((lMF[,which(str_detect(colnames(lMF),str_replace_all(
+  as.character(Along[i,'IPBES'])," ",".")))] > limit) & 
+    (lMF[,which(str_detect(colnames(lMF),
+                           str_replace_all(as.character(
+                             Along[i,'MF'])," ",".")))] > limit) 
+  )
+}
+
+p <- ggplot(data = Along, aes(axis1 = MF, axis2 = IPBES, y = n)) + 
+  geom_alluvium(aes(fill = MF, colour = MF), alpha = .75, width = 0, 
+                reverse = FALSE) +
+  guides(fill = "none") +
+  geom_stratum(width = 1/8, reverse = FALSE) +
+  geom_text(stat = "stratum", aes(label = after_stat(stratum)),
+            reverse = FALSE, angle = 90) +
+  scale_x_continuous(breaks = c(1,2), 
+                     labels = c("Method family", "IPBES category")) + 
+  ylab('Nuber of methods') + theme_bw() + 
+  theme(legend.position = "none")
+p
+ggsave(p,file = "output/MethodsAlluvialPlot.pdf", height = 12, width=8)
+ggsave(p,file = "output/MethodsAlluvialPlot.jpg", height = 12, width=8)
+```
+
+
+
+## Topic 1: Methods and their use
+
+## Topic 2: Context of application
+
+
+
+
+## Topic 3: Application descriptors
+
+## Topic 4: Reliability and Validity
+
+## Topic 5: IPLMLC
+
+## Topic 6: Human well-being
+
+## Topic 7: Ecological Sustainability
+
+```{r, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of ecological condition."}
+p <- PieBar(Q = '7.1', 
+       title = 'Was ECOLOGICAL CONDITION assessed & how?',
+       short = 'EcologicalCondition', 
+       ordered = TRUE, 
+       save = TRUE)
+p
+```
+
+## Topic 8: Justice
