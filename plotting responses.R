@@ -661,11 +661,11 @@ l<-data.frame(Q = c('7.1','7.2','7.3',
               title = c('Was ECOLOGICAL CONDITION assessed & how?','Was ECOSYSTEM CAPACITY assessed and how?','Was SUSTAINABLE USE/MANAGEMENT  of ecosystems assessed and how?',
                         'The application identifies/assesses respect towards nature by...', 'The application assesses responsibility or care for the land by...','The application assesses kinship/communality with other people by...', 'The application assesses kinship/communality with non-human entities by...','The application assesses values of self-determination and ancestral law, by...',
                         'Recognition: knowledge types','Recognition: broad values','Recognition: value types','Recognition: value dimensions',
-                        'Transparency level','Stakeholder representation','Stakeholder identification','Stakeholder inclusion actions','Power','Participation', 'Replicability of the results','Consistency of the results','Prcision of the results','Internal validity of the results','External validity of the results',
+                        'Transparency level','Stakeholder representation','Stakeholder identification','Stakeholder inclusion actions','Power','Participation',
+                        'Replicability of the results','Consistency of the results','Precision of the results','Internal validity of the results','External validity of the results',
                         'Was INTRA-GENERATIONAL JUSTICE assessed & how?','Was INTER-GENERATIONAL JUSTICE assessed and how?','Who is part of the community of justice?',
                         'The application assesses multiple values and brings them together into an overall value or importance by:','The application mentions interests and conflicts:',
-                        'The application assesses human well-being using one of the following indicators (multiple possible):', 'The application assesses the preferences (or importance) that humans assign to nature and biodiversity in terms of (multiple possible):','The application assesses the costs to protect nature & biodiversity for its
-own sake or to maintain nature’s contributions to people in the form of (multiple possible):','If the application assesses human well-being (specified above), is the well-being indicator assessed for different socio-demographic groups?'),
+                        'The application assesses human well-being using one of the following indicators (multiple possible):', 'The application assesses the preferences (or importance) that humans assign to nature and biodiversity in terms of (multiple possible):','The application assesses the costs to protect nature & biodiversity for its own sake or to maintain nature’s contributions to people in the form of (multiple possible):','If the application assesses human well-being (specified above), is the well-being indicator assessed for different socio-demographic groups?'),
               short = c('EcologicalCondition','EcosystemCapacity','SustainableUseManagement',
                         'NatureRespect','ResponsibilityLand','KinshipPeople','KinshipNonHuman','SelfDeterminationAncestralLaw',
                         'RecogKnowledgeTypes', 'RecogBroadValues','RecogValueTypes','RecogValueDimensions',
@@ -674,14 +674,15 @@ own sake or to maintain nature’s contributions to people in the form of (multi
                         'IntraJustice','InterGenJustice', 'CommunityJustice',
                         'MultipleValues','InterestsConflicts',
                         'HumanWellBeing', 'AssessBiodiversity','CostsProtect','WellBeingIndicator'),
-              ordered = c(TRUE,TRUE,TRUE,
-                          TRUE,TRUE,TRUE,TRUE,TRUE,
-                          TRUE,TRUE,TRUE,TRUE,
-                          FALSE, FALSE,TRUE, TRUE,TRUE,FALSE,
-                          TRUE,TRUE,TRUE,TRUE,TRUE,
-                          TRUE,TRUE,TRUE,
-                          TRUE,FALSE,
-                          TRUE,TRUE,TRUE,TRUE))
+              ordered = c(TRUE, TRUE, TRUE,
+                          TRUE, TRUE, TRUE, TRUE, TRUE,
+                          TRUE, TRUE, TRUE, TRUE,
+                          FALSE, FALSE, TRUE, TRUE, TRUE, FALSE,
+                          TRUE, TRUE, TRUE, TRUE, TRUE,
+                          TRUE, TRUE, TRUE,
+                          TRUE, FALSE,
+                          TRUE, TRUE, TRUE, TRUE))
+L <- read.xlsx("data/LegendListForDummyColumns.xlsx")
 legendlist<-list(L[str_detect(L$Question,'7.1'),], L[str_detect(L$Question,'7.2'),], L[str_detect(L$Question,'7.3'),],
                  L[str_detect(L$Question,'5.2'),], L[str_detect(L$Question,'5.3'),], L[str_detect(L$Question,'5.4'),], L[str_detect(L$Question,'5.5'),], L[str_detect(L$Question,'5.6'),],
                  L[str_detect(L$Question,'8.9'),], L[str_detect(L$Question,'8.10'),], L[str_detect(L$Question,'8.12'),], L[str_detect(L$Question,'8.13'),],
@@ -882,17 +883,27 @@ ggsave(p51pie,file = 'output/Q51IndigineousAuthorsPie.jpg', width = 4, height = 
 
 #Alluvial plot MF and IPBES categories
 library(ggalluvial)
-lMF <- read.xlsx('methods x MF x IPBESclasses SOD.xlsx')
+lMF <- read.xlsx('data/methods x MF x IPBESclasses SOD.xlsx')
 #Only keep the unique SOD methods
-a <- sapply(X=unique(lMF$method.name.SOD), FUN=function(x) min(which(lMF$method.name == x)))
-A <- lMF[a,c("method.name.SOD",  "MF1.-.Nature.based.valuation","MF2.-.Statement-based","MF3.-.Behaviour.based.valuation","MF4.-.Integrated.valuation" ,"Economic.valuation","socio-cultural.valuation","biophysical.valuation","health.related","ILK.related")]
-limit<-1 #we only say the method belong to the metod family/ipbes category if it scores higher than 'limit'
+a <- sapply(X = unique(lMF[!is.na(lMF$method.name.SOD),'method.name.SOD']), FUN = function(x) min(which(lMF$method.name == x)))
+A <- lMF[a,c("method.name.SOD",
+             "MF1.-.Nature.based.valuation",
+             "MF2.-.Statement-based",
+             "MF3.-.Behaviour.based.valuation",
+             "MF4.-.Integrated.valuation" ,
+             "Economic.valuation",
+             "socio-cultural.valuation",
+             "biophysical.valuation","health.related",
+             "ILK.related")]
+limit <- 1 #we only say the method belong to the metod family/ipbes category if it scores higher than 'limit'
 Along<-data.frame(MF=rep(c("Nature based","Statement-based","Behaviour based valuation","Integrated"), each=5),
                   IPBES= rep(c('Economic valuation','socio-cultural valuation','biophysical valuation','health related','ILK related'),4),
                   n=NA)
 for (i in 1:nrow(Along)){
-Along[i,'n'] <- sum((lMF[,which(str_detect(colnames(lMF),str_replace_all(as.character(Along[i,'IPBES'])," ",".")))]>limit) & (lMF[,which(str_detect(colnames(lMF),str_replace_all(as.character(Along[i,'MF'])," ",".")))]>limit) )
+Along[i,'n'] <- sum((lMF[,which(str_detect(colnames(lMF),str_replace_all(as.character(Along[i,'IPBES'])," ",".")))] > limit) &
+                      (lMF[,which(str_detect(colnames(lMF),str_replace_all(as.character(Along[i,'MF'])," ",".")))] > limit) )
 }
+
 p<-ggplot(data = Along, aes(axis1 = MF, axis2 = IPBES, y = n)) + geom_alluvium(aes(fill = MF, colour = MF), alpha = .75, width = 0, reverse = FALSE) +
   guides(fill = FALSE) +
   geom_stratum(width = 1/8, reverse = FALSE) +

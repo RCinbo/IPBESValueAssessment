@@ -4,6 +4,9 @@ data
 # Large output files
 output
 
+# output files from the Rmarkdown
+Index_files
+
 # History files
 .Rhistory
 .Rapp.history

@@ -13,6 +13,8 @@ output:
   bookdown::pdf_document2:
     toc: true
     fig_caption: yes
+params:
+    printfigures: FALSE
 ---
 
 ```{r setup, include=FALSE}
@@ -76,8 +78,8 @@ This report will summarize all responses for the IPBES Value assessment. The dat
 ```{r Figurefunctions, echo=FALSE}
 lgnd <- read.xlsx("data/LegendListForDummyColumns.xlsx")
 ### this function generates a figure with bars and a pie-chart
-PieBar <- function(Q, title, short, ordered, save){
-  legend <- lgnd[str_detect(lgnd$Question,Q),]
+PieBar <- function(Q, title, short, ordered, save, type = "piebar"){
+  legend <- lgnd[lgnd$Question== Q,]
   sbst <- s3_single[,c('paperID',MFkeycol,MFSODcol,as.character(legend$code))]
   #from wide to long format
   sbst %>%
@@ -143,7 +145,13 @@ PieBar <- function(Q, title, short, ordered, save){
   piebar <- ggdraw() +
     draw_plot(bar) +
     draw_plot(pie, x = 0.65, y = 0.09, width = .3, height = .4)
-  return(piebar)
+  if (type == "piebar") {
+    return(piebar)
+  } else if (type == "pie") {
+    return(pie)
+  }
+  
+  
   if (save) {
     ggsave(pie, 
            filename = sprintf('output/Q%s%sPie.pdf',Q,short), 
@@ -261,27 +269,310 @@ ggsave(p,file = "output/MethodsAlluvialPlot.jpg", height = 12, width=8)
 ## Topic 1: Methods and their use
 
 ## Topic 2: Context of application
+```{r plot215, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 6, fig.cap= "Assessment of multiple values."}
+p <- PieBar(Q = '2.15', 
+       title = 'The application assesses multiple values and brings them together into an overall value or importance by:',
+       short = 'MultipleValues', 
+       ordered = TRUE, 
+       save = params$printfigures)
+p
+```
 
+```{r plot216, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Interests and conflicts."}
+p <- PieBar(Q = '2.16', 
+       title = 'The application mentions interests and conflicts:',
+       short = 'nterestsConflicts', 
+       ordered = FALSE, 
+       save = params$printfigures)
+p
+```
 
 
 
 ## Topic 3: Application descriptors
 
 ## Topic 4: Reliability and Validity
+```{r plot41, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of the replicability of the results."}
+p <- PieBar(Q = '4.1', 
+       title = 'Replicability of the results',
+       short = 'Replicability', 
+       ordered = TRUE, 
+       save = params$printfigures,
+       type = "pie")
+p
+```
+
+```{r plot42, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of the consistency of the results."}
+p <- PieBar(Q = '4.2', 
+       title = 'Consistency of the results',
+       short = 'Consistency', 
+       ordered = TRUE, 
+       save = params$printfigures,
+       type = "pie")
+p
+```
+
+```{r plot43, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of the precision of the results."}
+p <- PieBar(Q = '4.3', 
+       title = 'Precision of the results',
+       short = 'Precision', 
+       ordered = TRUE, 
+       save = params$printfigures,
+       type = "pie")
+p
+```
+
+```{r plot44, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of the internal validity of the results."}
+p <- PieBar(Q = '4.4', 
+       title = 'Internal validity of the results',
+       short = 'IntValidity', 
+       ordered = TRUE, 
+       save = params$printfigures)
+p
+```
+
+```{r plot45, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of the external validity of the results."}
+p <- PieBar(Q = '4.5', 
+       title = 'External validity of the results',
+       short = 'ExtValidity', 
+       ordered = TRUE, 
+       save = params$printfigures)
+p
+```
+
 
 ## Topic 5: IPLMLC
+```{r plot52, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of respect towards nature."}
+p <- PieBar(Q = '5.2', 
+       title = 'The application identifies/assesses respect towards nature by...',
+       short = 'NatureRespect', 
+       ordered = TRUE, 
+       save = params$printfigures)
+p
+```
+
+```{r plot53, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of responsibility or care for the land."}
+p <- PieBar(Q = '5.3', 
+       title = 'The application assesses responsibility or care for the land by...',
+       short = 'ResponsibilityLand', 
+       ordered = TRUE, 
+       save = params$printfigures)
+p
+```
+
+```{r plot54, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of kinship/communality with other people."}
+p <- PieBar(Q = '5.4', 
+       title = 'The application assesses kinship/communality with other people by...',
+       short = 'KinshipPeople', 
+       ordered = TRUE, 
+       save = params$printfigures)
+p
+```
+
+```{r plot55, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of kinship/communality with non-human entities."}
+p <- PieBar(Q = '5.5', 
+       title = 'The application assesses kinship/communality with non-human entities by...',
+       short = 'KinshipNonHuman', 
+       ordered = TRUE, 
+       save = params$printfigures)
+p
+```
+
+```{r plot56, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of values of self-determination and ancestral law."}
+p <- PieBar(Q = '5.6', 
+       title = 'The application assesses values of self-determination and ancestral law, by...',
+       short = 'SelfDeterminationAncestralLaw', 
+       ordered = TRUE, 
+       save = params$printfigures)
+p
+```
+
 
 ## Topic 6: Human well-being
 
+```{r plot61, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 6, fig.cap= "Assessment of ecological human well-being."}
+p <- PieBar(Q = '6.1', 
+       title = 'The application assesses human well-being using one of the following indicators (multiple possible):',
+       short = 'HumanWellBeing', 
+       ordered = TRUE, 
+       save = params$printfigures)
+p
+```
+
+```{r plot62, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of preferences (or importance) that humans assign to nature and biodiversity."}
+p <- PieBar(Q = '6.2', 
+       title = 'The application assesses the preferences (or importance) that humans assign to nature and biodiversity in terms of (multiple possible):',
+       short = 'AssessBiodiversity', 
+       ordered = TRUE, 
+       save = params$printfigures)
+p
+```
+
+```{r plot63, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 6, fig.cap= "Assessment of the costs to protect nature & biodiversity."}
+p <- PieBar(Q = '6.3', 
+       title = 'The application assesses the costs to protect nature & biodiversity for its own sake or to maintain nature’s contributions to people in the form of (multiple possible):',
+       short = 'CostsProtect', 
+       ordered = TRUE, 
+       save = params$printfigures)
+p
+```
+
+```{r plot65, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of well-being indicator for different socio-demographic groups."}
+p <- PieBar(Q = '6.5', 
+       title = 'If the application assesses human well-being (specified above), is the well-being indicator assessed for different socio-demographic groups?',
+       short = 'WellBeingIndicator', 
+       ordered = TRUE, 
+       save = params$printfigures)
+p
+```
+
 ## Topic 7: Ecological Sustainability
 
-```{r, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of ecological condition."}
+```{r plot71, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of ecological condition."}
 p <- PieBar(Q = '7.1', 
        title = 'Was ECOLOGICAL CONDITION assessed & how?',
        short = 'EcologicalCondition', 
        ordered = TRUE, 
-       save = TRUE)
+       save = params$printfigures)
+p
+```
+
+```{r plot72, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of ecosystem capacity."}
+p <- PieBar(Q = '7.2', 
+       title = 'Was ECOSYSTEM CAPACITY assessed and how?',
+       short = 'EcosystemCapacity', 
+       ordered = TRUE, 
+       save = params$printfigures)
+p
+```
+
+```{r plot73, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of sustainable use/management."}
+p <- PieBar(Q = '7.3', 
+       title = 'Was SUSTAINABLE USE/MANAGEMENT  of ecosystems assessed and how?',
+       short = 'SustainableUseManagement', 
+       ordered = TRUE, 
+       save = params$printfigures)
 p
 ```
 
 ## Topic 8: Justice
+
+```{r plot89, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of recognition."}
+p <- PieBar(Q = '8.9', 
+       title = 'Recognition: knowledge types',
+       short = 'RecogKnowledgeTypes', 
+       ordered = TRUE, 
+       save = params$printfigures)
+p
+```
+```{r plot810, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of recognition."}
+p <- PieBar(Q = '8.10', 
+       title = 'Recognition: broad values',
+       short = 'RecogBroadValues', 
+       ordered = TRUE, 
+       save = params$printfigures)
+p
+```
+```{r plot811, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of recognition."}
+p <- PieBar(Q = '8.12', 
+       title = 'Recognition: value types',
+       short = 'RecogValueTypes', 
+       ordered = TRUE, 
+       save = params$printfigures)
+p
+```
+
+```{r plot812, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of recognition."}
+p <- PieBar(Q = '8.13', 
+       title = 'Recognition: value dimensions',
+       short = 'RecogValueDimensions', 
+       ordered = TRUE, 
+       save = params$printfigures)
+p
+```
+
+
+```{r plot83, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 6, fig.cap= "Transparency of the valuation process."}
+p <- PieBar(Q = '8.3', 
+       title = 'Transparency level',
+       short = 'Transparency', 
+       ordered = FALSE, 
+       save = params$printfigures)
+p
+```
+
+```{r plot84, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "- Representation of different stakeholders in the valuation process."}
+p <- PieBar(Q = '8.4', 
+       title = 'Stakeholder representation',
+       short = 'StkhldrRepr', 
+       ordered = FALSE, 
+       save = params$printfigures)
+p
+```
+
+```{r plot85, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 6, fig.cap= "Based on what are stakeholder groups identified and targeted (for sample or for participation)."}
+p <- PieBar(Q = '8.5', 
+       title = 'Stakeholder identification',
+       short = 'StkhldrIdent', 
+       ordered = TRUE, 
+       save = params$printfigures)
+p
+```
+
+```{r plot86, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "The application addresses inclusiveness of multiple stakeholders and minorities in the design of the valuation process by adjusting/providing:."}
+p <- PieBar(Q = '8.6', 
+       title = 'Stakeholder inclusion actions',
+       short = 'StkhldrIncl', 
+       ordered = TRUE, 
+       save = params$printfigures)
+p
+```
+
+```{r plot87, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Does the application present results and data on internal power dynamics?(by e.g. showing speaking time, interruptions, use of physical space, testing difference in outputs in different power context..., )"}
+p <- PieBar(Q = '8.7', 
+       title = 'Power',
+       short = 'Power', 
+       ordered = TRUE, 
+       save = params$printfigures,
+       type = "pie")
+p
+```
+
+```{r plot88, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Regarding participation level, the application:"}
+p <- PieBar(Q = '8.8', 
+       title = 'Participation',
+       short = 'Participation', 
+       ordered = FALSE, 
+       save = params$printfigures)
+p
+```
+
+```{r plot81, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of intra-generational justice"}
+p <- PieBar(Q = '8.1', 
+       title = 'Was INTRA-GENERATIONAL JUSTICE assessed and how?',
+       short = 'IntraJustice', 
+       ordered = TRUE, 
+       save = params$printfigures)
+p
+```
+
+```{r plot82, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of inter-generational justice"}
+p <- PieBar(Q = '8.2', 
+       title = 'Was INTER-GENERATIONAL JUSTICE assessed and how?',
+       short = 'InterGenJustice', 
+       ordered = TRUE, 
+       save = params$printfigures)
+p
+```
+
+```{r plot814, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Assessment of community of justice"}
+p <- PieBar(Q = '8.14', 
+       title = 'Who is part of the community of justice?',
+       short = 'CommunityJustice', 
+       ordered = TRUE, 
+       save = params$printfigures)
+p
+```
+
+
+
