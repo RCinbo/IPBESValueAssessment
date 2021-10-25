@@ -154,7 +154,11 @@ b <- which(!is.na(split))
 SODmethods <- unique(lMF[,'method.name.SOD'])
 A <- matrix(0,nrow = nrow(s3_single), ncol = length(SODmethods))
 colnames(A) <- SODmethods
-s3_single %>% mutate(MF1.SOD = NA, MF2.SOD = NA, MF3.SOD = NA, MF4.SOD = NA, IPBES.econ_SOD = NA, IPBES.soccul_SOD = NA,IPBES.bioph_SOD = NA,IPBES.health_SOD = NA,IPBES.ILK_SOD = NA) -> s3_single
+s3_single %>% mutate(MF1.SOD = NA, MF2.SOD = NA, MF3.SOD = NA, MF4.SOD = NA,
+                     IPBES.econ_SOD = NA, IPBES.soccul_SOD = NA,
+                     IPBES.bioph_SOD = NA,IPBES.health_SOD = NA,
+                     IPBES.ILK_SOD = NA) ->
+  s3_single
 mfcol <- c(7,8,9,10)#the columns where the methodfamily loadings are
 ipbescol <- c(11,12,13,14,15)#the columns in lMF where the IPBES category loadings are
 for (i in b) {

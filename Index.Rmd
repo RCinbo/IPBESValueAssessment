@@ -36,9 +36,15 @@ load('output/s3_single_WithDummies.Rdata')
 MFkeycol <- c('MF1.key','MF2.key','MF3.key','MF4.key')
 #the columns in s3_single to use
 MFSODcol <- c('MF1.SOD','MF2.SOD','MF3.SOD','MF4.SOD')
+#the columns in s3_single to use for IPBEs method families
+MFIPBEScol <- c("IPBES.econ_SOD", "IPBES.soccul_SOD", "IPBES.bioph_SOD", 
+                "IPBES.health_SOD","IPBES.ILK_SOD")
 #Labels for the method families
 MFLabels <- c('Nature-based valuation','Statement-based valuation','Behaviour-based valuation','Integrated valuation', 'AllArticles') # change the names here if needed.
 names(MFLabels) <- c('MF1','MF2','MF3','MF4', 'All articles')
+MFIPBESLabels <- c("Economic valuation", "Socio-cultural valuation",
+             "Biophysical valuation", "Health related", "ILK related")
+names(MFIPBESLabels) <- c('MF1','MF2','MF3','MF4', 'MF5')
 #define colors for the figures
 IPbesdarkgreen <- rgb(92/255, 102/255, 93/255) #5c665d
 IPbeslightgreen <- rgb(181/255, 212/255, 141/255) #b5d48d
@@ -53,14 +59,14 @@ g_legend <- function(a.gplot){
   return(legend)
 }
 #define themes for clean figures
-blank_theme <- theme_minimal()+
+blank_theme <- theme_minimal() +
   theme(
     axis.title.x = element_blank(),
     axis.title.y = element_blank(),
     panel.border = element_blank(),
-    panel.grid=element_blank(),
+    panel.grid = element_blank(),
     axis.ticks = element_blank(),
-    plot.title=element_text(size=14, face="bold")
+    plot.title = element_text(size = 14, face = "bold")
   )
 minimal_theme_bars <- theme_bw() + 
   theme(panel.border = element_blank(), 
@@ -78,8 +84,10 @@ This report will summarize all responses for the IPBES Value assessment. The dat
 ```{r Figurefunctions, echo=FALSE}
 lgnd <- read.xlsx("data/LegendListForDummyColumns.xlsx")
 ### this function generates a figure with bars and a pie-chart
+# type can be either "piebar" or "pie" such that either the pie or a barchart 
+# ith a pie chart is shown. Default is piebar.
 PieBar <- function(Q, title, short, ordered, save, type = "piebar"){
-  legend <- lgnd[lgnd$Question== Q,]
+  legend <- lgnd[lgnd$Question == Q,]
   sbst <- s3_single[,c('paperID',MFkeycol,MFSODcol,as.character(legend$code))]
   #from wide to long format
   sbst %>%
@@ -168,6 +176,129 @@ PieBar <- function(Q, title, short, ordered, save, type = "piebar"){
            width = 10, height = 4)
   }
 }
+
+# type can be either "mfkey", "mfsod" or "ipbes" such that either the 
+# keyword search based, SOD, or ipbes method families are used. Default is mfkey.
+MFBar <- function(Q, short, save, type = "mfkey"){
+  legend <- lgnd[lgnd$Question == Q,]
+  sbst <- s3_single[,c('paperID',MFkeycol,MFSODcol,MFIPBEScol, as.character(legend$code))]
+  familysummary <- data.frame(MF = c('MF1','MF1','MF2','MF2','MF3','MF3','MF4','MF4'),
+                                Answer = c('Yes','No','Yes','No','Yes','No','Yes','No'),
+                                N = NA,
+                                Percentage = NA)
+  if (type == "mfkey") {
+    familysummary$N <- sapply(1:nrow(familysummary), FUN = function(x)
+      ifelse(familysummary$Answer[x] == 'No',
+             sum(sbst[,(1 + as.numeric(str_remove(familysummary[x,'MF'], "MF")))]
+                 == 1 &
+                   pmax(sbst[,str_detect(colnames(sbst),'none|irrelevant')]) == 1,
+                 na.rm = T),
+             sum(sbst[,(1 + as.numeric(str_remove(familysummary[x,'MF'], "MF")))] 
+                 == 1 &
+                   pmax(sbst[,str_detect(colnames(sbst),'none|irrelevant')]) == 0,
+                 na.rm = T))
+      )
+     familysummary$Percentage <- familysummary$N /
+      sapply(familysummary$MF,
+             FUN = function(x) sum(familysummary[familysummary$MF == x, 'N']) 
+             )
+    } else if (type == "mfsod") {
+      familysummary$N <- sapply(1:nrow(familysummary), 
+                                FUN = function(x) ifelse(
+                                  familysummary$Answer[x] == 'No',
+                                  sum(
+                                    sbst[pmax(
+                                      sbst[,str_detect(colnames(sbst),
+                                                       'none|irrelevant')]) == 1,
+                                      (5 + as.numeric(str_remove(
+                                        familysummary[x,'MF'], "MF")))],
+                                    na.rm = T),
+                                  sum(
+                                    sbst[pmax(
+                                      sbst[,str_detect(colnames(sbst),
+                                                       'none|irrelevant')]) == 0,
+                                      (5 + as.numeric(str_remove(
+                                        familysummary[x,'MF'], "MF")))], 
+                                    na.rm = T)
+                                  )
+                                )
+      familysummary$Percentage <- familysummary$N / 
+        sapply(familysummary$MF, FUN = function(x)
+          sum(familysummary[familysummary$MF == x, 'N'])
+          )
+    } else if (type == "ipbes") {
+      familysummary <- data.frame(MF = c('MF1','MF1','MF2','MF2','MF3','MF3',
+                                         'MF4','MF4','MF5','MF5'),
+                                Answer = c('Yes','No','Yes','No','Yes','No',
+                                           'Yes','No', 'Yes','No'),
+                                N = NA,
+                                Percentage = NA)
+      familysummary$N <- sapply(1:nrow(familysummary), 
+                                FUN = function(x) ifelse(
+                                  familysummary$Answer[x] == 'No',
+                                  sum(
+                                    sbst[pmax(
+                                      sbst[,str_detect(colnames(sbst),
+                                                       'none|irrelevant')]) == 1,
+                                      (9 + as.numeric(str_remove(
+                                        familysummary[x,'MF'], "MF")))],
+                                    na.rm = T),
+                                  sum(
+                                    sbst[pmax(
+                                      sbst[,str_detect(colnames(sbst),
+                                                       'none|irrelevant')]) == 0,
+                                      (9 + as.numeric(str_remove(
+                                        familysummary[x,'MF'], "MF")))], 
+                                    na.rm = T)
+                                  )
+                                )
+      familysummary$Percentage <- familysummary$N / 
+        sapply(familysummary$MF, FUN = function(x)
+          sum(familysummary[familysummary$MF == x, 'N'])
+          )
+
+    }else {
+      warning('invalid type')
+    }
+    p <- ggplot(familysummary) + 
+      geom_bar(color = 'black', 
+               aes(x = MF, fill = Answer, y = Percentage * 100), 
+               stat = 'identity',
+               position = 'stack') + 
+      scale_fill_manual(name = '',
+                        breaks = c('Yes','No'), 
+                        labels = c('It is assessed','Not assessed'),
+                        values= c('grey', 'white')) + 
+      ylab('Percentage in the method family') + 
+      xlab('Method family') + 
+      minimal_theme_bars 
+    if(type != 'ipbes'){
+      p <- p + scale_x_discrete(labels = MFLabels)
+    } else {
+      p <- p + scale_x_discrete(labels = MFIPBESLabels)
+    }
+    if (save) {
+      ggsave(p, 
+           filename = sprintf('output/Q%s%sMF%sbars.pdf', Q, short, 
+                              ifelse(type == "mfkey", 
+                                     "key", 
+                                     ifelse(type == "mfsod",
+                                            "SOD",
+                                            "IPBES"))), 
+           width = 10, 
+           height = 4)
+      ggsave(p, 
+           filename = sprintf('output/Q%s%sMF%sbars.jpg', Q, short, 
+                              ifelse(type == "mfkey", 
+                                     "key", 
+                                     ifelse(type == "mfsod",
+                                            "SOD",
+                                            "IPBES"))), 
+           width = 10, 
+           height = 4)
+    }
+    return(p)
+}
 ```
 ## General overviews
 
@@ -221,7 +352,8 @@ The alluvial plot in Figure \@ref(fig:alluvial) shows how the method families ar
 library(ggalluvial)
 lMF <- read.xlsx('data/methods x MF x IPBESclasses SOD.xlsx')
 #Only keep the unique SOD methods
-a <- sapply(X = unique(lMF[!is.na(lMF$method.name.SOD),'method.name.SOD']), FUN = function(x) min(which(lMF$method.name == x)))
+a <- sapply(X = unique(lMF[!is.na(lMF$method.name.SOD),'method.name.SOD']), 
+            FUN = function(x) min(which(lMF$method.name == x)))
 A <- lMF[a,c("method.name.SOD", 
              "MF1.-.Nature.based.valuation",
              "MF2.-.Statement-based",
@@ -229,7 +361,8 @@ A <- lMF[a,c("method.name.SOD",
              "MF4.-.Integrated.valuation" ,
              "Economic.valuation",
              "socio-cultural.valuation",
-             "biophysical.valuation","health.related",
+             "biophysical.valuation",
+             "health.related",
              "ILK.related")]
 limit <- 1 #we only say the method belong to the metod family/ipbes category if it scores higher than 'limit'
 Along <- data.frame(MF = rep(c("Nature based","Statement-based",
@@ -277,6 +410,28 @@ p <- PieBar(Q = '2.15',
        save = params$printfigures)
 p
 ```
+```{r plot215MFkey, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 6, fig.cap= "Assessment of multiple values."}
+p <- MFBar(Q = "2.15",
+           short = 'MultipleValues',
+           save = params$printfigures, 
+           type = "mfkey")
+p
+```
+```{r plot215MFsod, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 6, fig.cap= "Assessment of multiple values."}
+p <- MFBar(Q = "2.15",
+           short = 'MultipleValues',
+           save = params$printfigures, 
+           type = "mfsod")
+p
+```
+```{r plot215ipbes, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 6, fig.cap= "Assessment of multiple values."}
+p <- MFBar(Q = "2.15",
+           short = 'MultipleValues',
+           save = params$printfigures, 
+           type = "ipbes")
+p
+```
+
 
 ```{r plot216, echo=FALSE, message = FALSE, fig.width = 10, fig.height = 4, fig.cap= "Interests and conflicts."}
 p <- PieBar(Q = '2.16', 
