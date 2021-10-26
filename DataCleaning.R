@@ -175,22 +175,21 @@ for (i in b) {
 s3_single <- cbind(s3_single,A)
 
 #Add monetary-nonmonetary and add biophys-socio-cultural
-Mon <- read.xlsx('Corrected/TOD_indicators_PCIV.xlsx', sheet = "Mette")
+Mon <- read.xlsx('data/TOD_indicators_PCIV.xlsx', sheet = "Mette")
 s3_single %>% mutate(Monetary = NA,
                      NonMonetary = NA,
-                     MonetaryUnclear = NA,
                      Biophysical = NA,
                      SocioCultural = NA,
-                     BiophSocCulUnclear = NA) -> s3_single
+                     Unclear = NA) -> s3_single
 for (i in 1:nrow(s3_single)) {
   if (s3_single[i,'paperID'] != Mon[i,'paperID']) {
     print(sprintf('Paper %d does not match the row number in de file',
                   s3_single[i,'paperID']))
     }else{
-    s3_single[i,c('Monetary','NonMonetary','MonetaryUnclear','Biophysical',
-                  'SocioCultural','BiophSocCulUnclear')] <-
-      Mon[i,c("monetary","non-monetary","mon/non-mon.unclear",
-              "Biophysical","Social-Cultural","bioph/socioc.unclear")]
+    s3_single[i,c('Monetary', 'NonMonetary', 'Biophysical', 'SocioCultural',
+                  'Unclear')] <-
+      Mon[i,c("monetary", "non-monetary", "Biophysical", "Social-Cultural",
+              "unclear")]
   }
 }
 
