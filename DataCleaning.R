@@ -119,11 +119,11 @@ for (i in 1:nrow(s3_single)) {
 }
 
 ########Add the loadings to the pre-SOD method families and IPBES categories
-lMF <- read.xlsx('data/methods x MF x IPBESclasses SOD.xlsx')
+lMF <- read.xlsx('data/methods x MF x IPBESclasses TOD.xlsx')
 Methods <- read.xlsx(
   'Corrected/1.2_MethodList_ByRowID_LuizaCorrected_n1163.xlsx',
   sheet = "Sheet 1")
-s3_single$MethodSOD <- NA
+s3_single$MethodTOD <- NA
 for (i in as.numeric(Methods$RowID)) {
   if (as.numeric(Methods[i, 'PaperID']) != s3_single[i, 'paperID']) {
     sprintf('The paperID at row %d of the methodsexcel (%s)
@@ -134,14 +134,14 @@ for (i in as.numeric(Methods$RowID)) {
             )
   }else{
     if ((Methods[i, 'MethodID'] == "") | is.na(Methods[i, 'MethodID'])) {
-      s3_single[i, 'MethodSOD'] <- NA
+      s3_single[i, 'MethodTOD'] <- NA
     }else{
-      s3_single[i,'MethodSOD'] <- Methods[i,'MethodID']
+      s3_single[i,'MethodTOD'] <- Methods[i,'MethodID']
     }
   }
 }
 
-split <- str_split(s3_single$MethodSOD,pattern = ";")
+split <- str_split(s3_single$MethodTOD,pattern = ";")
 if (sum(is.na(split)) > 0) {
   a <- which(is.na(split))
   for (i in a) {
@@ -151,31 +151,31 @@ if (sum(is.na(split)) > 0) {
 }
 
 b <- which(!is.na(split))
-SODmethods <- unique(lMF[,'method.name.SOD'])
-A <- matrix(0,nrow = nrow(s3_single), ncol = length(SODmethods))
-colnames(A) <- SODmethods
-s3_single %>% mutate(MF1.SOD = NA, MF2.SOD = NA, MF3.SOD = NA, MF4.SOD = NA,
-                     IPBES.econ_SOD = NA, IPBES.soccul_SOD = NA,
-                     IPBES.bioph_SOD = NA,IPBES.health_SOD = NA,
-                     IPBES.ILK_SOD = NA) ->
+TODmethods <- unique(lMF[,'method.name.TOD'])
+A <- matrix(0,nrow = nrow(s3_single), ncol = length(TODmethods))
+colnames(A) <- TODmethods
+s3_single %>% mutate(MF1.TOD = NA, MF2.TOD = NA, MF3.TOD = NA, MF4.TOD = NA,
+                     IPBES.econ_TOD = NA, IPBES.soccul_TOD = NA,
+                     IPBES.bioph_TOD = NA,IPBES.health_TOD = NA,
+                     IPBES.ILK_TOD = NA) ->
   s3_single
 mfcol <- c(7,8,9,10)#the columns where the methodfamily loadings are
 ipbescol <- c(11,12,13,14,15)#the columns in lMF where the IPBES category loadings are
 for (i in b) {
   methods <- split[[i]]
   d <- which(lMF$methods.ID_LUIZA %in% as.numeric(methods))
-  s3_single[i,c('MF1.SOD', 'MF2.SOD', 'MF3.SOD', 'MF4.SOD')] <-
+  s3_single[i,c('MF1.TOD', 'MF2.TOD', 'MF3.TOD', 'MF4.TOD')] <-
     colMeans(lMF[d,mfcol])
-  s3_single[i,c('IPBES.econ_SOD', 'IPBES.soccul_SOD', 'IPBES.bioph_SOD',
-                'IPBES.health_SOD','IPBES.ILK_SOD')] <-
+  s3_single[i,c('IPBES.econ_TOD', 'IPBES.soccul_TOD', 'IPBES.bioph_TOD',
+                'IPBES.health_TOD','IPBES.ILK_TOD')] <-
     colMeans(lMF[d,ipbescol])
-  SODmethods <- unique(lMF[d,'method.name.SOD'])
-  A[b[i],SODmethods] <- 1
+  TODmethods <- unique(lMF[d,'method.name.TOD'])
+  A[b[i],TODmethods] <- 1
 }
 s3_single <- cbind(s3_single,A)
 
 #Add monetary-nonmonetary and add biophys-socio-cultural
-Mon <- read.xlsx('Corrected/Articulation_luiza_SOD.xlsx', sheet = "Sheet1")
+Mon <- read.xlsx('Corrected/TOD_indicators_PCIV.xlsx', sheet = "Mette")
 s3_single %>% mutate(Monetary = NA,
                      NonMonetary = NA,
                      MonetaryUnclear = NA,
