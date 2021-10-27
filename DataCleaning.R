@@ -124,6 +124,8 @@ Methods <- read.xlsx(
   'Corrected/1.2_MethodList_ByRowID_LuizaCorrected_n1163.xlsx',
   sheet = "Sheet 1")
 s3_single$MethodTOD <- NA
+s3_single$MethodTODagg <- NA
+s3_single$MethodTODdisagg <- NA
 for (i in as.numeric(Methods$RowID)) {
   if (as.numeric(Methods[i, 'PaperID']) != s3_single[i, 'paperID']) {
     sprintf('The paperID at row %d of the methodsexcel (%s)
@@ -135,8 +137,18 @@ for (i in as.numeric(Methods$RowID)) {
   }else{
     if ((Methods[i, 'MethodID'] == "") | is.na(Methods[i, 'MethodID'])) {
       s3_single[i, 'MethodTOD'] <- NA
+      s3_single[i, 'MethodTODagg'] <- NA
+      s3_single[i, 'MethodTODdisagg'] <- NA
     }else{
-      s3_single[i,'MethodTOD'] <- Methods[i,'MethodID']
+      s3_single[i, 'MethodTOD'] <- str_remove(Methods[i,'MethodID']," ")
+      a <- as.numeric(unlist(str_split(s3_single[i, 'MethodTOD'], pattern = ";")))
+      rows <- unname(sapply(a, FUN = function(x){
+        which(lMF$methods.ID_LUIZA == x)})
+      )
+      s3_single[i, 'MethodTODagg'] <- paste(lMF[rows,"method.name.SOD"],
+                                            collapse = ";")
+      s3_single[i, 'MethodTODdisagg'] <- str_c(lMF[rows,"Method.name"],
+                                               collapse = ";")
     }
   }
 }
@@ -359,3 +371,25 @@ for (i in c('8.4','8.5','8.6','8.8')) {
 
 save(s3_single,L, file = 'output/s3_single_WithDummies.RData')
 write.xlsx(s3_single, file = 'output/s3_single.xlsx')
+
+################################################################################
+########Table with one row per method in stead of one per application###########
+################################################################################
+#explode the table by the MethodTOD columns and adjust the method names, families, and IPBES categories.
+s3_single %>% separate_rows(MethodTOD, sep = ";") %>%
+  mutate(MethodTOD = as.numeric(MethodTOD)) %>%
+  left_join(lMF, by = c("MethodTOD" = "methods.ID_LUIZA")) %>%
+  mutate(MethodTODagg = method.name.SOD,
+        MethodTODdisagg = Method.name,
+        MF1.TOD = Nature.Based,
+        MF2.TOD = Statement.Based,
+        MF3.TOD = Behaviour.Based,
+        MF4.TOD = Integration.Methods,
+        IPBES.econ_TOD = Economic.valuation,
+        IPBES.soccul_TOD = `socio-cultural.valuation`,
+        IPBES.bioph_TOD = biophysical.valuation,
+        IPBES.health_TOD = health.related,
+        IPBES.ILK_TOD = ILK.related) %>%
+  dplyr::select(-colnames(lMF)[-2]) -> s3_explode
+save(s3_explode,L, file = 'output/s3_explode.RData')
+write.xlsx(s3_explode, file = 'output/s3_explode.xlsx')
